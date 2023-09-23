@@ -1,0 +1,546 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"retarget.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_mcu/stm32_hal/retarget.c"
+  18              		.section	.text.RetargetInit,"ax",%progbits
+  19              		.align	1
+  20              		.global	RetargetInit
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	RetargetInit:
+  26              	.LVL0:
+  27              	.LFB148:
+   1:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #include "retarget.h"
+   2:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #include "usart.h"
+   3:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #include <errno.h>
+   4:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #include <sys/time.h>
+   5:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+   6:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+   7:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #if !defined(OS_USE_SEMIHOSTING)
+   8:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+   9:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #define STDIN_FILENO  0
+  10:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #define STDOUT_FILENO 1
+  11:Libraries/ctrl_mcu/stm32_hal/retarget.c **** #define STDERR_FILENO 2
+  12:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  13:Libraries/ctrl_mcu/stm32_hal/retarget.c **** UART_HandleTypeDef* gHuart;
+  14:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  15:Libraries/ctrl_mcu/stm32_hal/retarget.c **** void RetargetInit(UART_HandleTypeDef* huart)
+  16:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+  28              		.loc 1 16 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 16 1 is_stmt 0 view .LVU1
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  17:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     gHuart = huart;
+  38              		.loc 1 17 5 is_stmt 1 view .LVU2
+  39              		.loc 1 17 12 is_stmt 0 view .LVU3
+  40 0002 054B     		ldr	r3, .L3
+  41 0004 1860     		str	r0, [r3]
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 2
+
+
+  18:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  19:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     /* Disable I/O buffering for STDOUT stream, so that
+  20:Libraries/ctrl_mcu/stm32_hal/retarget.c ****      * chars are sent out as soon as they are printed. */
+  21:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     setvbuf(stdout, NULL, _IONBF, 0);
+  42              		.loc 1 21 5 is_stmt 1 view .LVU4
+  43              		.loc 1 21 13 is_stmt 0 view .LVU5
+  44 0006 054B     		ldr	r3, .L3+4
+  45 0008 1868     		ldr	r0, [r3]
+  46              	.LVL1:
+  47              		.loc 1 21 5 view .LVU6
+  48 000a 0023     		movs	r3, #0
+  49 000c 0222     		movs	r2, #2
+  50 000e 1946     		mov	r1, r3
+  51 0010 8068     		ldr	r0, [r0, #8]
+  52 0012 FFF7FEFF 		bl	setvbuf
+  53              	.LVL2:
+  22:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+  54              		.loc 1 22 1 view .LVU7
+  55 0016 08BD     		pop	{r3, pc}
+  56              	.L4:
+  57              		.align	2
+  58              	.L3:
+  59 0018 00000000 		.word	gHuart
+  60 001c 00000000 		.word	_impure_ptr
+  61              		.cfi_endproc
+  62              	.LFE148:
+  64              		.section	.text._isatty,"ax",%progbits
+  65              		.align	1
+  66              		.global	_isatty
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  71              	_isatty:
+  72              	.LVL3:
+  73              	.LFB149:
+  23:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  24:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _isatty(int fd)
+  25:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+  74              		.loc 1 25 1 is_stmt 1 view -0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  26:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  78              		.loc 1 26 5 view .LVU9
+  79              		.loc 1 26 8 is_stmt 0 view .LVU10
+  80 0000 0228     		cmp	r0, #2
+  81 0002 01D8     		bhi	.L12
+  27:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         return 1;
+  82              		.loc 1 27 16 view .LVU11
+  83 0004 0120     		movs	r0, #1
+  84              	.LVL4:
+  28:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  29:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     errno = EBADF;
+  30:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+  31:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+  85              		.loc 1 31 1 view .LVU12
+  86 0006 7047     		bx	lr
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 3
+
+
+  87              	.LVL5:
+  88              	.L12:
+  25:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  89              		.loc 1 25 1 view .LVU13
+  90 0008 08B5     		push	{r3, lr}
+  91              	.LCFI1:
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 3, -8
+  94              		.cfi_offset 14, -4
+  29:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+  95              		.loc 1 29 5 is_stmt 1 view .LVU14
+  96 000a FFF7FEFF 		bl	__errno
+  97              	.LVL6:
+  29:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+  98              		.loc 1 29 11 is_stmt 0 view .LVU15
+  99 000e 0923     		movs	r3, #9
+ 100 0010 0360     		str	r3, [r0]
+  30:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 101              		.loc 1 30 5 is_stmt 1 view .LVU16
+  30:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 102              		.loc 1 30 12 is_stmt 0 view .LVU17
+ 103 0012 0020     		movs	r0, #0
+ 104              		.loc 1 31 1 view .LVU18
+ 105 0014 08BD     		pop	{r3, pc}
+ 106              		.cfi_endproc
+ 107              	.LFE149:
+ 109              		.section	.text._write,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	_write
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 116              	_write:
+ 117              	.LVL7:
+ 118              	.LFB150:
+  32:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  33:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _write(int fd, char* ptr, int len)
+  34:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+ 119              		.loc 1 34 1 is_stmt 1 view -0
+ 120              		.cfi_startproc
+ 121              		@ args = 0, pretend = 0, frame = 0
+ 122              		@ frame_needed = 0, uses_anonymous_args = 0
+  35:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
+ 123              		.loc 1 35 5 view .LVU20
+ 124              		.loc 1 35 29 is_stmt 0 view .LVU21
+ 125 0000 0138     		subs	r0, r0, #1
+ 126              	.LVL8:
+ 127              		.loc 1 35 8 view .LVU22
+ 128 0002 0128     		cmp	r0, #1
+ 129 0004 09D8     		bhi	.L15
+  34:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
+ 130              		.loc 1 34 1 view .LVU23
+ 131 0006 10B5     		push	{r4, lr}
+ 132              	.LCFI2:
+ 133              		.cfi_def_cfa_offset 8
+ 134              		.cfi_offset 4, -8
+ 135              		.cfi_offset 14, -4
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 4
+
+
+ 136 0008 1446     		mov	r4, r2
+  36:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     {
+  37:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         HAL_UART_Transmit(gHuart, (uint8_t*) ptr, len, 10);
+ 137              		.loc 1 37 9 is_stmt 1 view .LVU24
+ 138 000a 0A23     		movs	r3, #10
+ 139 000c 92B2     		uxth	r2, r2
+ 140              	.LVL9:
+ 141              		.loc 1 37 9 is_stmt 0 view .LVU25
+ 142 000e 0448     		ldr	r0, .L20
+ 143              	.LVL10:
+ 144              		.loc 1 37 9 view .LVU26
+ 145 0010 0068     		ldr	r0, [r0]
+ 146 0012 FFF7FEFF 		bl	HAL_UART_Transmit
+ 147              	.LVL11:
+  38:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         return len;
+ 148              		.loc 1 38 9 is_stmt 1 view .LVU27
+ 149              		.loc 1 38 16 is_stmt 0 view .LVU28
+ 150 0016 2046     		mov	r0, r4
+  39:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     } else
+  40:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         return -1;
+  41:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 151              		.loc 1 41 1 view .LVU29
+ 152 0018 10BD     		pop	{r4, pc}
+ 153              	.LVL12:
+ 154              	.L15:
+ 155              	.LCFI3:
+ 156              		.cfi_def_cfa_offset 0
+ 157              		.cfi_restore 4
+ 158              		.cfi_restore 14
+  40:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 159              		.loc 1 40 16 view .LVU30
+ 160 001a 4FF0FF30 		mov	r0, #-1
+ 161              		.loc 1 41 1 view .LVU31
+ 162 001e 7047     		bx	lr
+ 163              	.L21:
+ 164              		.align	2
+ 165              	.L20:
+ 166 0020 00000000 		.word	gHuart
+ 167              		.cfi_endproc
+ 168              	.LFE150:
+ 170              		.section	.text._close,"ax",%progbits
+ 171              		.align	1
+ 172              		.global	_close
+ 173              		.syntax unified
+ 174              		.thumb
+ 175              		.thumb_func
+ 177              	_close:
+ 178              	.LVL13:
+ 179              	.LFB151:
+  42:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  43:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _close(int fd)
+  44:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+ 180              		.loc 1 44 1 is_stmt 1 view -0
+ 181              		.cfi_startproc
+ 182              		@ args = 0, pretend = 0, frame = 0
+ 183              		@ frame_needed = 0, uses_anonymous_args = 0
+  45:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 5
+
+
+ 184              		.loc 1 45 5 view .LVU33
+ 185              		.loc 1 45 8 is_stmt 0 view .LVU34
+ 186 0000 0228     		cmp	r0, #2
+ 187 0002 01D8     		bhi	.L29
+  46:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         return 0;
+ 188              		.loc 1 46 16 view .LVU35
+ 189 0004 0020     		movs	r0, #0
+ 190              	.LVL14:
+  47:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  48:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     errno = EBADF;
+  49:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+  50:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 191              		.loc 1 50 1 view .LVU36
+ 192 0006 7047     		bx	lr
+ 193              	.LVL15:
+ 194              	.L29:
+  44:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+ 195              		.loc 1 44 1 view .LVU37
+ 196 0008 08B5     		push	{r3, lr}
+ 197              	.LCFI4:
+ 198              		.cfi_def_cfa_offset 8
+ 199              		.cfi_offset 3, -8
+ 200              		.cfi_offset 14, -4
+  48:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+ 201              		.loc 1 48 5 is_stmt 1 view .LVU38
+ 202 000a FFF7FEFF 		bl	__errno
+ 203              	.LVL16:
+  48:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+ 204              		.loc 1 48 11 is_stmt 0 view .LVU39
+ 205 000e 0923     		movs	r3, #9
+ 206 0010 0360     		str	r3, [r0]
+  49:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 207              		.loc 1 49 5 is_stmt 1 view .LVU40
+  49:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 208              		.loc 1 49 12 is_stmt 0 view .LVU41
+ 209 0012 4FF0FF30 		mov	r0, #-1
+ 210              		.loc 1 50 1 view .LVU42
+ 211 0016 08BD     		pop	{r3, pc}
+ 212              		.cfi_endproc
+ 213              	.LFE151:
+ 215              		.section	.text._lseek,"ax",%progbits
+ 216              		.align	1
+ 217              		.global	_lseek
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 222              	_lseek:
+ 223              	.LVL17:
+ 224              	.LFB152:
+  51:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  52:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _lseek(int fd, int ptr, int dir)
+  53:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+ 225              		.loc 1 53 1 is_stmt 1 view -0
+ 226              		.cfi_startproc
+ 227              		@ args = 0, pretend = 0, frame = 0
+ 228              		@ frame_needed = 0, uses_anonymous_args = 0
+ 229              		.loc 1 53 1 is_stmt 0 view .LVU44
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 6
+
+
+ 230 0000 08B5     		push	{r3, lr}
+ 231              	.LCFI5:
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 3, -8
+ 234              		.cfi_offset 14, -4
+  54:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     (void) fd;
+ 235              		.loc 1 54 5 is_stmt 1 view .LVU45
+  55:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     (void) ptr;
+ 236              		.loc 1 55 5 view .LVU46
+  56:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     (void) dir;
+ 237              		.loc 1 56 5 view .LVU47
+  57:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  58:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     errno = EBADF;
+ 238              		.loc 1 58 5 view .LVU48
+ 239 0002 FFF7FEFF 		bl	__errno
+ 240              	.LVL18:
+ 241              		.loc 1 58 11 is_stmt 0 view .LVU49
+ 242 0006 0923     		movs	r3, #9
+ 243 0008 0360     		str	r3, [r0]
+  59:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+ 244              		.loc 1 59 5 is_stmt 1 view .LVU50
+  60:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 245              		.loc 1 60 1 is_stmt 0 view .LVU51
+ 246 000a 4FF0FF30 		mov	r0, #-1
+ 247 000e 08BD     		pop	{r3, pc}
+ 248              		.cfi_endproc
+ 249              	.LFE152:
+ 251              		.section	.text._read,"ax",%progbits
+ 252              		.align	1
+ 253              		.global	_read
+ 254              		.syntax unified
+ 255              		.thumb
+ 256              		.thumb_func
+ 258              	_read:
+ 259              	.LVL19:
+ 260              	.LFB153:
+  61:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  62:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _read(int fd, char* ptr, int len)
+  63:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+ 261              		.loc 1 63 1 is_stmt 1 view -0
+ 262              		.cfi_startproc
+ 263              		@ args = 0, pretend = 0, frame = 0
+ 264              		@ frame_needed = 0, uses_anonymous_args = 0
+ 265              		.loc 1 63 1 is_stmt 0 view .LVU53
+ 266 0000 08B5     		push	{r3, lr}
+ 267              	.LCFI6:
+ 268              		.cfi_def_cfa_offset 8
+ 269              		.cfi_offset 3, -8
+ 270              		.cfi_offset 14, -4
+  64:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     HAL_StatusTypeDef hstatus;
+ 271              		.loc 1 64 5 is_stmt 1 view .LVU54
+  65:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  66:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd == STDIN_FILENO)
+ 272              		.loc 1 66 5 view .LVU55
+ 273              		.loc 1 66 8 is_stmt 0 view .LVU56
+ 274 0002 48B9     		cbnz	r0, .L33
+  67:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 7
+
+
+  68:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         hstatus = HAL_UART_Receive(gHuart, (uint8_t*) ptr, 1, HAL_MAX_DELAY);
+ 275              		.loc 1 68 9 is_stmt 1 view .LVU57
+ 276              		.loc 1 68 19 is_stmt 0 view .LVU58
+ 277 0004 4FF0FF33 		mov	r3, #-1
+ 278 0008 0122     		movs	r2, #1
+ 279              	.LVL20:
+ 280              		.loc 1 68 19 view .LVU59
+ 281 000a 0848     		ldr	r0, .L37
+ 282              	.LVL21:
+ 283              		.loc 1 68 19 view .LVU60
+ 284 000c 0068     		ldr	r0, [r0]
+ 285 000e FFF7FEFF 		bl	HAL_UART_Receive
+ 286              	.LVL22:
+  69:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         if (hstatus == HAL_OK)
+ 287              		.loc 1 69 9 is_stmt 1 view .LVU61
+ 288              		.loc 1 69 12 is_stmt 0 view .LVU62
+ 289 0012 40B9     		cbnz	r0, .L35
+  70:Libraries/ctrl_mcu/stm32_hal/retarget.c ****             return 1;
+ 290              		.loc 1 70 20 view .LVU63
+ 291 0014 0120     		movs	r0, #1
+ 292              	.LVL23:
+ 293              	.L32:
+  71:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         else
+  72:Libraries/ctrl_mcu/stm32_hal/retarget.c ****             return EIO;
+  73:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     }
+  74:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     errno = EBADF;
+  75:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+  76:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 294              		.loc 1 76 1 view .LVU64
+ 295 0016 08BD     		pop	{r3, pc}
+ 296              	.LVL24:
+ 297              	.L33:
+  74:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+ 298              		.loc 1 74 5 is_stmt 1 view .LVU65
+ 299 0018 FFF7FEFF 		bl	__errno
+ 300              	.LVL25:
+  74:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return -1;
+ 301              		.loc 1 74 11 is_stmt 0 view .LVU66
+ 302 001c 0923     		movs	r3, #9
+ 303 001e 0360     		str	r3, [r0]
+  75:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 304              		.loc 1 75 5 is_stmt 1 view .LVU67
+  75:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 305              		.loc 1 75 12 is_stmt 0 view .LVU68
+ 306 0020 4FF0FF30 		mov	r0, #-1
+ 307 0024 F7E7     		b	.L32
+ 308              	.LVL26:
+ 309              	.L35:
+  72:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     }
+ 310              		.loc 1 72 20 view .LVU69
+ 311 0026 0520     		movs	r0, #5
+ 312              	.LVL27:
+  72:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     }
+ 313              		.loc 1 72 20 view .LVU70
+ 314 0028 F5E7     		b	.L32
+ 315              	.L38:
+ 316 002a 00BF     		.align	2
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 8
+
+
+ 317              	.L37:
+ 318 002c 00000000 		.word	gHuart
+ 319              		.cfi_endproc
+ 320              	.LFE153:
+ 322              		.section	.text._fstat,"ax",%progbits
+ 323              		.align	1
+ 324              		.global	_fstat
+ 325              		.syntax unified
+ 326              		.thumb
+ 327              		.thumb_func
+ 329              	_fstat:
+ 330              	.LVL28:
+ 331              	.LFB154:
+  77:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  78:Libraries/ctrl_mcu/stm32_hal/retarget.c **** int _fstat(int fd, struct stat* st)
+  79:Libraries/ctrl_mcu/stm32_hal/retarget.c **** {
+ 332              		.loc 1 79 1 is_stmt 1 view -0
+ 333              		.cfi_startproc
+ 334              		@ args = 0, pretend = 0, frame = 0
+ 335              		@ frame_needed = 0, uses_anonymous_args = 0
+ 336              		.loc 1 79 1 is_stmt 0 view .LVU72
+ 337 0000 08B5     		push	{r3, lr}
+ 338              	.LCFI7:
+ 339              		.cfi_def_cfa_offset 8
+ 340              		.cfi_offset 3, -8
+ 341              		.cfi_offset 14, -4
+  80:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+ 342              		.loc 1 80 5 is_stmt 1 view .LVU73
+ 343              		.loc 1 80 8 is_stmt 0 view .LVU74
+ 344 0002 0228     		cmp	r0, #2
+ 345 0004 04D8     		bhi	.L40
+  81:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     {
+  82:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         st->st_mode = S_IFCHR;
+ 346              		.loc 1 82 9 is_stmt 1 view .LVU75
+ 347              		.loc 1 82 21 is_stmt 0 view .LVU76
+ 348 0006 4FF40053 		mov	r3, #8192
+ 349 000a 4B60     		str	r3, [r1, #4]
+  83:Libraries/ctrl_mcu/stm32_hal/retarget.c ****         return 0;
+ 350              		.loc 1 83 9 is_stmt 1 view .LVU77
+ 351              	.LVL29:
+ 352              	.L41:
+  84:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     }
+  85:Libraries/ctrl_mcu/stm32_hal/retarget.c **** 
+  86:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     errno = EBADF;
+  87:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+  88:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 353              		.loc 1 88 1 is_stmt 0 view .LVU78
+ 354 000c 0020     		movs	r0, #0
+ 355 000e 08BD     		pop	{r3, pc}
+ 356              	.LVL30:
+ 357              	.L40:
+  86:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+ 358              		.loc 1 86 5 is_stmt 1 view .LVU79
+ 359 0010 FFF7FEFF 		bl	__errno
+ 360              	.LVL31:
+  86:Libraries/ctrl_mcu/stm32_hal/retarget.c ****     return 0;
+ 361              		.loc 1 86 11 is_stmt 0 view .LVU80
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 9
+
+
+ 362 0014 0923     		movs	r3, #9
+ 363 0016 0360     		str	r3, [r0]
+  87:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 364              		.loc 1 87 5 is_stmt 1 view .LVU81
+  87:Libraries/ctrl_mcu/stm32_hal/retarget.c **** }
+ 365              		.loc 1 87 12 is_stmt 0 view .LVU82
+ 366 0018 F8E7     		b	.L41
+ 367              		.cfi_endproc
+ 368              	.LFE154:
+ 370              		.global	gHuart
+ 371              		.section	.bss.gHuart,"aw",%nobits
+ 372              		.align	2
+ 375              	gHuart:
+ 376 0000 00000000 		.space	4
+ 377              		.text
+ 378              	.Letext0:
+ 379              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 380              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 381              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 382              		.file 5 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ 383              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 384              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 385              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 386              		.file 9 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_types.h"
+ 387              		.file 10 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\reent.h"
+ 388              		.file 11 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\lock.h"
+ 389              		.file 12 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_timeval.h"
+ 390              		.file 13 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_timespec.h"
+ 391              		.file 14 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\types.h"
+ 392              		.file 15 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\stat.h"
+ 393              		.file 16 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\stdio.h"
+ 394              		.file 17 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\errno.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 retarget.c
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:19     .text.RetargetInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:25     .text.RetargetInit:00000000 RetargetInit
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:59     .text.RetargetInit:00000018 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:375    .bss.gHuart:00000000 gHuart
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:65     .text._isatty:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:71     .text._isatty:00000000 _isatty
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:110    .text._write:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:116    .text._write:00000000 _write
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:166    .text._write:00000020 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:171    .text._close:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:177    .text._close:00000000 _close
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:216    .text._lseek:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:222    .text._lseek:00000000 _lseek
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:252    .text._read:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:258    .text._read:00000000 _read
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:318    .text._read:0000002c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:323    .text._fstat:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:329    .text._fstat:00000000 _fstat
+C:\Users\Mxuan\AppData\Local\Temp\ccSixakp.s:372    .bss.gHuart:00000000 $d
+
+UNDEFINED SYMBOLS
+setvbuf
+_impure_ptr
+__errno
+HAL_UART_Transmit
+HAL_UART_Receive

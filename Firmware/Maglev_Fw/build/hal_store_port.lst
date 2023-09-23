@@ -1,0 +1,111 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"hal_store_port.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_sdk/port/hal_store_port.c"
+  18              		.section	.text.hal_store_port_init,"ax",%progbits
+  19              		.align	1
+  20              		.global	hal_store_port_init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	hal_store_port_init:
+  26              	.LFB0:
+   1:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Includes ------------------------------------------------------------------*/
+   2:Libraries/ctrl_sdk/port/hal_store_port.c **** #include "hal_store.h"
+   3:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private define ------------------------------------------------------------*/
+   4:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private macro -------------------------------------------------------------*/
+   5:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private typedef -----------------------------------------------------------*/
+   6:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private variables ---------------------------------------------------------*/
+   7:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private function prototypes -----------------------------------------------*/
+   8:Libraries/ctrl_sdk/port/hal_store_port.c **** /* Private functions ---------------------------------------------------------*/
+   9:Libraries/ctrl_sdk/port/hal_store_port.c **** void hal_store_port_init(void)
+  10:Libraries/ctrl_sdk/port/hal_store_port.c **** {
+  27              		.loc 1 10 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  11:Libraries/ctrl_sdk/port/hal_store_port.c **** 
+  12:Libraries/ctrl_sdk/port/hal_store_port.c **** }
+  32              		.loc 1 12 1 view .LVU1
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE0:
+  37              		.section	.text.hal_store_port_lock,"ax",%progbits
+  38              		.align	1
+  39              		.global	hal_store_port_lock
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  44              	hal_store_port_lock:
+  45              	.LFB1:
+  13:Libraries/ctrl_sdk/port/hal_store_port.c **** 
+  14:Libraries/ctrl_sdk/port/hal_store_port.c **** void hal_store_port_lock(void)
+  15:Libraries/ctrl_sdk/port/hal_store_port.c **** {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s 			page 2
+
+
+  46              		.loc 1 15 1 view -0
+  47              		.cfi_startproc
+  48              		@ args = 0, pretend = 0, frame = 0
+  49              		@ frame_needed = 0, uses_anonymous_args = 0
+  50              		@ link register save eliminated.
+  16:Libraries/ctrl_sdk/port/hal_store_port.c **** 
+  17:Libraries/ctrl_sdk/port/hal_store_port.c **** }
+  51              		.loc 1 17 1 view .LVU3
+  52 0000 7047     		bx	lr
+  53              		.cfi_endproc
+  54              	.LFE1:
+  56              		.section	.text.hal_store_port_unlock,"ax",%progbits
+  57              		.align	1
+  58              		.global	hal_store_port_unlock
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	hal_store_port_unlock:
+  64              	.LFB2:
+  18:Libraries/ctrl_sdk/port/hal_store_port.c **** 
+  19:Libraries/ctrl_sdk/port/hal_store_port.c **** void hal_store_port_unlock(void)
+  20:Libraries/ctrl_sdk/port/hal_store_port.c **** {
+  65              		.loc 1 20 1 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  21:Libraries/ctrl_sdk/port/hal_store_port.c **** 
+  22:Libraries/ctrl_sdk/port/hal_store_port.c **** }...
+  70              		.loc 1 22 1 view .LVU5
+  71 0000 7047     		bx	lr
+  72              		.cfi_endproc
+  73              	.LFE2:
+  75              		.text
+  76              	.Letext0:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 hal_store_port.c
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:19     .text.hal_store_port_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:25     .text.hal_store_port_init:00000000 hal_store_port_init
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:38     .text.hal_store_port_lock:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:44     .text.hal_store_port_lock:00000000 hal_store_port_lock
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:57     .text.hal_store_port_unlock:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccNFUmPg.s:63     .text.hal_store_port_unlock:00000000 hal_store_port_unlock
+
+NO UNDEFINED SYMBOLS

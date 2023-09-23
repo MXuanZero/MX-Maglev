@@ -1,0 +1,363 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"hc595.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_drv/hc595.c"
+  18              		.section	.text.hc595_init,"ax",%progbits
+  19              		.align	1
+  20              		.global	hc595_init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	hc595_init:
+  26              	.LFB127:
+   1:Libraries/ctrl_drv/hc595.c **** /* Includes ------------------------------------------------------------------*/
+   2:Libraries/ctrl_drv/hc595.c **** #include <stdint.h>
+   3:Libraries/ctrl_drv/hc595.c **** #include "hc595.h"
+   4:Libraries/ctrl_drv/hc595.c **** /* Private define ------------------------------------------------------------*/
+   5:Libraries/ctrl_drv/hc595.c **** /* Private macro -------------------------------------------------------------*/
+   6:Libraries/ctrl_drv/hc595.c **** /* Private typedef -----------------------------------------------------------*/
+   7:Libraries/ctrl_drv/hc595.c **** /* Private variables ---------------------------------------------------------*/
+   8:Libraries/ctrl_drv/hc595.c **** static uint8_t hc595_byte = 0;
+   9:Libraries/ctrl_drv/hc595.c **** /* Private function prototypes -----------------------------------------------*/
+  10:Libraries/ctrl_drv/hc595.c **** /* Private functions ---------------------------------------------------------*/
+  11:Libraries/ctrl_drv/hc595.c **** void hc595_init(void)
+  12:Libraries/ctrl_drv/hc595.c **** {
+  27              		.loc 1 12 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 10B5     		push	{r4, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  13:Libraries/ctrl_drv/hc595.c **** 	HC595_RCK_HIGH();
+  36              		.loc 1 13 2 view .LVU1
+  37 0002 094C     		ldr	r4, .L3
+  38 0004 0122     		movs	r2, #1
+  39 0006 4FF48071 		mov	r1, #256
+  40 000a 2046     		mov	r0, r4
+  41 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+  42              	.LVL0:
+  43              		.loc 1 13 18 view .LVU2
+  14:Libraries/ctrl_drv/hc595.c **** 	HC595_RCL_LOW();
+  44              		.loc 1 14 2 view .LVU3
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 2
+
+
+  45 0010 0022     		movs	r2, #0
+  46 0012 4FF48071 		mov	r1, #256
+  47 0016 2046     		mov	r0, r4
+  48 0018 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  49              	.LVL1:
+  50              		.loc 1 14 17 view .LVU4
+  15:Libraries/ctrl_drv/hc595.c **** 	HC595_SI_LOW();
+  51              		.loc 1 15 2 view .LVU5
+  52 001c 0022     		movs	r2, #0
+  53 001e 8021     		movs	r1, #128
+  54 0020 2046     		mov	r0, r4
+  55 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  56              	.LVL2:
+  57              		.loc 1 15 16 view .LVU6
+  16:Libraries/ctrl_drv/hc595.c **** }
+  58              		.loc 1 16 1 is_stmt 0 view .LVU7
+  59 0026 10BD     		pop	{r4, pc}
+  60              	.L4:
+  61              		.align	2
+  62              	.L3:
+  63 0028 00100140 		.word	1073811456
+  64              		.cfi_endproc
+  65              	.LFE127:
+  67              		.section	.text.hc595_update,"ax",%progbits
+  68              		.align	1
+  69              		.global	hc595_update
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  74              	hc595_update:
+  75              	.LFB128:
+  17:Libraries/ctrl_drv/hc595.c **** 
+  18:Libraries/ctrl_drv/hc595.c **** void hc595_update(void)
+  19:Libraries/ctrl_drv/hc595.c **** {
+  76              		.loc 1 19 1 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80 0000 38B5     		push	{r3, r4, r5, lr}
+  81              	.LCFI1:
+  82              		.cfi_def_cfa_offset 16
+  83              		.cfi_offset 3, -16
+  84              		.cfi_offset 4, -12
+  85              		.cfi_offset 5, -8
+  86              		.cfi_offset 14, -4
+  20:Libraries/ctrl_drv/hc595.c **** 	uint8_t byte = hc595_byte;
+  87              		.loc 1 20 2 view .LVU9
+  88              		.loc 1 20 10 is_stmt 0 view .LVU10
+  89 0002 184B     		ldr	r3, .L12
+  90 0004 1D78     		ldrb	r5, [r3]	@ zero_extendqisi2
+  91              	.LVL3:
+  21:Libraries/ctrl_drv/hc595.c **** 	HC595_RCL_LOW();
+  92              		.loc 1 21 2 is_stmt 1 view .LVU11
+  93 0006 0022     		movs	r2, #0
+  94 0008 4FF48071 		mov	r1, #256
+  95 000c 1648     		ldr	r0, .L12+4
+  96 000e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 3
+
+
+  97              	.LVL4:
+  98              		.loc 1 21 17 view .LVU12
+  22:Libraries/ctrl_drv/hc595.c **** 	HC595_DELAY(1);
+  99              		.loc 1 22 16 view .LVU13
+  23:Libraries/ctrl_drv/hc595.c **** 	for (uint8_t i = 0; i < 8; ++i) {
+ 100              		.loc 1 23 2 view .LVU14
+ 101              	.LBB2:
+ 102              		.loc 1 23 7 view .LVU15
+ 103              		.loc 1 23 15 is_stmt 0 view .LVU16
+ 104 0012 0024     		movs	r4, #0
+ 105              		.loc 1 23 2 view .LVU17
+ 106 0014 0EE0     		b	.L6
+ 107              	.LVL5:
+ 108              	.L7:
+  24:Libraries/ctrl_drv/hc595.c **** 		HC595_SCK_LOW();
+  25:Libraries/ctrl_drv/hc595.c **** 		HC595_DELAY(1);
+  26:Libraries/ctrl_drv/hc595.c **** 		if ((byte & 0x80) != 0) {
+  27:Libraries/ctrl_drv/hc595.c **** 			HC595_SI_HIGH();
+  28:Libraries/ctrl_drv/hc595.c **** 		} else {
+  29:Libraries/ctrl_drv/hc595.c **** 			HC595_SI_LOW();
+ 109              		.loc 1 29 4 is_stmt 1 view .LVU18
+ 110 0016 0022     		movs	r2, #0
+ 111 0018 8021     		movs	r1, #128
+ 112 001a 1348     		ldr	r0, .L12+4
+ 113 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 114              	.LVL6:
+ 115              	.L8:
+ 116              		.loc 1 29 18 discriminator 1 view .LVU19
+  30:Libraries/ctrl_drv/hc595.c **** 		}
+  31:Libraries/ctrl_drv/hc595.c **** 		HC595_DELAY(1);
+ 117              		.loc 1 31 17 discriminator 1 view .LVU20
+  32:Libraries/ctrl_drv/hc595.c **** 		HC595_SCK_HIGH();
+ 118              		.loc 1 32 3 discriminator 1 view .LVU21
+ 119 0020 0122     		movs	r2, #1
+ 120 0022 4FF40071 		mov	r1, #512
+ 121 0026 1048     		ldr	r0, .L12+4
+ 122 0028 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 123              	.LVL7:
+ 124              		.loc 1 32 19 discriminator 1 view .LVU22
+  33:Libraries/ctrl_drv/hc595.c **** 		HC595_DELAY(1);
+ 125              		.loc 1 33 17 discriminator 1 view .LVU23
+  34:Libraries/ctrl_drv/hc595.c **** 		byte <<= 1;
+ 126              		.loc 1 34 3 discriminator 1 view .LVU24
+ 127              		.loc 1 34 8 is_stmt 0 discriminator 1 view .LVU25
+ 128 002c 6D00     		lsls	r5, r5, #1
+ 129              	.LVL8:
+ 130              		.loc 1 34 8 discriminator 1 view .LVU26
+ 131 002e EDB2     		uxtb	r5, r5
+ 132              	.LVL9:
+  23:Libraries/ctrl_drv/hc595.c **** 		HC595_SCK_LOW();
+ 133              		.loc 1 23 29 is_stmt 1 discriminator 1 view .LVU27
+ 134 0030 0134     		adds	r4, r4, #1
+ 135              	.LVL10:
+  23:Libraries/ctrl_drv/hc595.c **** 		HC595_SCK_LOW();
+ 136              		.loc 1 23 29 is_stmt 0 discriminator 1 view .LVU28
+ 137 0032 E4B2     		uxtb	r4, r4
+ 138              	.LVL11:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 4
+
+
+ 139              	.L6:
+  23:Libraries/ctrl_drv/hc595.c **** 		HC595_SCK_LOW();
+ 140              		.loc 1 23 24 is_stmt 1 discriminator 2 view .LVU29
+ 141 0034 072C     		cmp	r4, #7
+ 142 0036 0ED8     		bhi	.L11
+  24:Libraries/ctrl_drv/hc595.c **** 		HC595_DELAY(1);
+ 143              		.loc 1 24 3 view .LVU30
+ 144 0038 0022     		movs	r2, #0
+ 145 003a 4FF40071 		mov	r1, #512
+ 146 003e 0A48     		ldr	r0, .L12+4
+ 147 0040 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 148              	.LVL12:
+  24:Libraries/ctrl_drv/hc595.c **** 		HC595_DELAY(1);
+ 149              		.loc 1 24 18 view .LVU31
+  25:Libraries/ctrl_drv/hc595.c **** 		if ((byte & 0x80) != 0) {
+ 150              		.loc 1 25 17 view .LVU32
+  26:Libraries/ctrl_drv/hc595.c **** 			HC595_SI_HIGH();
+ 151              		.loc 1 26 3 view .LVU33
+  26:Libraries/ctrl_drv/hc595.c **** 			HC595_SI_HIGH();
+ 152              		.loc 1 26 6 is_stmt 0 view .LVU34
+ 153 0044 15F0800F 		tst	r5, #128
+ 154 0048 E5D0     		beq	.L7
+  27:Libraries/ctrl_drv/hc595.c **** 		} else {
+ 155              		.loc 1 27 4 is_stmt 1 view .LVU35
+ 156 004a 0122     		movs	r2, #1
+ 157 004c 8021     		movs	r1, #128
+ 158 004e 0648     		ldr	r0, .L12+4
+ 159 0050 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 160              	.LVL13:
+  27:Libraries/ctrl_drv/hc595.c **** 		} else {
+ 161              		.loc 1 27 19 view .LVU36
+ 162 0054 E4E7     		b	.L8
+ 163              	.L11:
+ 164              	.LBE2:
+  35:Libraries/ctrl_drv/hc595.c **** 	}
+  36:Libraries/ctrl_drv/hc595.c **** 	HC595_DELAY(1);
+ 165              		.loc 1 36 16 view .LVU37
+  37:Libraries/ctrl_drv/hc595.c **** 	HC595_RCK_HIGH();
+ 166              		.loc 1 37 2 view .LVU38
+ 167 0056 0122     		movs	r2, #1
+ 168 0058 4FF48071 		mov	r1, #256
+ 169 005c 0248     		ldr	r0, .L12+4
+ 170 005e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 171              	.LVL14:
+ 172              		.loc 1 37 18 view .LVU39
+  38:Libraries/ctrl_drv/hc595.c **** }
+ 173              		.loc 1 38 1 is_stmt 0 view .LVU40
+ 174 0062 38BD     		pop	{r3, r4, r5, pc}
+ 175              	.LVL15:
+ 176              	.L13:
+ 177              		.loc 1 38 1 view .LVU41
+ 178              		.align	2
+ 179              	.L12:
+ 180 0064 00000000 		.word	hc595_byte
+ 181 0068 00100140 		.word	1073811456
+ 182              		.cfi_endproc
+ 183              	.LFE128:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 5
+
+
+ 185              		.section	.text.hc595_write_bit,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	hc595_write_bit
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 192              	hc595_write_bit:
+ 193              	.LVL16:
+ 194              	.LFB129:
+  39:Libraries/ctrl_drv/hc595.c **** 
+  40:Libraries/ctrl_drv/hc595.c **** void hc595_write_bit(uint8_t bit_n, bool i)
+  41:Libraries/ctrl_drv/hc595.c **** {
+ 195              		.loc 1 41 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
+  42:Libraries/ctrl_drv/hc595.c **** 	if (i) {
+ 200              		.loc 1 42 2 view .LVU43
+ 201              		.loc 1 42 5 is_stmt 0 view .LVU44
+ 202 0000 31B1     		cbz	r1, .L15
+  43:Libraries/ctrl_drv/hc595.c **** 		DEF_BIT_SET(hc595_byte, bit_n);
+ 203              		.loc 1 43 3 is_stmt 1 view .LVU45
+ 204 0002 0122     		movs	r2, #1
+ 205 0004 8240     		lsls	r2, r2, r0
+ 206 0006 0649     		ldr	r1, .L17
+ 207              	.LVL17:
+ 208              		.loc 1 43 3 is_stmt 0 view .LVU46
+ 209 0008 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 210 000a 1343     		orrs	r3, r3, r2
+ 211 000c 0B70     		strb	r3, [r1]
+ 212 000e 7047     		bx	lr
+ 213              	.LVL18:
+ 214              	.L15:
+  44:Libraries/ctrl_drv/hc595.c **** 	} else {
+  45:Libraries/ctrl_drv/hc595.c **** 		DEF_BIT_CLEAR(hc595_byte, bit_n);
+ 215              		.loc 1 45 3 is_stmt 1 view .LVU47
+ 216 0010 0122     		movs	r2, #1
+ 217 0012 8240     		lsls	r2, r2, r0
+ 218 0014 0249     		ldr	r1, .L17
+ 219              	.LVL19:
+ 220              		.loc 1 45 3 is_stmt 0 view .LVU48
+ 221 0016 0B78     		ldrb	r3, [r1]	@ zero_extendqisi2
+ 222 0018 23EA0203 		bic	r3, r3, r2
+ 223 001c 0B70     		strb	r3, [r1]
+  46:Libraries/ctrl_drv/hc595.c **** 	}
+  47:Libraries/ctrl_drv/hc595.c **** }
+ 224              		.loc 1 47 1 view .LVU49
+ 225 001e 7047     		bx	lr
+ 226              	.L18:
+ 227              		.align	2
+ 228              	.L17:
+ 229 0020 00000000 		.word	hc595_byte
+ 230              		.cfi_endproc
+ 231              	.LFE129:
+ 233              		.section	.text.hc595_write_byte,"ax",%progbits
+ 234              		.align	1
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 6
+
+
+ 235              		.global	hc595_write_byte
+ 236              		.syntax unified
+ 237              		.thumb
+ 238              		.thumb_func
+ 240              	hc595_write_byte:
+ 241              	.LVL20:
+ 242              	.LFB130:
+  48:Libraries/ctrl_drv/hc595.c **** 
+  49:Libraries/ctrl_drv/hc595.c **** void hc595_write_byte(uint8_t byte)
+  50:Libraries/ctrl_drv/hc595.c **** {
+ 243              		.loc 1 50 1 is_stmt 1 view -0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247              		@ link register save eliminated.
+  51:Libraries/ctrl_drv/hc595.c **** 	hc595_byte = byte;
+ 248              		.loc 1 51 2 view .LVU51
+ 249              		.loc 1 51 13 is_stmt 0 view .LVU52
+ 250 0000 014B     		ldr	r3, .L20
+ 251 0002 1870     		strb	r0, [r3]
+  52:Libraries/ctrl_drv/hc595.c **** }...
+ 252              		.loc 1 52 1 view .LVU53
+ 253 0004 7047     		bx	lr
+ 254              	.L21:
+ 255 0006 00BF     		.align	2
+ 256              	.L20:
+ 257 0008 00000000 		.word	hc595_byte
+ 258              		.cfi_endproc
+ 259              	.LFE130:
+ 261              		.section	.bss.hc595_byte,"aw",%nobits
+ 264              	hc595_byte:
+ 265 0000 00       		.space	1
+ 266              		.text
+ 267              	.Letext0:
+ 268              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 269              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 270              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 271              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 hc595.c
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:19     .text.hc595_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:25     .text.hc595_init:00000000 hc595_init
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:63     .text.hc595_init:00000028 $d
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:68     .text.hc595_update:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:74     .text.hc595_update:00000000 hc595_update
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:180    .text.hc595_update:00000064 $d
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:264    .bss.hc595_byte:00000000 hc595_byte
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:186    .text.hc595_write_bit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:192    .text.hc595_write_bit:00000000 hc595_write_bit
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:229    .text.hc595_write_bit:00000020 $d
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:234    .text.hc595_write_byte:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:240    .text.hc595_write_byte:00000000 hc595_write_byte
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:257    .text.hc595_write_byte:00000008 $d
+C:\Users\Mxuan\AppData\Local\Temp\cclGYSLA.s:265    .bss.hc595_byte:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin

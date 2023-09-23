@@ -1,0 +1,1136 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"lib_list.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_sdk/src/lib_list.c"
+  18              		.section	.text.lib_list_init,"ax",%progbits
+  19              		.align	1
+  20              		.global	lib_list_init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	lib_list_init:
+  26              	.LVL0:
+  27              	.LFB0:
+   1:Libraries/ctrl_sdk/src/lib_list.c **** /* Includes ------------------------------------------------------------------*/
+   2:Libraries/ctrl_sdk/src/lib_list.c **** #include "lib_list.h"
+   3:Libraries/ctrl_sdk/src/lib_list.c **** /* Private define ------------------------------------------------------------*/
+   4:Libraries/ctrl_sdk/src/lib_list.c **** /* Private macro -------------------------------------------------------------*/
+   5:Libraries/ctrl_sdk/src/lib_list.c **** /* Private typedef -----------------------------------------------------------*/
+   6:Libraries/ctrl_sdk/src/lib_list.c **** /* Private variables ---------------------------------------------------------*/
+   7:Libraries/ctrl_sdk/src/lib_list.c **** /* Private function prototypes -----------------------------------------------*/
+   8:Libraries/ctrl_sdk/src/lib_list.c **** /* Private functions ---------------------------------------------------------*/
+   9:Libraries/ctrl_sdk/src/lib_list.c **** 
+  10:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_init(lib_list_t *list, size_t size)
+  11:Libraries/ctrl_sdk/src/lib_list.c **** {
+  28              		.loc 1 11 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  12:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL) {
+  33              		.loc 1 12 2 view .LVU1
+  34              		.loc 1 12 5 is_stmt 0 view .LVU2
+  35 0000 30B1     		cbz	r0, .L1
+  13:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  14:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  15:Libraries/ctrl_sdk/src/lib_list.c **** 	list->head = NULL;
+  36              		.loc 1 15 2 is_stmt 1 view .LVU3
+  37              		.loc 1 15 13 is_stmt 0 view .LVU4
+  38 0002 0022     		movs	r2, #0
+  39 0004 0260     		str	r2, [r0]
+  16:Libraries/ctrl_sdk/src/lib_list.c **** 	list->tail = NULL;
+  40              		.loc 1 16 2 is_stmt 1 view .LVU5
+  41              		.loc 1 16 13 is_stmt 0 view .LVU6
+  42 0006 4260     		str	r2, [r0, #4]
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 2
+
+
+  17:Libraries/ctrl_sdk/src/lib_list.c **** 	size       = (size + 3) & (~0x3);
+  43              		.loc 1 17 2 is_stmt 1 view .LVU7
+  44              		.loc 1 17 21 is_stmt 0 view .LVU8
+  45 0008 0331     		adds	r1, r1, #3
+  46              	.LVL1:
+  47              		.loc 1 17 13 view .LVU9
+  48 000a 21F00301 		bic	r1, r1, #3
+  49              	.LVL2:
+  18:Libraries/ctrl_sdk/src/lib_list.c **** 	list->size = size;
+  50              		.loc 1 18 2 is_stmt 1 view .LVU10
+  51              		.loc 1 18 13 is_stmt 0 view .LVU11
+  52 000e 8160     		str	r1, [r0, #8]
+  53              	.L1:
+  19:Libraries/ctrl_sdk/src/lib_list.c **** }
+  54              		.loc 1 19 1 view .LVU12
+  55 0010 7047     		bx	lr
+  56              		.cfi_endproc
+  57              	.LFE0:
+  59              		.section	.text.lib_list_inc_head,"ax",%progbits
+  60              		.align	1
+  61              		.global	lib_list_inc_head
+  62              		.syntax unified
+  63              		.thumb
+  64              		.thumb_func
+  66              	lib_list_inc_head:
+  67              	.LVL3:
+  68              	.LFB1:
+  20:Libraries/ctrl_sdk/src/lib_list.c **** 
+  21:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_inc_head(lib_list_t *list, lib_node_t *new_node)
+  22:Libraries/ctrl_sdk/src/lib_list.c **** {
+  69              		.loc 1 22 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+  23:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || new_node == NULL) {
+  74              		.loc 1 23 2 view .LVU14
+  75              		.loc 1 23 5 is_stmt 0 view .LVU15
+  76 0000 0346     		mov	r3, r0
+  77 0002 48B1     		cbz	r0, .L3
+  78              		.loc 1 23 19 discriminator 1 view .LVU16
+  79 0004 41B1     		cbz	r1, .L3
+  24:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  25:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  26:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_node_t *head = list->head;
+  80              		.loc 1 26 2 is_stmt 1 view .LVU17
+  81              		.loc 1 26 14 is_stmt 0 view .LVU18
+  82 0006 0268     		ldr	r2, [r0]
+  83              	.LVL4:
+  27:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->prev = NULL;
+  84              		.loc 1 27 2 is_stmt 1 view .LVU19
+  85              		.loc 1 27 17 is_stmt 0 view .LVU20
+  86 0008 0020     		movs	r0, #0
+  87              	.LVL5:
+  88              		.loc 1 27 17 view .LVU21
+  89 000a 4860     		str	r0, [r1, #4]
+  28:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->next = head;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 3
+
+
+  90              		.loc 1 28 2 is_stmt 1 view .LVU22
+  91              		.loc 1 28 17 is_stmt 0 view .LVU23
+  92 000c 0A60     		str	r2, [r1]
+  29:Libraries/ctrl_sdk/src/lib_list.c **** 
+  30:Libraries/ctrl_sdk/src/lib_list.c **** 	if (head != NULL) {
+  93              		.loc 1 30 2 is_stmt 1 view .LVU24
+  94              		.loc 1 30 5 is_stmt 0 view .LVU25
+  95 000e 02B1     		cbz	r2, .L5
+  31:Libraries/ctrl_sdk/src/lib_list.c **** 		head->prev = new_node;
+  96              		.loc 1 31 3 is_stmt 1 view .LVU26
+  97              		.loc 1 31 14 is_stmt 0 view .LVU27
+  98 0010 5160     		str	r1, [r2, #4]
+  99              	.L5:
+  32:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  33:Libraries/ctrl_sdk/src/lib_list.c **** 	list->head = new_node;
+ 100              		.loc 1 33 2 is_stmt 1 view .LVU28
+ 101              		.loc 1 33 13 is_stmt 0 view .LVU29
+ 102 0012 1960     		str	r1, [r3]
+  34:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list->tail == NULL) {
+ 103              		.loc 1 34 2 is_stmt 1 view .LVU30
+ 104              		.loc 1 34 10 is_stmt 0 view .LVU31
+ 105 0014 5A68     		ldr	r2, [r3, #4]
+ 106              	.LVL6:
+ 107              		.loc 1 34 5 view .LVU32
+ 108 0016 02B1     		cbz	r2, .L6
+ 109              	.LVL7:
+ 110              	.L3:
+  35:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = new_node;
+  36:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  37:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 111              		.loc 1 37 1 view .LVU33
+ 112 0018 7047     		bx	lr
+ 113              	.LVL8:
+ 114              	.L6:
+  35:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = new_node;
+ 115              		.loc 1 35 3 is_stmt 1 view .LVU34
+  35:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = new_node;
+ 116              		.loc 1 35 14 is_stmt 0 view .LVU35
+ 117 001a 5960     		str	r1, [r3, #4]
+ 118 001c FCE7     		b	.L3
+ 119              		.cfi_endproc
+ 120              	.LFE1:
+ 122              		.section	.text.lib_list_inc_tail,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	lib_list_inc_tail
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	lib_list_inc_tail:
+ 130              	.LVL9:
+ 131              	.LFB2:
+  38:Libraries/ctrl_sdk/src/lib_list.c **** 
+  39:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_inc_tail(lib_list_t *list, lib_node_t *new_node)
+  40:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 132              		.loc 1 40 1 is_stmt 1 view -0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 4
+
+
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		@ link register save eliminated.
+  41:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || new_node == NULL) {
+ 137              		.loc 1 41 2 view .LVU37
+ 138              		.loc 1 41 5 is_stmt 0 view .LVU38
+ 139 0000 0346     		mov	r3, r0
+ 140 0002 48B1     		cbz	r0, .L7
+ 141              		.loc 1 41 19 discriminator 1 view .LVU39
+ 142 0004 41B1     		cbz	r1, .L7
+  42:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  43:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  44:Libraries/ctrl_sdk/src/lib_list.c **** 
+  45:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_node_t *tail = list->tail;
+ 143              		.loc 1 45 2 is_stmt 1 view .LVU40
+ 144              		.loc 1 45 14 is_stmt 0 view .LVU41
+ 145 0006 4268     		ldr	r2, [r0, #4]
+ 146              	.LVL10:
+  46:Libraries/ctrl_sdk/src/lib_list.c **** 
+  47:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->prev = tail;
+ 147              		.loc 1 47 2 is_stmt 1 view .LVU42
+ 148              		.loc 1 47 17 is_stmt 0 view .LVU43
+ 149 0008 4A60     		str	r2, [r1, #4]
+  48:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->next = NULL;
+ 150              		.loc 1 48 2 is_stmt 1 view .LVU44
+ 151              		.loc 1 48 17 is_stmt 0 view .LVU45
+ 152 000a 0020     		movs	r0, #0
+ 153              	.LVL11:
+ 154              		.loc 1 48 17 view .LVU46
+ 155 000c 0860     		str	r0, [r1]
+  49:Libraries/ctrl_sdk/src/lib_list.c **** 
+  50:Libraries/ctrl_sdk/src/lib_list.c **** 	if (tail != NULL) {
+ 156              		.loc 1 50 2 is_stmt 1 view .LVU47
+ 157              		.loc 1 50 5 is_stmt 0 view .LVU48
+ 158 000e 02B1     		cbz	r2, .L9
+  51:Libraries/ctrl_sdk/src/lib_list.c **** 		tail->next = new_node;
+ 159              		.loc 1 51 3 is_stmt 1 view .LVU49
+ 160              		.loc 1 51 14 is_stmt 0 view .LVU50
+ 161 0010 1160     		str	r1, [r2]
+ 162              	.L9:
+  52:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  53:Libraries/ctrl_sdk/src/lib_list.c **** 	list->tail = new_node;
+ 163              		.loc 1 53 2 is_stmt 1 view .LVU51
+ 164              		.loc 1 53 13 is_stmt 0 view .LVU52
+ 165 0012 5960     		str	r1, [r3, #4]
+  54:Libraries/ctrl_sdk/src/lib_list.c **** 
+  55:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list->head == NULL) {
+ 166              		.loc 1 55 2 is_stmt 1 view .LVU53
+ 167              		.loc 1 55 10 is_stmt 0 view .LVU54
+ 168 0014 1A68     		ldr	r2, [r3]
+ 169              	.LVL12:
+ 170              		.loc 1 55 5 view .LVU55
+ 171 0016 02B1     		cbz	r2, .L10
+ 172              	.LVL13:
+ 173              	.L7:
+  56:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = new_node;
+  57:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  58:Libraries/ctrl_sdk/src/lib_list.c **** }
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 5
+
+
+ 174              		.loc 1 58 1 view .LVU56
+ 175 0018 7047     		bx	lr
+ 176              	.LVL14:
+ 177              	.L10:
+  56:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = new_node;
+ 178              		.loc 1 56 3 is_stmt 1 view .LVU57
+  56:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = new_node;
+ 179              		.loc 1 56 14 is_stmt 0 view .LVU58
+ 180 001a 1960     		str	r1, [r3]
+ 181 001c FCE7     		b	.L7
+ 182              		.cfi_endproc
+ 183              	.LFE2:
+ 185              		.section	.text.lib_list_inc_next,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	lib_list_inc_next
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 192              	lib_list_inc_next:
+ 193              	.LVL15:
+ 194              	.LFB3:
+  59:Libraries/ctrl_sdk/src/lib_list.c **** 
+  60:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_inc_next(lib_list_t *list, lib_node_t *node, lib_node_t *new_node)
+  61:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 195              		.loc 1 61 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 0
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 199              		@ link register save eliminated.
+  62:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || node == NULL || new_node == NULL) {
+ 200              		.loc 1 62 2 view .LVU60
+ 201              		.loc 1 62 5 is_stmt 0 view .LVU61
+ 202 0000 38B1     		cbz	r0, .L11
+ 203              		.loc 1 62 19 discriminator 1 view .LVU62
+ 204 0002 31B1     		cbz	r1, .L11
+ 205              		.loc 1 62 35 discriminator 2 view .LVU63
+ 206 0004 2AB1     		cbz	r2, .L11
+  63:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  64:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  65:Libraries/ctrl_sdk/src/lib_list.c **** 
+  66:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_node_t *buf = NULL;
+ 207              		.loc 1 66 2 is_stmt 1 view .LVU64
+ 208              	.LVL16:
+  67:Libraries/ctrl_sdk/src/lib_list.c **** 	buf = node->next;
+ 209              		.loc 1 67 2 view .LVU65
+ 210              		.loc 1 67 6 is_stmt 0 view .LVU66
+ 211 0006 0B68     		ldr	r3, [r1]
+ 212              	.LVL17:
+  68:Libraries/ctrl_sdk/src/lib_list.c **** 	node->next = new_node;
+ 213              		.loc 1 68 2 is_stmt 1 view .LVU67
+ 214              		.loc 1 68 13 is_stmt 0 view .LVU68
+ 215 0008 0A60     		str	r2, [r1]
+  69:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->next = buf;
+ 216              		.loc 1 69 2 is_stmt 1 view .LVU69
+ 217              		.loc 1 69 17 is_stmt 0 view .LVU70
+ 218 000a 1360     		str	r3, [r2]
+  70:Libraries/ctrl_sdk/src/lib_list.c **** 	if (buf != NULL) {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 6
+
+
+ 219              		.loc 1 70 2 is_stmt 1 view .LVU71
+ 220              		.loc 1 70 5 is_stmt 0 view .LVU72
+ 221 000c 13B1     		cbz	r3, .L13
+  71:Libraries/ctrl_sdk/src/lib_list.c **** 		buf->prev = new_node;
+ 222              		.loc 1 71 3 is_stmt 1 view .LVU73
+ 223              		.loc 1 71 13 is_stmt 0 view .LVU74
+ 224 000e 5A60     		str	r2, [r3, #4]
+ 225              	.L14:
+  72:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+  73:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = new_node;
+  74:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  75:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->prev = node;
+ 226              		.loc 1 75 2 is_stmt 1 view .LVU75
+ 227              		.loc 1 75 17 is_stmt 0 view .LVU76
+ 228 0010 5160     		str	r1, [r2, #4]
+ 229              	.LVL18:
+ 230              	.L11:
+  76:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 231              		.loc 1 76 1 view .LVU77
+ 232 0012 7047     		bx	lr
+ 233              	.LVL19:
+ 234              	.L13:
+  73:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 235              		.loc 1 73 3 is_stmt 1 view .LVU78
+  73:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 236              		.loc 1 73 14 is_stmt 0 view .LVU79
+ 237 0014 4260     		str	r2, [r0, #4]
+ 238 0016 FBE7     		b	.L14
+ 239              		.cfi_endproc
+ 240              	.LFE3:
+ 242              		.section	.text.lib_list_inc_prev,"ax",%progbits
+ 243              		.align	1
+ 244              		.global	lib_list_inc_prev
+ 245              		.syntax unified
+ 246              		.thumb
+ 247              		.thumb_func
+ 249              	lib_list_inc_prev:
+ 250              	.LVL20:
+ 251              	.LFB4:
+  77:Libraries/ctrl_sdk/src/lib_list.c **** 
+  78:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_inc_prev(lib_list_t *list, lib_node_t *node, lib_node_t *new_node)
+  79:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 252              		.loc 1 79 1 is_stmt 1 view -0
+ 253              		.cfi_startproc
+ 254              		@ args = 0, pretend = 0, frame = 0
+ 255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 256              		@ link register save eliminated.
+  80:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || node == NULL || new_node == NULL) {
+ 257              		.loc 1 80 2 view .LVU81
+ 258              		.loc 1 80 5 is_stmt 0 view .LVU82
+ 259 0000 38B1     		cbz	r0, .L15
+ 260              		.loc 1 80 19 discriminator 1 view .LVU83
+ 261 0002 31B1     		cbz	r1, .L15
+ 262              		.loc 1 80 35 discriminator 2 view .LVU84
+ 263 0004 2AB1     		cbz	r2, .L15
+  81:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  82:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 7
+
+
+  83:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_node_t *buf = node->prev;
+ 264              		.loc 1 83 2 is_stmt 1 view .LVU85
+ 265              		.loc 1 83 14 is_stmt 0 view .LVU86
+ 266 0006 4B68     		ldr	r3, [r1, #4]
+ 267              	.LVL21:
+  84:Libraries/ctrl_sdk/src/lib_list.c **** 	node->prev = new_node;
+ 268              		.loc 1 84 2 is_stmt 1 view .LVU87
+ 269              		.loc 1 84 13 is_stmt 0 view .LVU88
+ 270 0008 4A60     		str	r2, [r1, #4]
+  85:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->prev = buf;
+ 271              		.loc 1 85 2 is_stmt 1 view .LVU89
+ 272              		.loc 1 85 17 is_stmt 0 view .LVU90
+ 273 000a 5360     		str	r3, [r2, #4]
+  86:Libraries/ctrl_sdk/src/lib_list.c **** 	if (buf != NULL) {
+ 274              		.loc 1 86 2 is_stmt 1 view .LVU91
+ 275              		.loc 1 86 5 is_stmt 0 view .LVU92
+ 276 000c 13B1     		cbz	r3, .L17
+  87:Libraries/ctrl_sdk/src/lib_list.c **** 		buf->next = new_node;
+ 277              		.loc 1 87 3 is_stmt 1 view .LVU93
+ 278              		.loc 1 87 13 is_stmt 0 view .LVU94
+ 279 000e 1A60     		str	r2, [r3]
+ 280              	.L18:
+  88:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+  89:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = new_node;
+  90:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  91:Libraries/ctrl_sdk/src/lib_list.c **** 	new_node->next = node;
+ 281              		.loc 1 91 2 is_stmt 1 view .LVU95
+ 282              		.loc 1 91 17 is_stmt 0 view .LVU96
+ 283 0010 1160     		str	r1, [r2]
+ 284              	.LVL22:
+ 285              	.L15:
+  92:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 286              		.loc 1 92 1 view .LVU97
+ 287 0012 7047     		bx	lr
+ 288              	.LVL23:
+ 289              	.L17:
+  89:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 290              		.loc 1 89 3 is_stmt 1 view .LVU98
+  89:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 291              		.loc 1 89 14 is_stmt 0 view .LVU99
+ 292 0014 0260     		str	r2, [r0]
+ 293 0016 FBE7     		b	.L18
+ 294              		.cfi_endproc
+ 295              	.LFE4:
+ 297              		.section	.text.lib_list_delete,"ax",%progbits
+ 298              		.align	1
+ 299              		.global	lib_list_delete
+ 300              		.syntax unified
+ 301              		.thumb
+ 302              		.thumb_func
+ 304              	lib_list_delete:
+ 305              	.LVL24:
+ 306              	.LFB5:
+  93:Libraries/ctrl_sdk/src/lib_list.c **** 
+  94:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_delete(lib_list_t *list, lib_node_t *node)
+  95:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 307              		.loc 1 95 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 8
+
+
+ 308              		.cfi_startproc
+ 309              		@ args = 0, pretend = 0, frame = 0
+ 310              		@ frame_needed = 0, uses_anonymous_args = 0
+ 311              		@ link register save eliminated.
+  96:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || node == NULL) {
+ 312              		.loc 1 96 2 view .LVU101
+ 313              		.loc 1 96 5 is_stmt 0 view .LVU102
+ 314 0000 8446     		mov	ip, r0
+ 315 0002 58B1     		cbz	r0, .L19
+ 316              		.loc 1 96 19 discriminator 1 view .LVU103
+ 317 0004 51B1     		cbz	r1, .L19
+  97:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+  98:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+  99:Libraries/ctrl_sdk/src/lib_list.c **** 	if (node->next == NULL && node->prev == NULL) {
+ 318              		.loc 1 99 2 is_stmt 1 view .LVU104
+ 319              		.loc 1 99 10 is_stmt 0 view .LVU105
+ 320 0006 0B68     		ldr	r3, [r1]
+ 321              		.loc 1 99 5 view .LVU106
+ 322 0008 4BB1     		cbz	r3, .L24
+ 323              	.L21:
+ 100:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = NULL;
+ 101:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = NULL;
+ 102:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->next == NULL) {
+ 324              		.loc 1 102 9 is_stmt 1 view .LVU107
+ 325              		.loc 1 102 12 is_stmt 0 view .LVU108
+ 326 000a 73B1     		cbz	r3, .L25
+ 103:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev->next = NULL;
+ 104:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = node->prev;
+ 105:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 106:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->prev == NULL) {
+ 327              		.loc 1 106 9 is_stmt 1 view .LVU109
+ 328              		.loc 1 106 17 is_stmt 0 view .LVU110
+ 329 000c 4A68     		ldr	r2, [r1, #4]
+ 330              		.loc 1 106 12 view .LVU111
+ 331 000e 9AB1     		cbz	r2, .L26
+ 107:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next->prev = NULL;
+ 108:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = node->next;
+ 109:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 110:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+ 111:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next->prev = node->prev;
+ 332              		.loc 1 111 3 is_stmt 1 view .LVU112
+ 333              		.loc 1 111 20 is_stmt 0 view .LVU113
+ 334 0010 5A60     		str	r2, [r3, #4]
+ 112:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev->next = node->next;
+ 335              		.loc 1 112 3 is_stmt 1 view .LVU114
+ 336              		.loc 1 112 26 is_stmt 0 view .LVU115
+ 337 0012 0B68     		ldr	r3, [r1]
+ 338              		.loc 1 112 20 view .LVU116
+ 339 0014 1360     		str	r3, [r2]
+ 113:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 340              		.loc 1 113 3 is_stmt 1 view .LVU117
+ 341              		.loc 1 113 14 is_stmt 0 view .LVU118
+ 342 0016 0023     		movs	r3, #0
+ 343 0018 0B60     		str	r3, [r1]
+ 114:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 344              		.loc 1 114 3 is_stmt 1 view .LVU119
+ 345              		.loc 1 114 14 is_stmt 0 view .LVU120
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 9
+
+
+ 346 001a 4B60     		str	r3, [r1, #4]
+ 347              	.L19:
+ 115:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 116:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 348              		.loc 1 116 1 view .LVU121
+ 349 001c 7047     		bx	lr
+ 350              	.L24:
+  99:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = NULL;
+ 351              		.loc 1 99 32 discriminator 1 view .LVU122
+ 352 001e 4A68     		ldr	r2, [r1, #4]
+  99:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = NULL;
+ 353              		.loc 1 99 25 discriminator 1 view .LVU123
+ 354 0020 002A     		cmp	r2, #0
+ 355 0022 F2D1     		bne	.L21
+ 100:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = NULL;
+ 356              		.loc 1 100 3 is_stmt 1 view .LVU124
+ 100:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = NULL;
+ 357              		.loc 1 100 14 is_stmt 0 view .LVU125
+ 358 0024 0360     		str	r3, [r0]
+ 101:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->next == NULL) {
+ 359              		.loc 1 101 3 is_stmt 1 view .LVU126
+ 101:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->next == NULL) {
+ 360              		.loc 1 101 14 is_stmt 0 view .LVU127
+ 361 0026 4360     		str	r3, [r0, #4]
+ 362 0028 7047     		bx	lr
+ 363              	.L25:
+ 103:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = node->prev;
+ 364              		.loc 1 103 3 is_stmt 1 view .LVU128
+ 103:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = node->prev;
+ 365              		.loc 1 103 7 is_stmt 0 view .LVU129
+ 366 002a 4A68     		ldr	r2, [r1, #4]
+ 103:Libraries/ctrl_sdk/src/lib_list.c **** 		list->tail = node->prev;
+ 367              		.loc 1 103 20 view .LVU130
+ 368 002c 1360     		str	r3, [r2]
+ 104:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 369              		.loc 1 104 3 is_stmt 1 view .LVU131
+ 104:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 370              		.loc 1 104 20 is_stmt 0 view .LVU132
+ 371 002e 4A68     		ldr	r2, [r1, #4]
+ 104:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 372              		.loc 1 104 14 view .LVU133
+ 373 0030 CCF80420 		str	r2, [ip, #4]
+ 105:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->prev == NULL) {
+ 374              		.loc 1 105 3 is_stmt 1 view .LVU134
+ 105:Libraries/ctrl_sdk/src/lib_list.c **** 	} else if (node->prev == NULL) {
+ 375              		.loc 1 105 14 is_stmt 0 view .LVU135
+ 376 0034 4B60     		str	r3, [r1, #4]
+ 377 0036 7047     		bx	lr
+ 378              	.L26:
+ 107:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = node->next;
+ 379              		.loc 1 107 3 is_stmt 1 view .LVU136
+ 107:Libraries/ctrl_sdk/src/lib_list.c **** 		list->head = node->next;
+ 380              		.loc 1 107 20 is_stmt 0 view .LVU137
+ 381 0038 5A60     		str	r2, [r3, #4]
+ 108:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 382              		.loc 1 108 3 is_stmt 1 view .LVU138
+ 108:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 10
+
+
+ 383              		.loc 1 108 20 is_stmt 0 view .LVU139
+ 384 003a 0B68     		ldr	r3, [r1]
+ 108:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 385              		.loc 1 108 14 view .LVU140
+ 386 003c CCF80030 		str	r3, [ip]
+ 109:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+ 387              		.loc 1 109 3 is_stmt 1 view .LVU141
+ 109:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+ 388              		.loc 1 109 14 is_stmt 0 view .LVU142
+ 389 0040 0A60     		str	r2, [r1]
+ 390 0042 7047     		bx	lr
+ 391              		.cfi_endproc
+ 392              	.LFE5:
+ 394              		.section	.text.lib_list_change_node,"ax",%progbits
+ 395              		.align	1
+ 396              		.global	lib_list_change_node
+ 397              		.syntax unified
+ 398              		.thumb
+ 399              		.thumb_func
+ 401              	lib_list_change_node:
+ 402              	.LVL25:
+ 403              	.LFB6:
+ 117:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 118:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_change_node(lib_list_t *olist, lib_list_t *nlist,
+ 119:Libraries/ctrl_sdk/src/lib_list.c **** 			  lib_node_t *node,
+ 120:Libraries/ctrl_sdk/src/lib_list.c **** 			 bool head)
+ 121:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 404              		.loc 1 121 1 is_stmt 1 view -0
+ 405              		.cfi_startproc
+ 406              		@ args = 0, pretend = 0, frame = 0
+ 407              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122:Libraries/ctrl_sdk/src/lib_list.c **** 	if (olist == NULL || nlist == NULL || node == NULL) {
+ 408              		.loc 1 122 2 view .LVU144
+ 409              		.loc 1 122 5 is_stmt 0 view .LVU145
+ 410 0000 08B3     		cbz	r0, .L33
+ 121:Libraries/ctrl_sdk/src/lib_list.c **** 	if (olist == NULL || nlist == NULL || node == NULL) {
+ 411              		.loc 1 121 1 discriminator 1 view .LVU146
+ 412 0002 70B5     		push	{r4, r5, r6, lr}
+ 413              	.LCFI0:
+ 414              		.cfi_def_cfa_offset 16
+ 415              		.cfi_offset 4, -16
+ 416              		.cfi_offset 5, -12
+ 417              		.cfi_offset 6, -8
+ 418              		.cfi_offset 14, -4
+ 419 0004 0E46     		mov	r6, r1
+ 420 0006 1446     		mov	r4, r2
+ 421 0008 1D46     		mov	r5, r3
+ 422              		.loc 1 122 20 discriminator 1 view .LVU147
+ 423 000a 69B1     		cbz	r1, .L27
+ 424              		.loc 1 122 37 discriminator 2 view .LVU148
+ 425 000c 62B1     		cbz	r2, .L27
+ 123:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+ 124:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 125:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_list_delete(olist, node); // 断开节点连接
+ 426              		.loc 1 125 2 is_stmt 1 view .LVU149
+ 427 000e 1146     		mov	r1, r2
+ 428              	.LVL26:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 11
+
+
+ 429              		.loc 1 125 2 is_stmt 0 view .LVU150
+ 430 0010 FFF7FEFF 		bl	lib_list_delete
+ 431              	.LVL27:
+ 126:Libraries/ctrl_sdk/src/lib_list.c **** 	if (head) {
+ 432              		.loc 1 126 2 is_stmt 1 view .LVU151
+ 433              		.loc 1 126 5 is_stmt 0 view .LVU152
+ 434 0014 5DB1     		cbz	r5, .L29
+ 435              	.LBB2:
+ 127:Libraries/ctrl_sdk/src/lib_list.c **** 		lib_node_t *head_node = nlist->head;
+ 436              		.loc 1 127 3 is_stmt 1 view .LVU153
+ 437              		.loc 1 127 15 is_stmt 0 view .LVU154
+ 438 0016 3368     		ldr	r3, [r6]
+ 439              	.LVL28:
+ 128:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = NULL;
+ 440              		.loc 1 128 3 is_stmt 1 view .LVU155
+ 441              		.loc 1 128 14 is_stmt 0 view .LVU156
+ 442 0018 0022     		movs	r2, #0
+ 443 001a 6260     		str	r2, [r4, #4]
+ 129:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = head_node;
+ 444              		.loc 1 129 3 is_stmt 1 view .LVU157
+ 445              		.loc 1 129 14 is_stmt 0 view .LVU158
+ 446 001c 2360     		str	r3, [r4]
+ 130:Libraries/ctrl_sdk/src/lib_list.c **** 		if (head_node != NULL) {
+ 447              		.loc 1 130 3 is_stmt 1 view .LVU159
+ 448              		.loc 1 130 6 is_stmt 0 view .LVU160
+ 449 001e 03B1     		cbz	r3, .L30
+ 131:Libraries/ctrl_sdk/src/lib_list.c **** 			head_node->prev = node;
+ 450              		.loc 1 131 4 is_stmt 1 view .LVU161
+ 451              		.loc 1 131 20 is_stmt 0 view .LVU162
+ 452 0020 5C60     		str	r4, [r3, #4]
+ 453              	.L30:
+ 132:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 133:Libraries/ctrl_sdk/src/lib_list.c **** 		nlist->head = node;
+ 454              		.loc 1 133 3 is_stmt 1 view .LVU163
+ 455              		.loc 1 133 15 is_stmt 0 view .LVU164
+ 456 0022 3460     		str	r4, [r6]
+ 134:Libraries/ctrl_sdk/src/lib_list.c **** 		if (nlist->tail == NULL) {
+ 457              		.loc 1 134 3 is_stmt 1 view .LVU165
+ 458              		.loc 1 134 12 is_stmt 0 view .LVU166
+ 459 0024 7368     		ldr	r3, [r6, #4]
+ 460              	.LVL29:
+ 461              		.loc 1 134 6 view .LVU167
+ 462 0026 03B1     		cbz	r3, .L36
+ 463              	.LVL30:
+ 464              	.L27:
+ 465              		.loc 1 134 6 view .LVU168
+ 466              	.LBE2:
+ 135:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->tail = node;
+ 136:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 137:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+ 138:Libraries/ctrl_sdk/src/lib_list.c **** 		lib_node_t *tail_node = nlist->tail;
+ 139:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = tail_node;
+ 140:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 141:Libraries/ctrl_sdk/src/lib_list.c **** 		if (tail_node != NULL) {
+ 142:Libraries/ctrl_sdk/src/lib_list.c **** 			tail_node->next = node;
+ 143:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 144:Libraries/ctrl_sdk/src/lib_list.c **** 		nlist->tail = node;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 12
+
+
+ 145:Libraries/ctrl_sdk/src/lib_list.c **** 		if (nlist->head == NULL) {
+ 146:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->head = node;
+ 147:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 148:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 149:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 467              		.loc 1 149 1 view .LVU169
+ 468 0028 70BD     		pop	{r4, r5, r6, pc}
+ 469              	.LVL31:
+ 470              	.L36:
+ 471              	.LBB3:
+ 135:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->tail = node;
+ 472              		.loc 1 135 4 is_stmt 1 view .LVU170
+ 135:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->tail = node;
+ 473              		.loc 1 135 16 is_stmt 0 view .LVU171
+ 474 002a 7460     		str	r4, [r6, #4]
+ 475 002c FCE7     		b	.L27
+ 476              	.LVL32:
+ 477              	.L29:
+ 135:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->tail = node;
+ 478              		.loc 1 135 16 view .LVU172
+ 479              	.LBE3:
+ 480              	.LBB4:
+ 138:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = tail_node;
+ 481              		.loc 1 138 3 is_stmt 1 view .LVU173
+ 138:Libraries/ctrl_sdk/src/lib_list.c **** 		node->prev = tail_node;
+ 482              		.loc 1 138 15 is_stmt 0 view .LVU174
+ 483 002e 7368     		ldr	r3, [r6, #4]
+ 484              	.LVL33:
+ 139:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 485              		.loc 1 139 3 is_stmt 1 view .LVU175
+ 139:Libraries/ctrl_sdk/src/lib_list.c **** 		node->next = NULL;
+ 486              		.loc 1 139 14 is_stmt 0 view .LVU176
+ 487 0030 6360     		str	r3, [r4, #4]
+ 140:Libraries/ctrl_sdk/src/lib_list.c **** 		if (tail_node != NULL) {
+ 488              		.loc 1 140 3 is_stmt 1 view .LVU177
+ 140:Libraries/ctrl_sdk/src/lib_list.c **** 		if (tail_node != NULL) {
+ 489              		.loc 1 140 14 is_stmt 0 view .LVU178
+ 490 0032 0022     		movs	r2, #0
+ 491 0034 2260     		str	r2, [r4]
+ 141:Libraries/ctrl_sdk/src/lib_list.c **** 			tail_node->next = node;
+ 492              		.loc 1 141 3 is_stmt 1 view .LVU179
+ 141:Libraries/ctrl_sdk/src/lib_list.c **** 			tail_node->next = node;
+ 493              		.loc 1 141 6 is_stmt 0 view .LVU180
+ 494 0036 03B1     		cbz	r3, .L31
+ 142:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 495              		.loc 1 142 4 is_stmt 1 view .LVU181
+ 142:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 496              		.loc 1 142 20 is_stmt 0 view .LVU182
+ 497 0038 1C60     		str	r4, [r3]
+ 498              	.L31:
+ 144:Libraries/ctrl_sdk/src/lib_list.c **** 		if (nlist->head == NULL) {
+ 499              		.loc 1 144 3 is_stmt 1 view .LVU183
+ 144:Libraries/ctrl_sdk/src/lib_list.c **** 		if (nlist->head == NULL) {
+ 500              		.loc 1 144 15 is_stmt 0 view .LVU184
+ 501 003a 7460     		str	r4, [r6, #4]
+ 145:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->head = node;
+ 502              		.loc 1 145 3 is_stmt 1 view .LVU185
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 13
+
+
+ 145:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->head = node;
+ 503              		.loc 1 145 12 is_stmt 0 view .LVU186
+ 504 003c 3368     		ldr	r3, [r6]
+ 505              	.LVL34:
+ 145:Libraries/ctrl_sdk/src/lib_list.c **** 			nlist->head = node;
+ 506              		.loc 1 145 6 view .LVU187
+ 507 003e 002B     		cmp	r3, #0
+ 508 0040 F2D1     		bne	.L27
+ 146:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 509              		.loc 1 146 4 is_stmt 1 view .LVU188
+ 146:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 510              		.loc 1 146 16 is_stmt 0 view .LVU189
+ 511 0042 3460     		str	r4, [r6]
+ 512 0044 F0E7     		b	.L27
+ 513              	.LVL35:
+ 514              	.L33:
+ 515              	.LCFI1:
+ 516              		.cfi_def_cfa_offset 0
+ 517              		.cfi_restore 4
+ 518              		.cfi_restore 5
+ 519              		.cfi_restore 6
+ 520              		.cfi_restore 14
+ 146:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 521              		.loc 1 146 16 view .LVU190
+ 522 0046 7047     		bx	lr
+ 523              	.LBE4:
+ 524              		.cfi_endproc
+ 525              	.LFE6:
+ 527              		.section	.text.lib_list_move_node,"ax",%progbits
+ 528              		.align	1
+ 529              		.global	lib_list_move_node
+ 530              		.syntax unified
+ 531              		.thumb
+ 532              		.thumb_func
+ 534              	lib_list_move_node:
+ 535              	.LVL36:
+ 536              	.LFB7:
+ 150:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 151:Libraries/ctrl_sdk/src/lib_list.c **** void lib_list_move_node(lib_list_t *list, lib_node_t *act, lib_node_t *node,
+ 152:Libraries/ctrl_sdk/src/lib_list.c **** 		       bool before)
+ 153:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 537              		.loc 1 153 1 is_stmt 1 view -0
+ 538              		.cfi_startproc
+ 539              		@ args = 0, pretend = 0, frame = 0
+ 540              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || act == NULL || node == NULL) {
+ 541              		.loc 1 154 2 view .LVU192
+ 542              		.loc 1 154 5 is_stmt 0 view .LVU193
+ 543 0000 30B3     		cbz	r0, .L44
+ 153:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL || act == NULL || node == NULL) {
+ 544              		.loc 1 153 1 discriminator 1 view .LVU194
+ 545 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 546              	.LCFI2:
+ 547              		.cfi_def_cfa_offset 24
+ 548              		.cfi_offset 3, -24
+ 549              		.cfi_offset 4, -20
+ 550              		.cfi_offset 5, -16
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 14
+
+
+ 551              		.cfi_offset 6, -12
+ 552              		.cfi_offset 7, -8
+ 553              		.cfi_offset 14, -4
+ 554 0004 0C46     		mov	r4, r1
+ 555 0006 1546     		mov	r5, r2
+ 556 0008 1E46     		mov	r6, r3
+ 557 000a 0746     		mov	r7, r0
+ 558              		.loc 1 154 19 discriminator 1 view .LVU195
+ 559 000c 61B1     		cbz	r1, .L37
+ 560              		.loc 1 154 34 discriminator 2 view .LVU196
+ 561 000e 5AB1     		cbz	r2, .L37
+ 155:Libraries/ctrl_sdk/src/lib_list.c **** 		return;
+ 156:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 157:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_list_delete(list, act); // 断开节点连接
+ 562              		.loc 1 157 2 is_stmt 1 view .LVU197
+ 563 0010 FFF7FEFF 		bl	lib_list_delete
+ 564              	.LVL37:
+ 158:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 159:Libraries/ctrl_sdk/src/lib_list.c **** 	/* 连接新的节点 */
+ 160:Libraries/ctrl_sdk/src/lib_list.c **** 	if (node->next == NULL && node->prev == NULL) {
+ 565              		.loc 1 160 2 view .LVU198
+ 566              		.loc 1 160 10 is_stmt 0 view .LVU199
+ 567 0014 2B68     		ldr	r3, [r5]
+ 568              		.loc 1 160 5 view .LVU200
+ 569 0016 43B1     		cbz	r3, .L47
+ 570              	.L39:
+ 161:Libraries/ctrl_sdk/src/lib_list.c **** 		return; // 出现这种情况即为出错
+ 162:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 163:Libraries/ctrl_sdk/src/lib_list.c **** 	if (before) {
+ 571              		.loc 1 163 2 is_stmt 1 view .LVU201
+ 572              		.loc 1 163 5 is_stmt 0 view .LVU202
+ 573 0018 7EB1     		cbz	r6, .L40
+ 164:Libraries/ctrl_sdk/src/lib_list.c **** 		if (node->prev == NULL) {
+ 574              		.loc 1 164 3 is_stmt 1 view .LVU203
+ 575              		.loc 1 164 11 is_stmt 0 view .LVU204
+ 576 001a 6B68     		ldr	r3, [r5, #4]
+ 577              		.loc 1 164 6 view .LVU205
+ 578 001c 4BB1     		cbz	r3, .L48
+ 165:Libraries/ctrl_sdk/src/lib_list.c **** 			act->next = node;
+ 166:Libraries/ctrl_sdk/src/lib_list.c **** 			node->prev = act;
+ 167:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 168:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 169:Libraries/ctrl_sdk/src/lib_list.c **** 			node->prev->next = act;
+ 579              		.loc 1 169 4 is_stmt 1 view .LVU206
+ 580              		.loc 1 169 21 is_stmt 0 view .LVU207
+ 581 001e 1C60     		str	r4, [r3]
+ 170:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node->prev;
+ 582              		.loc 1 170 4 is_stmt 1 view .LVU208
+ 583              		.loc 1 170 20 is_stmt 0 view .LVU209
+ 584 0020 6B68     		ldr	r3, [r5, #4]
+ 585              		.loc 1 170 14 view .LVU210
+ 586 0022 6360     		str	r3, [r4, #4]
+ 171:Libraries/ctrl_sdk/src/lib_list.c **** 			node->prev = act;
+ 587              		.loc 1 171 4 is_stmt 1 view .LVU211
+ 588              		.loc 1 171 15 is_stmt 0 view .LVU212
+ 589 0024 6C60     		str	r4, [r5, #4]
+ 172:Libraries/ctrl_sdk/src/lib_list.c **** 			act->next = node;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 15
+
+
+ 590              		.loc 1 172 4 is_stmt 1 view .LVU213
+ 591              		.loc 1 172 14 is_stmt 0 view .LVU214
+ 592 0026 2560     		str	r5, [r4]
+ 593              	.L37:
+ 173:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 174:Libraries/ctrl_sdk/src/lib_list.c **** 	} else {
+ 175:Libraries/ctrl_sdk/src/lib_list.c **** 		if (node->next == NULL) {
+ 176:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 177:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 178:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 179:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 180:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next->prev = act;
+ 181:Libraries/ctrl_sdk/src/lib_list.c **** 			act->next = node->next;
+ 182:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 183:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 184:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 185:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 186:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 594              		.loc 1 186 1 view .LVU215
+ 595 0028 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 596              	.LVL38:
+ 597              	.L47:
+ 160:Libraries/ctrl_sdk/src/lib_list.c **** 		return; // 出现这种情况即为出错
+ 598              		.loc 1 160 32 discriminator 1 view .LVU216
+ 599 002a 6A68     		ldr	r2, [r5, #4]
+ 160:Libraries/ctrl_sdk/src/lib_list.c **** 		return; // 出现这种情况即为出错
+ 600              		.loc 1 160 25 discriminator 1 view .LVU217
+ 601 002c 002A     		cmp	r2, #0
+ 602 002e F3D1     		bne	.L39
+ 603 0030 FAE7     		b	.L37
+ 604              	.L48:
+ 165:Libraries/ctrl_sdk/src/lib_list.c **** 			node->prev = act;
+ 605              		.loc 1 165 4 is_stmt 1 view .LVU218
+ 165:Libraries/ctrl_sdk/src/lib_list.c **** 			node->prev = act;
+ 606              		.loc 1 165 14 is_stmt 0 view .LVU219
+ 607 0032 2560     		str	r5, [r4]
+ 166:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 608              		.loc 1 166 4 is_stmt 1 view .LVU220
+ 166:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 609              		.loc 1 166 15 is_stmt 0 view .LVU221
+ 610 0034 6C60     		str	r4, [r5, #4]
+ 167:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 611              		.loc 1 167 4 is_stmt 1 view .LVU222
+ 167:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 612              		.loc 1 167 15 is_stmt 0 view .LVU223
+ 613 0036 3C60     		str	r4, [r7]
+ 614 0038 F6E7     		b	.L37
+ 615              	.L40:
+ 175:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 616              		.loc 1 175 3 is_stmt 1 view .LVU224
+ 175:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 617              		.loc 1 175 6 is_stmt 0 view .LVU225
+ 618 003a 2BB1     		cbz	r3, .L49
+ 180:Libraries/ctrl_sdk/src/lib_list.c **** 			act->next = node->next;
+ 619              		.loc 1 180 4 is_stmt 1 view .LVU226
+ 180:Libraries/ctrl_sdk/src/lib_list.c **** 			act->next = node->next;
+ 620              		.loc 1 180 21 is_stmt 0 view .LVU227
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 16
+
+
+ 621 003c 5C60     		str	r4, [r3, #4]
+ 181:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 622              		.loc 1 181 4 is_stmt 1 view .LVU228
+ 181:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 623              		.loc 1 181 20 is_stmt 0 view .LVU229
+ 624 003e 2B68     		ldr	r3, [r5]
+ 181:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 625              		.loc 1 181 14 view .LVU230
+ 626 0040 2360     		str	r3, [r4]
+ 182:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 627              		.loc 1 182 4 is_stmt 1 view .LVU231
+ 182:Libraries/ctrl_sdk/src/lib_list.c **** 			act->prev = node;
+ 628              		.loc 1 182 15 is_stmt 0 view .LVU232
+ 629 0042 2C60     		str	r4, [r5]
+ 183:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 630              		.loc 1 183 4 is_stmt 1 view .LVU233
+ 183:Libraries/ctrl_sdk/src/lib_list.c **** 		}
+ 631              		.loc 1 183 14 is_stmt 0 view .LVU234
+ 632 0044 6560     		str	r5, [r4, #4]
+ 633 0046 EFE7     		b	.L37
+ 634              	.L49:
+ 176:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 635              		.loc 1 176 4 is_stmt 1 view .LVU235
+ 176:Libraries/ctrl_sdk/src/lib_list.c **** 			node->next = act;
+ 636              		.loc 1 176 14 is_stmt 0 view .LVU236
+ 637 0048 6560     		str	r5, [r4, #4]
+ 177:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 638              		.loc 1 177 4 is_stmt 1 view .LVU237
+ 177:Libraries/ctrl_sdk/src/lib_list.c **** 			list->head = act;
+ 639              		.loc 1 177 15 is_stmt 0 view .LVU238
+ 640 004a 2C60     		str	r4, [r5]
+ 178:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 641              		.loc 1 178 4 is_stmt 1 view .LVU239
+ 178:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 642              		.loc 1 178 15 is_stmt 0 view .LVU240
+ 643 004c 3C60     		str	r4, [r7]
+ 644 004e EBE7     		b	.L37
+ 645              	.LVL39:
+ 646              	.L44:
+ 647              	.LCFI3:
+ 648              		.cfi_def_cfa_offset 0
+ 649              		.cfi_restore 3
+ 650              		.cfi_restore 4
+ 651              		.cfi_restore 5
+ 652              		.cfi_restore 6
+ 653              		.cfi_restore 7
+ 654              		.cfi_restore 14
+ 178:Libraries/ctrl_sdk/src/lib_list.c **** 		} else {
+ 655              		.loc 1 178 15 view .LVU241
+ 656 0050 7047     		bx	lr
+ 657              		.cfi_endproc
+ 658              	.LFE7:
+ 660              		.section	.text.lib_list_get_len,"ax",%progbits
+ 661              		.align	1
+ 662              		.global	lib_list_get_len
+ 663              		.syntax unified
+ 664              		.thumb
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 17
+
+
+ 665              		.thumb_func
+ 667              	lib_list_get_len:
+ 668              	.LVL40:
+ 669              	.LFB8:
+ 187:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 188:Libraries/ctrl_sdk/src/lib_list.c **** size_t lib_list_get_len(const lib_list_t *list)
+ 189:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 670              		.loc 1 189 1 is_stmt 1 view -0
+ 671              		.cfi_startproc
+ 672              		@ args = 0, pretend = 0, frame = 0
+ 673              		@ frame_needed = 0, uses_anonymous_args = 0
+ 674              		@ link register save eliminated.
+ 190:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL) {
+ 675              		.loc 1 190 2 view .LVU243
+ 676              		.loc 1 190 5 is_stmt 0 view .LVU244
+ 677 0000 38B1     		cbz	r0, .L54
+ 191:Libraries/ctrl_sdk/src/lib_list.c **** 		return 0;
+ 192:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 193:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 194:Libraries/ctrl_sdk/src/lib_list.c **** 	lib_node_t *node = list->head;
+ 678              		.loc 1 194 2 is_stmt 1 view .LVU245
+ 679              		.loc 1 194 14 is_stmt 0 view .LVU246
+ 680 0002 0368     		ldr	r3, [r0]
+ 681              	.LVL41:
+ 195:Libraries/ctrl_sdk/src/lib_list.c **** 	size_t len = 0;
+ 682              		.loc 1 195 2 is_stmt 1 view .LVU247
+ 196:Libraries/ctrl_sdk/src/lib_list.c **** 	while (node != NULL) {
+ 683              		.loc 1 196 2 view .LVU248
+ 195:Libraries/ctrl_sdk/src/lib_list.c **** 	size_t len = 0;
+ 684              		.loc 1 195 9 is_stmt 0 view .LVU249
+ 685 0004 0020     		movs	r0, #0
+ 686              	.LVL42:
+ 687              		.loc 1 196 8 view .LVU250
+ 688 0006 01E0     		b	.L52
+ 689              	.LVL43:
+ 690              	.L53:
+ 197:Libraries/ctrl_sdk/src/lib_list.c **** 		node = node->next;
+ 691              		.loc 1 197 3 is_stmt 1 view .LVU251
+ 692              		.loc 1 197 8 is_stmt 0 view .LVU252
+ 693 0008 1B68     		ldr	r3, [r3]
+ 694              	.LVL44:
+ 198:Libraries/ctrl_sdk/src/lib_list.c **** 		++len;
+ 695              		.loc 1 198 3 is_stmt 1 view .LVU253
+ 696 000a 0130     		adds	r0, r0, #1
+ 697              	.LVL45:
+ 698              	.L52:
+ 196:Libraries/ctrl_sdk/src/lib_list.c **** 	while (node != NULL) {
+ 699              		.loc 1 196 14 view .LVU254
+ 700 000c 002B     		cmp	r3, #0
+ 701 000e FBD1     		bne	.L53
+ 196:Libraries/ctrl_sdk/src/lib_list.c **** 	while (node != NULL) {
+ 702              		.loc 1 196 14 is_stmt 0 view .LVU255
+ 703 0010 7047     		bx	lr
+ 704              	.LVL46:
+ 705              	.L54:
+ 191:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 706              		.loc 1 191 10 view .LVU256
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 18
+
+
+ 707 0012 0020     		movs	r0, #0
+ 708              	.LVL47:
+ 199:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 200:Libraries/ctrl_sdk/src/lib_list.c **** 	return len;
+ 201:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 709              		.loc 1 201 1 view .LVU257
+ 710 0014 7047     		bx	lr
+ 711              		.cfi_endproc
+ 712              	.LFE8:
+ 714              		.section	.text.lib_list_is_empty,"ax",%progbits
+ 715              		.align	1
+ 716              		.global	lib_list_is_empty
+ 717              		.syntax unified
+ 718              		.thumb
+ 719              		.thumb_func
+ 721              	lib_list_is_empty:
+ 722              	.LVL48:
+ 723              	.LFB9:
+ 202:Libraries/ctrl_sdk/src/lib_list.c **** 
+ 203:Libraries/ctrl_sdk/src/lib_list.c **** inline bool lib_list_is_empty(lib_list_t *list)
+ 204:Libraries/ctrl_sdk/src/lib_list.c **** {
+ 724              		.loc 1 204 1 is_stmt 1 view -0
+ 725              		.cfi_startproc
+ 726              		@ args = 0, pretend = 0, frame = 0
+ 727              		@ frame_needed = 0, uses_anonymous_args = 0
+ 728              		@ link register save eliminated.
+ 205:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list == NULL) {
+ 729              		.loc 1 205 2 view .LVU259
+ 730              		.loc 1 205 5 is_stmt 0 view .LVU260
+ 731 0000 38B1     		cbz	r0, .L57
+ 206:Libraries/ctrl_sdk/src/lib_list.c **** 		return false;
+ 207:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 208:Libraries/ctrl_sdk/src/lib_list.c **** 	if (list->head == NULL && list->tail == NULL) {
+ 732              		.loc 1 208 2 is_stmt 1 view .LVU261
+ 733              		.loc 1 208 10 is_stmt 0 view .LVU262
+ 734 0002 0268     		ldr	r2, [r0]
+ 735              		.loc 1 208 5 view .LVU263
+ 736 0004 0AB1     		cbz	r2, .L60
+ 209:Libraries/ctrl_sdk/src/lib_list.c **** 		return true;
+ 210:Libraries/ctrl_sdk/src/lib_list.c **** 	}
+ 211:Libraries/ctrl_sdk/src/lib_list.c **** 	return false;
+ 737              		.loc 1 211 9 view .LVU264
+ 738 0006 0020     		movs	r0, #0
+ 739              	.LVL49:
+ 740              		.loc 1 211 9 view .LVU265
+ 741 0008 7047     		bx	lr
+ 742              	.LVL50:
+ 743              	.L60:
+ 208:Libraries/ctrl_sdk/src/lib_list.c **** 		return true;
+ 744              		.loc 1 208 32 discriminator 1 view .LVU266
+ 745 000a 4368     		ldr	r3, [r0, #4]
+ 208:Libraries/ctrl_sdk/src/lib_list.c **** 		return true;
+ 746              		.loc 1 208 25 discriminator 1 view .LVU267
+ 747 000c 1BB1     		cbz	r3, .L59
+ 748              		.loc 1 211 9 view .LVU268
+ 749 000e 0020     		movs	r0, #0
+ 750              	.LVL51:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 19
+
+
+ 751              		.loc 1 211 9 view .LVU269
+ 752 0010 7047     		bx	lr
+ 753              	.LVL52:
+ 754              	.L57:
+ 206:Libraries/ctrl_sdk/src/lib_list.c **** 		return false;
+ 755              		.loc 1 206 10 view .LVU270
+ 756 0012 0020     		movs	r0, #0
+ 757              	.LVL53:
+ 206:Libraries/ctrl_sdk/src/lib_list.c **** 		return false;
+ 758              		.loc 1 206 10 view .LVU271
+ 759 0014 7047     		bx	lr
+ 760              	.LVL54:
+ 761              	.L59:
+ 209:Libraries/ctrl_sdk/src/lib_list.c **** 		return true;
+ 762              		.loc 1 209 10 view .LVU272
+ 763 0016 0120     		movs	r0, #1
+ 764              	.LVL55:
+ 212:Libraries/ctrl_sdk/src/lib_list.c **** }
+ 765              		.loc 1 212 1 view .LVU273
+ 766 0018 7047     		bx	lr
+ 767              		.cfi_endproc
+ 768              	.LFE9:
+ 770              		.text
+ 771              	.Letext0:
+ 772              		.file 2 "Libraries/ctrl_sdk/inc/lib_list.h"
+ 773              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 lib_list.c
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:19     .text.lib_list_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:25     .text.lib_list_init:00000000 lib_list_init
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:60     .text.lib_list_inc_head:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:66     .text.lib_list_inc_head:00000000 lib_list_inc_head
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:123    .text.lib_list_inc_tail:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:129    .text.lib_list_inc_tail:00000000 lib_list_inc_tail
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:186    .text.lib_list_inc_next:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:192    .text.lib_list_inc_next:00000000 lib_list_inc_next
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:243    .text.lib_list_inc_prev:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:249    .text.lib_list_inc_prev:00000000 lib_list_inc_prev
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:298    .text.lib_list_delete:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:304    .text.lib_list_delete:00000000 lib_list_delete
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:395    .text.lib_list_change_node:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:401    .text.lib_list_change_node:00000000 lib_list_change_node
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:528    .text.lib_list_move_node:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:534    .text.lib_list_move_node:00000000 lib_list_move_node
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:661    .text.lib_list_get_len:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:667    .text.lib_list_get_len:00000000 lib_list_get_len
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:715    .text.lib_list_is_empty:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccsbkgLJ.s:721    .text.lib_list_is_empty:00000000 lib_list_is_empty
+
+NO UNDEFINED SYMBOLS

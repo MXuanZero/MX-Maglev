@@ -1,0 +1,2075 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"math_base.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_sdk/src/math_base.c"
+  18              		.global	__aeabi_fmul
+  19              		.global	__aeabi_fsub
+  20              		.section	.text.m_rsqrtf,"ax",%progbits
+  21              		.align	1
+  22              		.global	m_rsqrtf
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	m_rsqrtf:
+  28              	.LVL0:
+  29              	.LFB3:
+   1:Libraries/ctrl_sdk/src/math_base.c **** #include <stdio.h>
+   2:Libraries/ctrl_sdk/src/math_base.c **** #include <stdint.h>
+   3:Libraries/ctrl_sdk/src/math_base.c **** #include <math.h>
+   4:Libraries/ctrl_sdk/src/math_base.c **** #include "math_base.h"
+   5:Libraries/ctrl_sdk/src/math_base.c **** 
+   6:Libraries/ctrl_sdk/src/math_base.c **** #define FAST_MATH_TABLE_SIZE 512
+   7:Libraries/ctrl_sdk/src/math_base.c **** 
+   8:Libraries/ctrl_sdk/src/math_base.c **** static const float m_sin_table_f[FAST_MATH_TABLE_SIZE + 1] = {
+   9:Libraries/ctrl_sdk/src/math_base.c **** 	0.00000000f,  0.01227154f,  0.02454123f,  0.03680722f,	0.04906767f,
+  10:Libraries/ctrl_sdk/src/math_base.c **** 	0.06132074f,  0.07356456f,  0.08579731f,  0.09801714f,	0.11022221f,
+  11:Libraries/ctrl_sdk/src/math_base.c **** 	0.12241068f,  0.13458071f,  0.14673047f,  0.15885814f,	0.17096189f,
+  12:Libraries/ctrl_sdk/src/math_base.c **** 	0.18303989f,  0.19509032f,  0.20711138f,  0.21910124f,	0.23105811f,
+  13:Libraries/ctrl_sdk/src/math_base.c **** 	0.24298018f,  0.25486566f,  0.26671276f,  0.27851969f,	0.29028468f,
+  14:Libraries/ctrl_sdk/src/math_base.c **** 	0.30200595f,  0.31368174f,  0.32531029f,  0.33688985f,	0.34841868f,
+  15:Libraries/ctrl_sdk/src/math_base.c **** 	0.35989504f,  0.37131719f,  0.38268343f,  0.39399204f,	0.40524131f,
+  16:Libraries/ctrl_sdk/src/math_base.c **** 	0.41642956f,  0.42755509f,  0.43861624f,  0.44961133f,	0.46053871f,
+  17:Libraries/ctrl_sdk/src/math_base.c **** 	0.47139674f,  0.48218377f,  0.49289819f,  0.50353838f,	0.51410274f,
+  18:Libraries/ctrl_sdk/src/math_base.c **** 	0.52458968f,  0.53499762f,  0.54532499f,  0.55557023f,	0.56573181f,
+  19:Libraries/ctrl_sdk/src/math_base.c **** 	0.57580819f,  0.58579786f,  0.59569930f,  0.60551104f,	0.61523159f,
+  20:Libraries/ctrl_sdk/src/math_base.c **** 	0.62485949f,  0.63439328f,  0.64383154f,  0.65317284f,	0.66241578f,
+  21:Libraries/ctrl_sdk/src/math_base.c **** 	0.67155895f,  0.68060100f,  0.68954054f,  0.69837625f,	0.70710678f,
+  22:Libraries/ctrl_sdk/src/math_base.c **** 	0.71573083f,  0.72424708f,  0.73265427f,  0.74095113f,	0.74913639f,
+  23:Libraries/ctrl_sdk/src/math_base.c **** 	0.75720885f,  0.76516727f,  0.77301045f,  0.78073723f,	0.78834643f,
+  24:Libraries/ctrl_sdk/src/math_base.c **** 	0.79583690f,  0.80320753f,  0.81045720f,  0.81758481f,	0.82458930f,
+  25:Libraries/ctrl_sdk/src/math_base.c **** 	0.83146961f,  0.83822471f,  0.84485357f,  0.85135519f,	0.85772861f,
+  26:Libraries/ctrl_sdk/src/math_base.c **** 	0.86397286f,  0.87008699f,  0.87607009f,  0.88192126f,	0.88763962f,
+  27:Libraries/ctrl_sdk/src/math_base.c **** 	0.89322430f,  0.89867447f,  0.90398929f,  0.90916798f,	0.91420976f,
+  28:Libraries/ctrl_sdk/src/math_base.c **** 	0.91911385f,  0.92387953f,  0.92850608f,  0.93299280f,	0.93733901f,
+  29:Libraries/ctrl_sdk/src/math_base.c **** 	0.94154407f,  0.94560733f,  0.94952818f,  0.95330604f,	0.95694034f,
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 2
+
+
+  30:Libraries/ctrl_sdk/src/math_base.c **** 	0.96043052f,  0.96377607f,  0.96697647f,  0.97003125f,	0.97293995f,
+  31:Libraries/ctrl_sdk/src/math_base.c **** 	0.97570213f,  0.97831737f,  0.98078528f,  0.98310549f,	0.98527764f,
+  32:Libraries/ctrl_sdk/src/math_base.c **** 	0.98730142f,  0.98917651f,  0.99090264f,  0.99247953f,	0.99390697f,
+  33:Libraries/ctrl_sdk/src/math_base.c **** 	0.99518473f,  0.99631261f,  0.99729046f,  0.99811811f,	0.99879546f,
+  34:Libraries/ctrl_sdk/src/math_base.c **** 	0.99932238f,  0.99969882f,  0.99992470f,  1.00000000f,	0.99992470f,
+  35:Libraries/ctrl_sdk/src/math_base.c **** 	0.99969882f,  0.99932238f,  0.99879546f,  0.99811811f,	0.99729046f,
+  36:Libraries/ctrl_sdk/src/math_base.c **** 	0.99631261f,  0.99518473f,  0.99390697f,  0.99247953f,	0.99090264f,
+  37:Libraries/ctrl_sdk/src/math_base.c **** 	0.98917651f,  0.98730142f,  0.98527764f,  0.98310549f,	0.98078528f,
+  38:Libraries/ctrl_sdk/src/math_base.c **** 	0.97831737f,  0.97570213f,  0.97293995f,  0.97003125f,	0.96697647f,
+  39:Libraries/ctrl_sdk/src/math_base.c **** 	0.96377607f,  0.96043052f,  0.95694034f,  0.95330604f,	0.94952818f,
+  40:Libraries/ctrl_sdk/src/math_base.c **** 	0.94560733f,  0.94154407f,  0.93733901f,  0.93299280f,	0.92850608f,
+  41:Libraries/ctrl_sdk/src/math_base.c **** 	0.92387953f,  0.91911385f,  0.91420976f,  0.90916798f,	0.90398929f,
+  42:Libraries/ctrl_sdk/src/math_base.c **** 	0.89867447f,  0.89322430f,  0.88763962f,  0.88192126f,	0.87607009f,
+  43:Libraries/ctrl_sdk/src/math_base.c **** 	0.87008699f,  0.86397286f,  0.85772861f,  0.85135519f,	0.84485357f,
+  44:Libraries/ctrl_sdk/src/math_base.c **** 	0.83822471f,  0.83146961f,  0.82458930f,  0.81758481f,	0.81045720f,
+  45:Libraries/ctrl_sdk/src/math_base.c **** 	0.80320753f,  0.79583690f,  0.78834643f,  0.78073723f,	0.77301045f,
+  46:Libraries/ctrl_sdk/src/math_base.c **** 	0.76516727f,  0.75720885f,  0.74913639f,  0.74095113f,	0.73265427f,
+  47:Libraries/ctrl_sdk/src/math_base.c **** 	0.72424708f,  0.71573083f,  0.70710678f,  0.69837625f,	0.68954054f,
+  48:Libraries/ctrl_sdk/src/math_base.c **** 	0.68060100f,  0.67155895f,  0.66241578f,  0.65317284f,	0.64383154f,
+  49:Libraries/ctrl_sdk/src/math_base.c **** 	0.63439328f,  0.62485949f,  0.61523159f,  0.60551104f,	0.59569930f,
+  50:Libraries/ctrl_sdk/src/math_base.c **** 	0.58579786f,  0.57580819f,  0.56573181f,  0.55557023f,	0.54532499f,
+  51:Libraries/ctrl_sdk/src/math_base.c **** 	0.53499762f,  0.52458968f,  0.51410274f,  0.50353838f,	0.49289819f,
+  52:Libraries/ctrl_sdk/src/math_base.c **** 	0.48218377f,  0.47139674f,  0.46053871f,  0.44961133f,	0.43861624f,
+  53:Libraries/ctrl_sdk/src/math_base.c **** 	0.42755509f,  0.41642956f,  0.40524131f,  0.39399204f,	0.38268343f,
+  54:Libraries/ctrl_sdk/src/math_base.c **** 	0.37131719f,  0.35989504f,  0.34841868f,  0.33688985f,	0.32531029f,
+  55:Libraries/ctrl_sdk/src/math_base.c **** 	0.31368174f,  0.30200595f,  0.29028468f,  0.27851969f,	0.26671276f,
+  56:Libraries/ctrl_sdk/src/math_base.c **** 	0.25486566f,  0.24298018f,  0.23105811f,  0.21910124f,	0.20711138f,
+  57:Libraries/ctrl_sdk/src/math_base.c **** 	0.19509032f,  0.18303989f,  0.17096189f,  0.15885814f,	0.14673047f,
+  58:Libraries/ctrl_sdk/src/math_base.c **** 	0.13458071f,  0.12241068f,  0.11022221f,  0.09801714f,	0.08579731f,
+  59:Libraries/ctrl_sdk/src/math_base.c **** 	0.07356456f,  0.06132074f,  0.04906767f,  0.03680722f,	0.02454123f,
+  60:Libraries/ctrl_sdk/src/math_base.c **** 	0.01227154f,  0.00000000f,  -0.01227154f, -0.02454123f, -0.03680722f,
+  61:Libraries/ctrl_sdk/src/math_base.c **** 	-0.04906767f, -0.06132074f, -0.07356456f, -0.08579731f, -0.09801714f,
+  62:Libraries/ctrl_sdk/src/math_base.c **** 	-0.11022221f, -0.12241068f, -0.13458071f, -0.14673047f, -0.15885814f,
+  63:Libraries/ctrl_sdk/src/math_base.c **** 	-0.17096189f, -0.18303989f, -0.19509032f, -0.20711138f, -0.21910124f,
+  64:Libraries/ctrl_sdk/src/math_base.c **** 	-0.23105811f, -0.24298018f, -0.25486566f, -0.26671276f, -0.27851969f,
+  65:Libraries/ctrl_sdk/src/math_base.c **** 	-0.29028468f, -0.30200595f, -0.31368174f, -0.32531029f, -0.33688985f,
+  66:Libraries/ctrl_sdk/src/math_base.c **** 	-0.34841868f, -0.35989504f, -0.37131719f, -0.38268343f, -0.39399204f,
+  67:Libraries/ctrl_sdk/src/math_base.c **** 	-0.40524131f, -0.41642956f, -0.42755509f, -0.43861624f, -0.44961133f,
+  68:Libraries/ctrl_sdk/src/math_base.c **** 	-0.46053871f, -0.47139674f, -0.48218377f, -0.49289819f, -0.50353838f,
+  69:Libraries/ctrl_sdk/src/math_base.c **** 	-0.51410274f, -0.52458968f, -0.53499762f, -0.54532499f, -0.55557023f,
+  70:Libraries/ctrl_sdk/src/math_base.c **** 	-0.56573181f, -0.57580819f, -0.58579786f, -0.59569930f, -0.60551104f,
+  71:Libraries/ctrl_sdk/src/math_base.c **** 	-0.61523159f, -0.62485949f, -0.63439328f, -0.64383154f, -0.65317284f,
+  72:Libraries/ctrl_sdk/src/math_base.c **** 	-0.66241578f, -0.67155895f, -0.68060100f, -0.68954054f, -0.69837625f,
+  73:Libraries/ctrl_sdk/src/math_base.c **** 	-0.70710678f, -0.71573083f, -0.72424708f, -0.73265427f, -0.74095113f,
+  74:Libraries/ctrl_sdk/src/math_base.c **** 	-0.74913639f, -0.75720885f, -0.76516727f, -0.77301045f, -0.78073723f,
+  75:Libraries/ctrl_sdk/src/math_base.c **** 	-0.78834643f, -0.79583690f, -0.80320753f, -0.81045720f, -0.81758481f,
+  76:Libraries/ctrl_sdk/src/math_base.c **** 	-0.82458930f, -0.83146961f, -0.83822471f, -0.84485357f, -0.85135519f,
+  77:Libraries/ctrl_sdk/src/math_base.c **** 	-0.85772861f, -0.86397286f, -0.87008699f, -0.87607009f, -0.88192126f,
+  78:Libraries/ctrl_sdk/src/math_base.c **** 	-0.88763962f, -0.89322430f, -0.89867447f, -0.90398929f, -0.90916798f,
+  79:Libraries/ctrl_sdk/src/math_base.c **** 	-0.91420976f, -0.91911385f, -0.92387953f, -0.92850608f, -0.93299280f,
+  80:Libraries/ctrl_sdk/src/math_base.c **** 	-0.93733901f, -0.94154407f, -0.94560733f, -0.94952818f, -0.95330604f,
+  81:Libraries/ctrl_sdk/src/math_base.c **** 	-0.95694034f, -0.96043052f, -0.96377607f, -0.96697647f, -0.97003125f,
+  82:Libraries/ctrl_sdk/src/math_base.c **** 	-0.97293995f, -0.97570213f, -0.97831737f, -0.98078528f, -0.98310549f,
+  83:Libraries/ctrl_sdk/src/math_base.c **** 	-0.98527764f, -0.98730142f, -0.98917651f, -0.99090264f, -0.99247953f,
+  84:Libraries/ctrl_sdk/src/math_base.c **** 	-0.99390697f, -0.99518473f, -0.99631261f, -0.99729046f, -0.99811811f,
+  85:Libraries/ctrl_sdk/src/math_base.c **** 	-0.99879546f, -0.99932238f, -0.99969882f, -0.99992470f, -1.00000000f,
+  86:Libraries/ctrl_sdk/src/math_base.c **** 	-0.99992470f, -0.99969882f, -0.99932238f, -0.99879546f, -0.99811811f,
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 3
+
+
+  87:Libraries/ctrl_sdk/src/math_base.c **** 	-0.99729046f, -0.99631261f, -0.99518473f, -0.99390697f, -0.99247953f,
+  88:Libraries/ctrl_sdk/src/math_base.c **** 	-0.99090264f, -0.98917651f, -0.98730142f, -0.98527764f, -0.98310549f,
+  89:Libraries/ctrl_sdk/src/math_base.c **** 	-0.98078528f, -0.97831737f, -0.97570213f, -0.97293995f, -0.97003125f,
+  90:Libraries/ctrl_sdk/src/math_base.c **** 	-0.96697647f, -0.96377607f, -0.96043052f, -0.95694034f, -0.95330604f,
+  91:Libraries/ctrl_sdk/src/math_base.c **** 	-0.94952818f, -0.94560733f, -0.94154407f, -0.93733901f, -0.93299280f,
+  92:Libraries/ctrl_sdk/src/math_base.c **** 	-0.92850608f, -0.92387953f, -0.91911385f, -0.91420976f, -0.90916798f,
+  93:Libraries/ctrl_sdk/src/math_base.c **** 	-0.90398929f, -0.89867447f, -0.89322430f, -0.88763962f, -0.88192126f,
+  94:Libraries/ctrl_sdk/src/math_base.c **** 	-0.87607009f, -0.87008699f, -0.86397286f, -0.85772861f, -0.85135519f,
+  95:Libraries/ctrl_sdk/src/math_base.c **** 	-0.84485357f, -0.83822471f, -0.83146961f, -0.82458930f, -0.81758481f,
+  96:Libraries/ctrl_sdk/src/math_base.c **** 	-0.81045720f, -0.80320753f, -0.79583690f, -0.78834643f, -0.78073723f,
+  97:Libraries/ctrl_sdk/src/math_base.c **** 	-0.77301045f, -0.76516727f, -0.75720885f, -0.74913639f, -0.74095113f,
+  98:Libraries/ctrl_sdk/src/math_base.c **** 	-0.73265427f, -0.72424708f, -0.71573083f, -0.70710678f, -0.69837625f,
+  99:Libraries/ctrl_sdk/src/math_base.c **** 	-0.68954054f, -0.68060100f, -0.67155895f, -0.66241578f, -0.65317284f,
+ 100:Libraries/ctrl_sdk/src/math_base.c **** 	-0.64383154f, -0.63439328f, -0.62485949f, -0.61523159f, -0.60551104f,
+ 101:Libraries/ctrl_sdk/src/math_base.c **** 	-0.59569930f, -0.58579786f, -0.57580819f, -0.56573181f, -0.55557023f,
+ 102:Libraries/ctrl_sdk/src/math_base.c **** 	-0.54532499f, -0.53499762f, -0.52458968f, -0.51410274f, -0.50353838f,
+ 103:Libraries/ctrl_sdk/src/math_base.c **** 	-0.49289819f, -0.48218377f, -0.47139674f, -0.46053871f, -0.44961133f,
+ 104:Libraries/ctrl_sdk/src/math_base.c **** 	-0.43861624f, -0.42755509f, -0.41642956f, -0.40524131f, -0.39399204f,
+ 105:Libraries/ctrl_sdk/src/math_base.c **** 	-0.38268343f, -0.37131719f, -0.35989504f, -0.34841868f, -0.33688985f,
+ 106:Libraries/ctrl_sdk/src/math_base.c **** 	-0.32531029f, -0.31368174f, -0.30200595f, -0.29028468f, -0.27851969f,
+ 107:Libraries/ctrl_sdk/src/math_base.c **** 	-0.26671276f, -0.25486566f, -0.24298018f, -0.23105811f, -0.21910124f,
+ 108:Libraries/ctrl_sdk/src/math_base.c **** 	-0.20711138f, -0.19509032f, -0.18303989f, -0.17096189f, -0.15885814f,
+ 109:Libraries/ctrl_sdk/src/math_base.c **** 	-0.14673047f, -0.13458071f, -0.12241068f, -0.11022221f, -0.09801714f,
+ 110:Libraries/ctrl_sdk/src/math_base.c **** 	-0.08579731f, -0.07356456f, -0.06132074f, -0.04906767f, -0.03680722f,
+ 111:Libraries/ctrl_sdk/src/math_base.c **** 	-0.02454123f, -0.01227154f, -0.00000000f
+ 112:Libraries/ctrl_sdk/src/math_base.c **** };
+ 113:Libraries/ctrl_sdk/src/math_base.c **** 
+ 114:Libraries/ctrl_sdk/src/math_base.c **** // 快速开平方的倒数
+ 115:Libraries/ctrl_sdk/src/math_base.c **** // https://reprap.org/forum/read.php?147,219210
+ 116:Libraries/ctrl_sdk/src/math_base.c **** // https://en.wikipedia.org/wiki/Fast_inverse_square_root
+ 117:Libraries/ctrl_sdk/src/math_base.c **** float m_rsqrtf(float number)
+ 118:Libraries/ctrl_sdk/src/math_base.c **** {
+  30              		.loc 1 118 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		.loc 1 118 1 is_stmt 0 view .LVU1
+  35 0000 10B5     		push	{r4, lr}
+  36              	.LCFI0:
+  37              		.cfi_def_cfa_offset 8
+  38              		.cfi_offset 4, -8
+  39              		.cfi_offset 14, -4
+  40 0002 0446     		mov	r4, r0
+ 119:Libraries/ctrl_sdk/src/math_base.c **** 	long i;
+  41              		.loc 1 119 2 is_stmt 1 view .LVU2
+ 120:Libraries/ctrl_sdk/src/math_base.c **** 	float x2, y;
+  42              		.loc 1 120 2 view .LVU3
+ 121:Libraries/ctrl_sdk/src/math_base.c **** 	const float threehalfs = 1.5F;
+  43              		.loc 1 121 2 view .LVU4
+  44              	.LVL1:
+ 122:Libraries/ctrl_sdk/src/math_base.c **** 
+ 123:Libraries/ctrl_sdk/src/math_base.c **** 	x2 = number * 0.5F;
+  45              		.loc 1 123 2 view .LVU5
+  46              		.loc 1 123 5 is_stmt 0 view .LVU6
+  47 0004 4FF07C51 		mov	r1, #1056964608
+  48 0008 FFF7FEFF 		bl	__aeabi_fmul
+  49              	.LVL2:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 4
+
+
+  50              		.loc 1 123 5 view .LVU7
+  51 000c 0146     		mov	r1, r0
+  52              	.LVL3:
+ 124:Libraries/ctrl_sdk/src/math_base.c **** 	y = number;
+  53              		.loc 1 124 2 is_stmt 1 view .LVU8
+ 125:Libraries/ctrl_sdk/src/math_base.c **** 	i = *(long *)&y; // evil floating point bit level hacking
+  54              		.loc 1 125 2 view .LVU9
+  55              		.loc 1 125 6 is_stmt 0 view .LVU10
+  56 000e 2346     		mov	r3, r4
+  57              	.LVL4:
+ 126:Libraries/ctrl_sdk/src/math_base.c **** 	i = 0x5f375a86 - (i >> 1); // what the fuck?
+  58              		.loc 1 126 2 is_stmt 1 view .LVU11
+ 127:Libraries/ctrl_sdk/src/math_base.c **** 	y = *(float *)&i;
+  59              		.loc 1 127 2 view .LVU12
+  60              		.loc 1 127 6 is_stmt 0 view .LVU13
+  61 0010 094C     		ldr	r4, .L3
+  62              	.LVL5:
+  63              		.loc 1 127 6 view .LVU14
+  64 0012 A4EB6304 		sub	r4, r4, r3, asr #1
+  65              	.LVL6:
+ 128:Libraries/ctrl_sdk/src/math_base.c **** 	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+  66              		.loc 1 128 2 is_stmt 1 view .LVU15
+  67              		.loc 1 128 28 is_stmt 0 view .LVU16
+  68 0016 2046     		mov	r0, r4
+  69              	.LVL7:
+  70              		.loc 1 128 28 view .LVU17
+  71 0018 FFF7FEFF 		bl	__aeabi_fmul
+  72              	.LVL8:
+  73              		.loc 1 128 28 view .LVU18
+  74 001c 0146     		mov	r1, r0
+  75              		.loc 1 128 32 view .LVU19
+  76 001e 2046     		mov	r0, r4
+  77 0020 FFF7FEFF 		bl	__aeabi_fmul
+  78              	.LVL9:
+  79 0024 0146     		mov	r1, r0
+  80              		.loc 1 128 22 view .LVU20
+  81 0026 4FF07F50 		mov	r0, #1069547520
+  82 002a FFF7FEFF 		bl	__aeabi_fsub
+  83              	.LVL10:
+  84 002e 0146     		mov	r1, r0
+  85              		.loc 1 128 8 view .LVU21
+  86 0030 2046     		mov	r0, r4
+  87 0032 FFF7FEFF 		bl	__aeabi_fmul
+  88              	.LVL11:
+ 129:Libraries/ctrl_sdk/src/math_base.c **** 	// y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration,
+ 130:Libraries/ctrl_sdk/src/math_base.c **** 	// this can be removed
+ 131:Libraries/ctrl_sdk/src/math_base.c **** 
+ 132:Libraries/ctrl_sdk/src/math_base.c **** 	return y;
+  89              		.loc 1 132 2 is_stmt 1 view .LVU22
+ 133:Libraries/ctrl_sdk/src/math_base.c **** }
+  90              		.loc 1 133 1 is_stmt 0 view .LVU23
+  91 0036 10BD     		pop	{r4, pc}
+  92              	.L4:
+  93              		.align	2
+  94              	.L3:
+  95 0038 865A375F 		.word	1597463174
+  96              		.cfi_endproc
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 5
+
+
+  97              	.LFE3:
+  99              		.section	.text.m_sqrtf,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	m_sqrtf
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	m_sqrtf:
+ 107              	.LVL12:
+ 108              	.LFB4:
+ 134:Libraries/ctrl_sdk/src/math_base.c **** 
+ 135:Libraries/ctrl_sdk/src/math_base.c **** float m_sqrtf(float number)
+ 136:Libraries/ctrl_sdk/src/math_base.c **** {
+ 109              		.loc 1 136 1 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113              		.loc 1 136 1 is_stmt 0 view .LVU25
+ 114 0000 38B5     		push	{r3, r4, r5, lr}
+ 115              	.LCFI1:
+ 116              		.cfi_def_cfa_offset 16
+ 117              		.cfi_offset 3, -16
+ 118              		.cfi_offset 4, -12
+ 119              		.cfi_offset 5, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 0546     		mov	r5, r0
+ 137:Libraries/ctrl_sdk/src/math_base.c **** 	long i;
+ 122              		.loc 1 137 2 is_stmt 1 view .LVU26
+ 138:Libraries/ctrl_sdk/src/math_base.c **** 	float x2, y;
+ 123              		.loc 1 138 2 view .LVU27
+ 139:Libraries/ctrl_sdk/src/math_base.c **** 	const float threehalfs = 1.5F;
+ 124              		.loc 1 139 2 view .LVU28
+ 125              	.LVL13:
+ 140:Libraries/ctrl_sdk/src/math_base.c **** 
+ 141:Libraries/ctrl_sdk/src/math_base.c **** 	x2 = number * 0.5F;
+ 126              		.loc 1 141 2 view .LVU29
+ 127              		.loc 1 141 5 is_stmt 0 view .LVU30
+ 128 0004 4FF07C51 		mov	r1, #1056964608
+ 129 0008 FFF7FEFF 		bl	__aeabi_fmul
+ 130              	.LVL14:
+ 131              		.loc 1 141 5 view .LVU31
+ 132 000c 0146     		mov	r1, r0
+ 133              	.LVL15:
+ 142:Libraries/ctrl_sdk/src/math_base.c **** 	y = number;
+ 134              		.loc 1 142 2 is_stmt 1 view .LVU32
+ 143:Libraries/ctrl_sdk/src/math_base.c **** 	i = *(long *)&y; // evil floating point bit level hacking
+ 135              		.loc 1 143 2 view .LVU33
+ 144:Libraries/ctrl_sdk/src/math_base.c **** 	i = 0x5f375a86 - (i >> 1); // what the fuck?
+ 136              		.loc 1 144 2 view .LVU34
+ 145:Libraries/ctrl_sdk/src/math_base.c **** 	y = *(float *)&i;
+ 137              		.loc 1 145 2 view .LVU35
+ 138              		.loc 1 145 6 is_stmt 0 view .LVU36
+ 139 000e 0B4C     		ldr	r4, .L7
+ 140 0010 A4EB6504 		sub	r4, r4, r5, asr #1
+ 141              	.LVL16:
+ 146:Libraries/ctrl_sdk/src/math_base.c **** 	y = y * (threehalfs - (x2 * y * y)); // 1st iteration
+ 142              		.loc 1 146 2 is_stmt 1 view .LVU37
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 6
+
+
+ 143              		.loc 1 146 28 is_stmt 0 view .LVU38
+ 144 0014 2046     		mov	r0, r4
+ 145              	.LVL17:
+ 146              		.loc 1 146 28 view .LVU39
+ 147 0016 FFF7FEFF 		bl	__aeabi_fmul
+ 148              	.LVL18:
+ 149              		.loc 1 146 28 view .LVU40
+ 150 001a 0146     		mov	r1, r0
+ 151              		.loc 1 146 32 view .LVU41
+ 152 001c 2046     		mov	r0, r4
+ 153 001e FFF7FEFF 		bl	__aeabi_fmul
+ 154              	.LVL19:
+ 155 0022 0146     		mov	r1, r0
+ 156              		.loc 1 146 22 view .LVU42
+ 157 0024 4FF07F50 		mov	r0, #1069547520
+ 158 0028 FFF7FEFF 		bl	__aeabi_fsub
+ 159              	.LVL20:
+ 160 002c 0146     		mov	r1, r0
+ 161              		.loc 1 146 8 view .LVU43
+ 162 002e 2046     		mov	r0, r4
+ 163 0030 FFF7FEFF 		bl	__aeabi_fmul
+ 164              	.LVL21:
+ 147:Libraries/ctrl_sdk/src/math_base.c **** 	// y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration,
+ 148:Libraries/ctrl_sdk/src/math_base.c **** 	// this can be removed
+ 149:Libraries/ctrl_sdk/src/math_base.c **** 
+ 150:Libraries/ctrl_sdk/src/math_base.c **** 	return y * number;
+ 165              		.loc 1 150 2 is_stmt 1 view .LVU44
+ 166              		.loc 1 150 11 is_stmt 0 view .LVU45
+ 167 0034 2946     		mov	r1, r5
+ 168 0036 FFF7FEFF 		bl	__aeabi_fmul
+ 169              	.LVL22:
+ 151:Libraries/ctrl_sdk/src/math_base.c **** }
+ 170              		.loc 1 151 1 view .LVU46
+ 171 003a 38BD     		pop	{r3, r4, r5, pc}
+ 172              	.LVL23:
+ 173              	.L8:
+ 174              		.loc 1 151 1 view .LVU47
+ 175              		.align	2
+ 176              	.L7:
+ 177 003c 865A375F 		.word	1597463174
+ 178              		.cfi_endproc
+ 179              	.LFE4:
+ 181              		.global	__aeabi_f2iz
+ 182              		.global	__aeabi_fcmplt
+ 183              		.global	__aeabi_i2f
+ 184              		.global	__aeabi_f2uiz
+ 185              		.global	__aeabi_ui2f
+ 186              		.global	__aeabi_fadd
+ 187              		.section	.text.m_sinf,"ax",%progbits
+ 188              		.align	1
+ 189              		.global	m_sinf
+ 190              		.syntax unified
+ 191              		.thumb
+ 192              		.thumb_func
+ 194              	m_sinf:
+ 195              	.LVL24:
+ 196              	.LFB5:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 7
+
+
+ 152:Libraries/ctrl_sdk/src/math_base.c **** 
+ 153:Libraries/ctrl_sdk/src/math_base.c **** // 查表法算sin值，从dsp库中复制出来的
+ 154:Libraries/ctrl_sdk/src/math_base.c **** float m_sinf(float x)
+ 155:Libraries/ctrl_sdk/src/math_base.c **** {
+ 197              		.loc 1 155 1 is_stmt 1 view -0
+ 198              		.cfi_startproc
+ 199              		@ args = 0, pretend = 0, frame = 0
+ 200              		@ frame_needed = 0, uses_anonymous_args = 0
+ 201              		.loc 1 155 1 is_stmt 0 view .LVU49
+ 202 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 203              	.LCFI2:
+ 204              		.cfi_def_cfa_offset 24
+ 205              		.cfi_offset 3, -24
+ 206              		.cfi_offset 4, -20
+ 207              		.cfi_offset 5, -16
+ 208              		.cfi_offset 6, -12
+ 209              		.cfi_offset 7, -8
+ 210              		.cfi_offset 14, -4
+ 211 0002 0646     		mov	r6, r0
+ 156:Libraries/ctrl_sdk/src/math_base.c **** 	float val, fract, in; /* Temporary variables for input, output */
+ 212              		.loc 1 156 2 is_stmt 1 view .LVU50
+ 157:Libraries/ctrl_sdk/src/math_base.c **** 	uint16_t index; /* Index variable */
+ 213              		.loc 1 157 2 view .LVU51
+ 158:Libraries/ctrl_sdk/src/math_base.c **** 	float a, b; /* Two nearest output values */
+ 214              		.loc 1 158 2 view .LVU52
+ 159:Libraries/ctrl_sdk/src/math_base.c **** 	int32_t n;
+ 215              		.loc 1 159 2 view .LVU53
+ 160:Libraries/ctrl_sdk/src/math_base.c **** 	float findex;
+ 216              		.loc 1 160 2 view .LVU54
+ 161:Libraries/ctrl_sdk/src/math_base.c **** 
+ 162:Libraries/ctrl_sdk/src/math_base.c **** 	/* input x is in radians */
+ 163:Libraries/ctrl_sdk/src/math_base.c **** 	/* Scale the input to [0 1] range from [0 2*PI], divide input by 2*pi */
+ 164:Libraries/ctrl_sdk/src/math_base.c **** 	in = x * 0.159154943092f;
+ 217              		.loc 1 164 2 view .LVU55
+ 218              		.loc 1 164 5 is_stmt 0 view .LVU56
+ 219 0004 2349     		ldr	r1, .L16
+ 220 0006 FFF7FEFF 		bl	__aeabi_fmul
+ 221              	.LVL25:
+ 222              		.loc 1 164 5 view .LVU57
+ 223 000a 0546     		mov	r5, r0
+ 224              	.LVL26:
+ 165:Libraries/ctrl_sdk/src/math_base.c **** 
+ 166:Libraries/ctrl_sdk/src/math_base.c **** 	/* Calculation of floor value of input */
+ 167:Libraries/ctrl_sdk/src/math_base.c **** 	n = (int32_t)in;
+ 225              		.loc 1 167 2 is_stmt 1 view .LVU58
+ 226              		.loc 1 167 4 is_stmt 0 view .LVU59
+ 227 000c FFF7FEFF 		bl	__aeabi_f2iz
+ 228              	.LVL27:
+ 229              		.loc 1 167 4 view .LVU60
+ 230 0010 0446     		mov	r4, r0
+ 231              	.LVL28:
+ 168:Libraries/ctrl_sdk/src/math_base.c **** 
+ 169:Libraries/ctrl_sdk/src/math_base.c **** 	/* Make negative values towards -infinity */
+ 170:Libraries/ctrl_sdk/src/math_base.c **** 	if (x < 0.0f) {
+ 232              		.loc 1 170 2 is_stmt 1 view .LVU61
+ 233              		.loc 1 170 5 is_stmt 0 view .LVU62
+ 234 0012 0021     		movs	r1, #0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 8
+
+
+ 235 0014 3046     		mov	r0, r6
+ 236              	.LVL29:
+ 237              		.loc 1 170 5 view .LVU63
+ 238 0016 FFF7FEFF 		bl	__aeabi_fcmplt
+ 239              	.LVL30:
+ 240 001a 0028     		cmp	r0, #0
+ 241 001c 38D1     		bne	.L15
+ 242              	.L10:
+ 171:Libraries/ctrl_sdk/src/math_base.c **** 		n--;
+ 172:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 173:Libraries/ctrl_sdk/src/math_base.c **** 
+ 174:Libraries/ctrl_sdk/src/math_base.c **** 	/* Map input value to [0 1] */
+ 175:Libraries/ctrl_sdk/src/math_base.c **** 	in = in - (float)n;
+ 243              		.loc 1 175 2 is_stmt 1 view .LVU64
+ 244              		.loc 1 175 12 is_stmt 0 view .LVU65
+ 245 001e 2046     		mov	r0, r4
+ 246 0020 FFF7FEFF 		bl	__aeabi_i2f
+ 247              	.LVL31:
+ 248 0024 0146     		mov	r1, r0
+ 249              		.loc 1 175 5 view .LVU66
+ 250 0026 2846     		mov	r0, r5
+ 251 0028 FFF7FEFF 		bl	__aeabi_fsub
+ 252              	.LVL32:
+ 176:Libraries/ctrl_sdk/src/math_base.c **** 
+ 177:Libraries/ctrl_sdk/src/math_base.c **** 	/* Calculation of index of the table */
+ 178:Libraries/ctrl_sdk/src/math_base.c **** 	findex = (float)FAST_MATH_TABLE_SIZE * in;
+ 253              		.loc 1 178 2 is_stmt 1 view .LVU67
+ 254              		.loc 1 178 9 is_stmt 0 view .LVU68
+ 255 002c 4FF08841 		mov	r1, #1140850688
+ 256 0030 FFF7FEFF 		bl	__aeabi_fmul
+ 257              	.LVL33:
+ 258              		.loc 1 178 9 view .LVU69
+ 259 0034 0546     		mov	r5, r0
+ 260              	.LVL34:
+ 179:Libraries/ctrl_sdk/src/math_base.c **** 	index = (uint16_t)findex;
+ 261              		.loc 1 179 2 is_stmt 1 view .LVU70
+ 262              		.loc 1 179 8 is_stmt 0 view .LVU71
+ 263 0036 FFF7FEFF 		bl	__aeabi_f2uiz
+ 264              	.LVL35:
+ 265              		.loc 1 179 8 view .LVU72
+ 266 003a 84B2     		uxth	r4, r0
+ 267              	.LVL36:
+ 180:Libraries/ctrl_sdk/src/math_base.c **** 
+ 181:Libraries/ctrl_sdk/src/math_base.c **** 	/* when "in" is exactly 1, we need to rotate the index down to 0 */
+ 182:Libraries/ctrl_sdk/src/math_base.c **** 	if (index >= FAST_MATH_TABLE_SIZE) {
+ 268              		.loc 1 182 2 is_stmt 1 view .LVU73
+ 269              		.loc 1 182 5 is_stmt 0 view .LVU74
+ 270 003c B4F5007F 		cmp	r4, #512
+ 271 0040 06D3     		bcc	.L12
+ 183:Libraries/ctrl_sdk/src/math_base.c **** 		index = 0;
+ 272              		.loc 1 183 3 is_stmt 1 view .LVU75
+ 273              	.LVL37:
+ 184:Libraries/ctrl_sdk/src/math_base.c **** 		findex -= (float)FAST_MATH_TABLE_SIZE;
+ 274              		.loc 1 184 3 view .LVU76
+ 275              		.loc 1 184 10 is_stmt 0 view .LVU77
+ 276 0042 4FF08841 		mov	r1, #1140850688
+ 277 0046 2846     		mov	r0, r5
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 9
+
+
+ 278 0048 FFF7FEFF 		bl	__aeabi_fsub
+ 279              	.LVL38:
+ 280 004c 0546     		mov	r5, r0
+ 281              	.LVL39:
+ 183:Libraries/ctrl_sdk/src/math_base.c **** 		index = 0;
+ 282              		.loc 1 183 9 view .LVU78
+ 283 004e 0024     		movs	r4, #0
+ 284              	.LVL40:
+ 285              	.L12:
+ 185:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 186:Libraries/ctrl_sdk/src/math_base.c **** 
+ 187:Libraries/ctrl_sdk/src/math_base.c **** 	/* fractional value calculation */
+ 188:Libraries/ctrl_sdk/src/math_base.c **** 	fract = findex - (float)index;
+ 286              		.loc 1 188 2 is_stmt 1 view .LVU79
+ 287              		.loc 1 188 19 is_stmt 0 view .LVU80
+ 288 0050 2046     		mov	r0, r4
+ 289 0052 FFF7FEFF 		bl	__aeabi_ui2f
+ 290              	.LVL41:
+ 291 0056 0146     		mov	r1, r0
+ 292              		.loc 1 188 8 view .LVU81
+ 293 0058 2846     		mov	r0, r5
+ 294 005a FFF7FEFF 		bl	__aeabi_fsub
+ 295              	.LVL42:
+ 296 005e 0546     		mov	r5, r0
+ 297              	.LVL43:
+ 189:Libraries/ctrl_sdk/src/math_base.c **** 
+ 190:Libraries/ctrl_sdk/src/math_base.c **** 	/* read two nearest values of input value from the sin table */
+ 191:Libraries/ctrl_sdk/src/math_base.c **** 	a = m_sin_table_f[index];
+ 298              		.loc 1 191 2 is_stmt 1 view .LVU82
+ 299              		.loc 1 191 4 is_stmt 0 view .LVU83
+ 300 0060 0D4B     		ldr	r3, .L16+4
+ 301 0062 53F82470 		ldr	r7, [r3, r4, lsl #2]	@ float
+ 302              	.LVL44:
+ 192:Libraries/ctrl_sdk/src/math_base.c **** 	b = m_sin_table_f[index + 1];
+ 303              		.loc 1 192 2 is_stmt 1 view .LVU84
+ 304              		.loc 1 192 26 is_stmt 0 view .LVU85
+ 305 0066 0134     		adds	r4, r4, #1
+ 306              	.LVL45:
+ 307              		.loc 1 192 4 view .LVU86
+ 308 0068 53F82460 		ldr	r6, [r3, r4, lsl #2]	@ float
+ 309              	.LVL46:
+ 193:Libraries/ctrl_sdk/src/math_base.c **** 
+ 194:Libraries/ctrl_sdk/src/math_base.c **** 	/* Linear interpolation process */
+ 195:Libraries/ctrl_sdk/src/math_base.c **** 	val = (1.0f - fract) * a + fract * b;
+ 310              		.loc 1 195 2 is_stmt 1 view .LVU87
+ 311              		.loc 1 195 14 is_stmt 0 view .LVU88
+ 312 006c 0146     		mov	r1, r0
+ 313 006e 4FF07E50 		mov	r0, #1065353216
+ 314              	.LVL47:
+ 315              		.loc 1 195 14 view .LVU89
+ 316 0072 FFF7FEFF 		bl	__aeabi_fsub
+ 317              	.LVL48:
+ 318              		.loc 1 195 23 view .LVU90
+ 319 0076 3946     		mov	r1, r7
+ 320 0078 FFF7FEFF 		bl	__aeabi_fmul
+ 321              	.LVL49:
+ 322 007c 0446     		mov	r4, r0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 10
+
+
+ 323              		.loc 1 195 35 view .LVU91
+ 324 007e 3146     		mov	r1, r6
+ 325 0080 2846     		mov	r0, r5
+ 326 0082 FFF7FEFF 		bl	__aeabi_fmul
+ 327              	.LVL50:
+ 328 0086 0146     		mov	r1, r0
+ 329              		.loc 1 195 6 view .LVU92
+ 330 0088 2046     		mov	r0, r4
+ 331 008a FFF7FEFF 		bl	__aeabi_fadd
+ 332              	.LVL51:
+ 196:Libraries/ctrl_sdk/src/math_base.c **** 
+ 197:Libraries/ctrl_sdk/src/math_base.c **** 	/* Return the output value */
+ 198:Libraries/ctrl_sdk/src/math_base.c **** 	return (val);
+ 333              		.loc 1 198 2 is_stmt 1 view .LVU93
+ 199:Libraries/ctrl_sdk/src/math_base.c **** }
+ 334              		.loc 1 199 1 is_stmt 0 view .LVU94
+ 335 008e F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 336              	.LVL52:
+ 337              	.L15:
+ 171:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 338              		.loc 1 171 3 is_stmt 1 view .LVU95
+ 171:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 339              		.loc 1 171 4 is_stmt 0 view .LVU96
+ 340 0090 013C     		subs	r4, r4, #1
+ 341              	.LVL53:
+ 171:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 342              		.loc 1 171 4 view .LVU97
+ 343 0092 C4E7     		b	.L10
+ 344              	.L17:
+ 345              		.align	2
+ 346              	.L16:
+ 347 0094 83F9223E 		.word	1042479491
+ 348 0098 00000000 		.word	m_sin_table_f
+ 349              		.cfi_endproc
+ 350              	.LFE5:
+ 352              		.section	.text.m_cosf,"ax",%progbits
+ 353              		.align	1
+ 354              		.global	m_cosf
+ 355              		.syntax unified
+ 356              		.thumb
+ 357              		.thumb_func
+ 359              	m_cosf:
+ 360              	.LVL54:
+ 361              	.LFB6:
+ 200:Libraries/ctrl_sdk/src/math_base.c **** 
+ 201:Libraries/ctrl_sdk/src/math_base.c **** // 查表法算cos值，从dsp库中复制出来的
+ 202:Libraries/ctrl_sdk/src/math_base.c **** float m_cosf(float x)
+ 203:Libraries/ctrl_sdk/src/math_base.c **** {
+ 362              		.loc 1 203 1 is_stmt 1 view -0
+ 363              		.cfi_startproc
+ 364              		@ args = 0, pretend = 0, frame = 0
+ 365              		@ frame_needed = 0, uses_anonymous_args = 0
+ 366              		.loc 1 203 1 is_stmt 0 view .LVU99
+ 367 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 368              	.LCFI3:
+ 369              		.cfi_def_cfa_offset 24
+ 370              		.cfi_offset 3, -24
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 11
+
+
+ 371              		.cfi_offset 4, -20
+ 372              		.cfi_offset 5, -16
+ 373              		.cfi_offset 6, -12
+ 374              		.cfi_offset 7, -8
+ 375              		.cfi_offset 14, -4
+ 204:Libraries/ctrl_sdk/src/math_base.c **** 	float val, fract, in; /* Temporary variables for input, output */
+ 376              		.loc 1 204 2 is_stmt 1 view .LVU100
+ 205:Libraries/ctrl_sdk/src/math_base.c **** 	uint16_t index; /* Index variable */
+ 377              		.loc 1 205 2 view .LVU101
+ 206:Libraries/ctrl_sdk/src/math_base.c **** 	float a, b; /* Two nearest output values */
+ 378              		.loc 1 206 2 view .LVU102
+ 207:Libraries/ctrl_sdk/src/math_base.c **** 	int32_t n;
+ 379              		.loc 1 207 2 view .LVU103
+ 208:Libraries/ctrl_sdk/src/math_base.c **** 	float findex;
+ 380              		.loc 1 208 2 view .LVU104
+ 209:Libraries/ctrl_sdk/src/math_base.c **** 
+ 210:Libraries/ctrl_sdk/src/math_base.c **** 	/* input x is in radians */
+ 211:Libraries/ctrl_sdk/src/math_base.c **** 	/* Scale the input to [0 1] range from [0 2*PI] , divide input by 2*pi,
+ 212:Libraries/ctrl_sdk/src/math_base.c **** 	 * add 0.25 (pi/2) to read sine table */
+ 213:Libraries/ctrl_sdk/src/math_base.c **** 	in = x * 0.159154943092f + 0.25f;
+ 381              		.loc 1 213 2 view .LVU105
+ 382              		.loc 1 213 9 is_stmt 0 view .LVU106
+ 383 0002 2649     		ldr	r1, .L25
+ 384 0004 FFF7FEFF 		bl	__aeabi_fmul
+ 385              	.LVL55:
+ 386              		.loc 1 213 5 view .LVU107
+ 387 0008 4FF07A51 		mov	r1, #1048576000
+ 388 000c FFF7FEFF 		bl	__aeabi_fadd
+ 389              	.LVL56:
+ 390 0010 0446     		mov	r4, r0
+ 391              	.LVL57:
+ 214:Libraries/ctrl_sdk/src/math_base.c **** 
+ 215:Libraries/ctrl_sdk/src/math_base.c **** 	/* Calculation of floor value of input */
+ 216:Libraries/ctrl_sdk/src/math_base.c **** 	n = (int32_t)in;
+ 392              		.loc 1 216 2 is_stmt 1 view .LVU108
+ 393              		.loc 1 216 4 is_stmt 0 view .LVU109
+ 394 0012 FFF7FEFF 		bl	__aeabi_f2iz
+ 395              	.LVL58:
+ 396              		.loc 1 216 4 view .LVU110
+ 397 0016 0546     		mov	r5, r0
+ 398              	.LVL59:
+ 217:Libraries/ctrl_sdk/src/math_base.c **** 
+ 218:Libraries/ctrl_sdk/src/math_base.c **** 	/* Make negative values towards -infinity */
+ 219:Libraries/ctrl_sdk/src/math_base.c **** 	if (in < 0.0f) {
+ 399              		.loc 1 219 2 is_stmt 1 view .LVU111
+ 400              		.loc 1 219 5 is_stmt 0 view .LVU112
+ 401 0018 0021     		movs	r1, #0
+ 402 001a 2046     		mov	r0, r4
+ 403              	.LVL60:
+ 404              		.loc 1 219 5 view .LVU113
+ 405 001c FFF7FEFF 		bl	__aeabi_fcmplt
+ 406              	.LVL61:
+ 407 0020 0028     		cmp	r0, #0
+ 408 0022 38D1     		bne	.L24
+ 409              	.L19:
+ 220:Libraries/ctrl_sdk/src/math_base.c **** 		n--;
+ 221:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 12
+
+
+ 222:Libraries/ctrl_sdk/src/math_base.c **** 
+ 223:Libraries/ctrl_sdk/src/math_base.c **** 	/* Map input value to [0 1] */
+ 224:Libraries/ctrl_sdk/src/math_base.c **** 	in = in - (float)n;
+ 410              		.loc 1 224 2 is_stmt 1 view .LVU114
+ 411              		.loc 1 224 12 is_stmt 0 view .LVU115
+ 412 0024 2846     		mov	r0, r5
+ 413 0026 FFF7FEFF 		bl	__aeabi_i2f
+ 414              	.LVL62:
+ 415 002a 0146     		mov	r1, r0
+ 416              		.loc 1 224 5 view .LVU116
+ 417 002c 2046     		mov	r0, r4
+ 418 002e FFF7FEFF 		bl	__aeabi_fsub
+ 419              	.LVL63:
+ 225:Libraries/ctrl_sdk/src/math_base.c **** 
+ 226:Libraries/ctrl_sdk/src/math_base.c **** 	/* Calculation of index of the table */
+ 227:Libraries/ctrl_sdk/src/math_base.c **** 	findex = (float)FAST_MATH_TABLE_SIZE * in;
+ 420              		.loc 1 227 2 is_stmt 1 view .LVU117
+ 421              		.loc 1 227 9 is_stmt 0 view .LVU118
+ 422 0032 4FF08841 		mov	r1, #1140850688
+ 423 0036 FFF7FEFF 		bl	__aeabi_fmul
+ 424              	.LVL64:
+ 425              		.loc 1 227 9 view .LVU119
+ 426 003a 0546     		mov	r5, r0
+ 427              	.LVL65:
+ 228:Libraries/ctrl_sdk/src/math_base.c **** 	index = (uint16_t)findex;
+ 428              		.loc 1 228 2 is_stmt 1 view .LVU120
+ 429              		.loc 1 228 8 is_stmt 0 view .LVU121
+ 430 003c FFF7FEFF 		bl	__aeabi_f2uiz
+ 431              	.LVL66:
+ 432              		.loc 1 228 8 view .LVU122
+ 433 0040 84B2     		uxth	r4, r0
+ 434              	.LVL67:
+ 229:Libraries/ctrl_sdk/src/math_base.c **** 
+ 230:Libraries/ctrl_sdk/src/math_base.c **** 	/* when "in" is exactly 1, we need to rotate the index down to 0 */
+ 231:Libraries/ctrl_sdk/src/math_base.c **** 	if (index >= FAST_MATH_TABLE_SIZE) {
+ 435              		.loc 1 231 2 is_stmt 1 view .LVU123
+ 436              		.loc 1 231 5 is_stmt 0 view .LVU124
+ 437 0042 B4F5007F 		cmp	r4, #512
+ 438 0046 06D3     		bcc	.L21
+ 232:Libraries/ctrl_sdk/src/math_base.c **** 		index = 0;
+ 439              		.loc 1 232 3 is_stmt 1 view .LVU125
+ 440              	.LVL68:
+ 233:Libraries/ctrl_sdk/src/math_base.c **** 		findex -= (float)FAST_MATH_TABLE_SIZE;
+ 441              		.loc 1 233 3 view .LVU126
+ 442              		.loc 1 233 10 is_stmt 0 view .LVU127
+ 443 0048 4FF08841 		mov	r1, #1140850688
+ 444 004c 2846     		mov	r0, r5
+ 445 004e FFF7FEFF 		bl	__aeabi_fsub
+ 446              	.LVL69:
+ 447 0052 0546     		mov	r5, r0
+ 448              	.LVL70:
+ 232:Libraries/ctrl_sdk/src/math_base.c **** 		index = 0;
+ 449              		.loc 1 232 9 view .LVU128
+ 450 0054 0024     		movs	r4, #0
+ 451              	.LVL71:
+ 452              	.L21:
+ 234:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 13
+
+
+ 235:Libraries/ctrl_sdk/src/math_base.c **** 
+ 236:Libraries/ctrl_sdk/src/math_base.c **** 	/* fractional value calculation */
+ 237:Libraries/ctrl_sdk/src/math_base.c **** 	fract = findex - (float)index;
+ 453              		.loc 1 237 2 is_stmt 1 view .LVU129
+ 454              		.loc 1 237 19 is_stmt 0 view .LVU130
+ 455 0056 2046     		mov	r0, r4
+ 456 0058 FFF7FEFF 		bl	__aeabi_ui2f
+ 457              	.LVL72:
+ 458 005c 0146     		mov	r1, r0
+ 459              		.loc 1 237 8 view .LVU131
+ 460 005e 2846     		mov	r0, r5
+ 461 0060 FFF7FEFF 		bl	__aeabi_fsub
+ 462              	.LVL73:
+ 463 0064 0546     		mov	r5, r0
+ 464              	.LVL74:
+ 238:Libraries/ctrl_sdk/src/math_base.c **** 
+ 239:Libraries/ctrl_sdk/src/math_base.c **** 	/* read two nearest values of input value from the cos table */
+ 240:Libraries/ctrl_sdk/src/math_base.c **** 	a = m_sin_table_f[index];
+ 465              		.loc 1 240 2 is_stmt 1 view .LVU132
+ 466              		.loc 1 240 4 is_stmt 0 view .LVU133
+ 467 0066 0E4B     		ldr	r3, .L25+4
+ 468 0068 53F82470 		ldr	r7, [r3, r4, lsl #2]	@ float
+ 469              	.LVL75:
+ 241:Libraries/ctrl_sdk/src/math_base.c **** 	b = m_sin_table_f[index + 1];
+ 470              		.loc 1 241 2 is_stmt 1 view .LVU134
+ 471              		.loc 1 241 26 is_stmt 0 view .LVU135
+ 472 006c 0134     		adds	r4, r4, #1
+ 473              	.LVL76:
+ 474              		.loc 1 241 4 view .LVU136
+ 475 006e 53F82460 		ldr	r6, [r3, r4, lsl #2]	@ float
+ 476              	.LVL77:
+ 242:Libraries/ctrl_sdk/src/math_base.c **** 
+ 243:Libraries/ctrl_sdk/src/math_base.c **** 	/* Linear interpolation process */
+ 244:Libraries/ctrl_sdk/src/math_base.c **** 	val = (1.0f - fract) * a + fract * b;
+ 477              		.loc 1 244 2 is_stmt 1 view .LVU137
+ 478              		.loc 1 244 14 is_stmt 0 view .LVU138
+ 479 0072 0146     		mov	r1, r0
+ 480 0074 4FF07E50 		mov	r0, #1065353216
+ 481              	.LVL78:
+ 482              		.loc 1 244 14 view .LVU139
+ 483 0078 FFF7FEFF 		bl	__aeabi_fsub
+ 484              	.LVL79:
+ 485              		.loc 1 244 23 view .LVU140
+ 486 007c 3946     		mov	r1, r7
+ 487 007e FFF7FEFF 		bl	__aeabi_fmul
+ 488              	.LVL80:
+ 489 0082 0446     		mov	r4, r0
+ 490              		.loc 1 244 35 view .LVU141
+ 491 0084 3146     		mov	r1, r6
+ 492 0086 2846     		mov	r0, r5
+ 493 0088 FFF7FEFF 		bl	__aeabi_fmul
+ 494              	.LVL81:
+ 495 008c 0146     		mov	r1, r0
+ 496              		.loc 1 244 6 view .LVU142
+ 497 008e 2046     		mov	r0, r4
+ 498 0090 FFF7FEFF 		bl	__aeabi_fadd
+ 499              	.LVL82:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 14
+
+
+ 245:Libraries/ctrl_sdk/src/math_base.c **** 
+ 246:Libraries/ctrl_sdk/src/math_base.c **** 	/* Return the output value */
+ 247:Libraries/ctrl_sdk/src/math_base.c **** 	return (val);
+ 500              		.loc 1 247 2 is_stmt 1 view .LVU143
+ 248:Libraries/ctrl_sdk/src/math_base.c **** }
+ 501              		.loc 1 248 1 is_stmt 0 view .LVU144
+ 502 0094 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 503              	.LVL83:
+ 504              	.L24:
+ 220:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 505              		.loc 1 220 3 is_stmt 1 view .LVU145
+ 220:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 506              		.loc 1 220 4 is_stmt 0 view .LVU146
+ 507 0096 013D     		subs	r5, r5, #1
+ 508              	.LVL84:
+ 220:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 509              		.loc 1 220 4 view .LVU147
+ 510 0098 C4E7     		b	.L19
+ 511              	.L26:
+ 512 009a 00BF     		.align	2
+ 513              	.L25:
+ 514 009c 83F9223E 		.word	1042479491
+ 515 00a0 00000000 		.word	m_sin_table_f
+ 516              		.cfi_endproc
+ 517              	.LFE6:
+ 519              		.global	__aeabi_fcmpgt
+ 520              		.global	__aeabi_fdiv
+ 521              		.section	.text.m_atanf,"ax",%progbits
+ 522              		.align	1
+ 523              		.global	m_atanf
+ 524              		.syntax unified
+ 525              		.thumb
+ 526              		.thumb_func
+ 528              	m_atanf:
+ 529              	.LVL85:
+ 530              	.LFB8:
+ 249:Libraries/ctrl_sdk/src/math_base.c **** 
+ 250:Libraries/ctrl_sdk/src/math_base.c **** // 快速算atan，从dsp库中复制出来的
+ 251:Libraries/ctrl_sdk/src/math_base.c **** #define ATANHALFF32 0.463648f
+ 252:Libraries/ctrl_sdk/src/math_base.c **** #define PIHALFF32 1.5707963267948966192313f
+ 253:Libraries/ctrl_sdk/src/math_base.c **** #define ATAN2_NB_COEFS_F32 10
+ 254:Libraries/ctrl_sdk/src/math_base.c **** static const float m_atan2_coefs_f[ATAN2_NB_COEFS_F32] = {
+ 255:Libraries/ctrl_sdk/src/math_base.c **** 	0.0f,
+ 256:Libraries/ctrl_sdk/src/math_base.c **** 	1.0000001638308195518f,
+ 257:Libraries/ctrl_sdk/src/math_base.c **** 	-0.0000228941363602264f,
+ 258:Libraries/ctrl_sdk/src/math_base.c **** 	-0.3328086544578890873f,
+ 259:Libraries/ctrl_sdk/src/math_base.c **** 	-0.004404814619311061f,
+ 260:Libraries/ctrl_sdk/src/math_base.c **** 	0.2162217461808173258f,
+ 261:Libraries/ctrl_sdk/src/math_base.c **** 	-0.0207504842057097504f,
+ 262:Libraries/ctrl_sdk/src/math_base.c **** 	-0.1745263362250363339f,
+ 263:Libraries/ctrl_sdk/src/math_base.c **** 	0.1340557235283553386f,
+ 264:Libraries/ctrl_sdk/src/math_base.c **** 	-0.0323664125927477625f
+ 265:Libraries/ctrl_sdk/src/math_base.c **** };
+ 266:Libraries/ctrl_sdk/src/math_base.c **** 
+ 267:Libraries/ctrl_sdk/src/math_base.c **** static inline float m_atan_limited_f(float x)
+ 268:Libraries/ctrl_sdk/src/math_base.c **** {
+ 269:Libraries/ctrl_sdk/src/math_base.c **** 	float res = m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1];
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 15
+
+
+ 270:Libraries/ctrl_sdk/src/math_base.c **** 	int i = 1;
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 	for (i = 1; i < ATAN2_NB_COEFS_F32; i++) {
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 273:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 274:Libraries/ctrl_sdk/src/math_base.c **** 
+ 275:Libraries/ctrl_sdk/src/math_base.c **** 	return (res);
+ 276:Libraries/ctrl_sdk/src/math_base.c **** }
+ 277:Libraries/ctrl_sdk/src/math_base.c **** 
+ 278:Libraries/ctrl_sdk/src/math_base.c **** inline float m_atanf(float x)
+ 279:Libraries/ctrl_sdk/src/math_base.c **** {
+ 531              		.loc 1 279 1 is_stmt 1 view -0
+ 532              		.cfi_startproc
+ 533              		@ args = 0, pretend = 0, frame = 0
+ 534              		@ frame_needed = 0, uses_anonymous_args = 0
+ 535              		.loc 1 279 1 is_stmt 0 view .LVU149
+ 536 0000 70B5     		push	{r4, r5, r6, lr}
+ 537              	.LCFI4:
+ 538              		.cfi_def_cfa_offset 16
+ 539              		.cfi_offset 4, -16
+ 540              		.cfi_offset 5, -12
+ 541              		.cfi_offset 6, -8
+ 542              		.cfi_offset 14, -4
+ 543 0002 0646     		mov	r6, r0
+ 280:Libraries/ctrl_sdk/src/math_base.c **** 	int sign = 0;
+ 544              		.loc 1 280 2 is_stmt 1 view .LVU150
+ 545              	.LVL86:
+ 281:Libraries/ctrl_sdk/src/math_base.c **** 	float res = 0.0f;
+ 546              		.loc 1 281 2 view .LVU151
+ 282:Libraries/ctrl_sdk/src/math_base.c **** 
+ 283:Libraries/ctrl_sdk/src/math_base.c **** 	if (x < 0.0f) {
+ 547              		.loc 1 283 2 view .LVU152
+ 548              		.loc 1 283 5 is_stmt 0 view .LVU153
+ 549 0004 0021     		movs	r1, #0
+ 550 0006 FFF7FEFF 		bl	__aeabi_fcmplt
+ 551              	.LVL87:
+ 552              		.loc 1 283 5 view .LVU154
+ 553 000a 78B9     		cbnz	r0, .L44
+ 280:Libraries/ctrl_sdk/src/math_base.c **** 	float res = 0.0f;
+ 554              		.loc 1 280 6 view .LVU155
+ 555 000c 0025     		movs	r5, #0
+ 556              	.LVL88:
+ 557              	.L28:
+ 284:Libraries/ctrl_sdk/src/math_base.c **** 		sign = 1;
+ 285:Libraries/ctrl_sdk/src/math_base.c **** 		x = -x;
+ 286:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 287:Libraries/ctrl_sdk/src/math_base.c **** 
+ 288:Libraries/ctrl_sdk/src/math_base.c **** 	if (x > 1.0f) {
+ 558              		.loc 1 288 2 is_stmt 1 view .LVU156
+ 559              		.loc 1 288 5 is_stmt 0 view .LVU157
+ 560 000e 4FF07E51 		mov	r1, #1065353216
+ 561 0012 3046     		mov	r0, r6
+ 562 0014 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 563              	.LVL89:
+ 564 0018 98B3     		cbz	r0, .L42
+ 289:Libraries/ctrl_sdk/src/math_base.c **** 		x = 1.0f / x;
+ 565              		.loc 1 289 3 is_stmt 1 view .LVU158
+ 566              		.loc 1 289 5 is_stmt 0 view .LVU159
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 16
+
+
+ 567 001a 3146     		mov	r1, r6
+ 568 001c 4FF07E50 		mov	r0, #1065353216
+ 569 0020 FFF7FEFF 		bl	__aeabi_fdiv
+ 570              	.LVL90:
+ 571 0024 0646     		mov	r6, r0
+ 572              	.LVL91:
+ 290:Libraries/ctrl_sdk/src/math_base.c **** 		res = PIHALFF32 - m_atan_limited_f(x);
+ 573              		.loc 1 290 3 is_stmt 1 view .LVU160
+ 574              	.LBB6:
+ 575              	.LBI6:
+ 267:Libraries/ctrl_sdk/src/math_base.c **** {
+ 576              		.loc 1 267 21 view .LVU161
+ 577              	.LBB7:
+ 269:Libraries/ctrl_sdk/src/math_base.c **** 	int i = 1;
+ 578              		.loc 1 269 2 view .LVU162
+ 270:Libraries/ctrl_sdk/src/math_base.c **** 	for (i = 1; i < ATAN2_NB_COEFS_F32; i++) {
+ 579              		.loc 1 270 2 view .LVU163
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 580              		.loc 1 271 2 view .LVU164
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 581              		.loc 1 271 9 is_stmt 0 view .LVU165
+ 582 0026 0124     		movs	r4, #1
+ 269:Libraries/ctrl_sdk/src/math_base.c **** 	int i = 1;
+ 583              		.loc 1 269 8 view .LVU166
+ 584 0028 1748     		ldr	r0, .L45
+ 585              	.LVL92:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 586              		.loc 1 271 2 view .LVU167
+ 587 002a 0EE0     		b	.L32
+ 588              	.LVL93:
+ 589              	.L44:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 590              		.loc 1 271 2 view .LVU168
+ 591              	.LBE7:
+ 592              	.LBE6:
+ 284:Libraries/ctrl_sdk/src/math_base.c **** 		x = -x;
+ 593              		.loc 1 284 3 is_stmt 1 view .LVU169
+ 285:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 594              		.loc 1 285 3 view .LVU170
+ 285:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 595              		.loc 1 285 5 is_stmt 0 view .LVU171
+ 596 002c 06F10046 		add	r6, r6, #-2147483648
+ 597              	.LVL94:
+ 284:Libraries/ctrl_sdk/src/math_base.c **** 		x = -x;
+ 598              		.loc 1 284 8 view .LVU172
+ 599 0030 0125     		movs	r5, #1
+ 600 0032 ECE7     		b	.L28
+ 601              	.LVL95:
+ 602              	.L33:
+ 603              	.LBB9:
+ 604              	.LBB8:
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 605              		.loc 1 272 3 is_stmt 1 view .LVU173
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 606              		.loc 1 272 11 is_stmt 0 view .LVU174
+ 607 0034 3146     		mov	r1, r6
+ 608 0036 FFF7FEFF 		bl	__aeabi_fmul
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 17
+
+
+ 609              	.LVL96:
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 610              		.loc 1 272 58 view .LVU175
+ 611 003a C4F10902 		rsb	r2, r4, #9
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 612              		.loc 1 272 7 view .LVU176
+ 613 003e 134B     		ldr	r3, .L45+4
+ 614 0040 53F82210 		ldr	r1, [r3, r2, lsl #2]	@ float
+ 615 0044 FFF7FEFF 		bl	__aeabi_fadd
+ 616              	.LVL97:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 617              		.loc 1 271 39 is_stmt 1 view .LVU177
+ 618 0048 0134     		adds	r4, r4, #1
+ 619              	.LVL98:
+ 620              	.L32:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 621              		.loc 1 271 16 view .LVU178
+ 622 004a 092C     		cmp	r4, #9
+ 623 004c F2DD     		ble	.L33
+ 275:Libraries/ctrl_sdk/src/math_base.c **** }
+ 624              		.loc 1 275 2 view .LVU179
+ 625              	.LVL99:
+ 275:Libraries/ctrl_sdk/src/math_base.c **** }
+ 626              		.loc 1 275 2 is_stmt 0 view .LVU180
+ 627              	.LBE8:
+ 628              	.LBE9:
+ 629              		.loc 1 290 7 view .LVU181
+ 630 004e 0146     		mov	r1, r0
+ 631 0050 0F48     		ldr	r0, .L45+8
+ 632 0052 FFF7FEFF 		bl	__aeabi_fsub
+ 633              	.LVL100:
+ 634              	.L34:
+ 291:Libraries/ctrl_sdk/src/math_base.c **** 	} else {
+ 292:Libraries/ctrl_sdk/src/math_base.c **** 		res += m_atan_limited_f(x);
+ 293:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 294:Libraries/ctrl_sdk/src/math_base.c **** 
+ 295:Libraries/ctrl_sdk/src/math_base.c **** 	if (sign) {
+ 635              		.loc 1 295 2 is_stmt 1 view .LVU182
+ 636              		.loc 1 295 5 is_stmt 0 view .LVU183
+ 637 0056 0DB1     		cbz	r5, .L27
+ 296:Libraries/ctrl_sdk/src/math_base.c **** 		res = -res;
+ 638              		.loc 1 296 3 is_stmt 1 view .LVU184
+ 639              		.loc 1 296 7 is_stmt 0 view .LVU185
+ 640 0058 00F10040 		add	r0, r0, #-2147483648
+ 641              	.LVL101:
+ 297:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 298:Libraries/ctrl_sdk/src/math_base.c **** 
+ 299:Libraries/ctrl_sdk/src/math_base.c **** 	return (res);
+ 642              		.loc 1 299 2 is_stmt 1 view .LVU186
+ 643              	.L27:
+ 300:Libraries/ctrl_sdk/src/math_base.c **** }
+ 644              		.loc 1 300 1 is_stmt 0 view .LVU187
+ 645 005c 70BD     		pop	{r4, r5, r6, pc}
+ 646              	.LVL102:
+ 647              	.L35:
+ 648              	.LBB10:
+ 649              	.LBB11:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 18
+
+
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 650              		.loc 1 272 3 is_stmt 1 view .LVU188
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 651              		.loc 1 272 11 is_stmt 0 view .LVU189
+ 652 005e 0146     		mov	r1, r0
+ 653 0060 3046     		mov	r0, r6
+ 654              	.LVL103:
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 655              		.loc 1 272 11 view .LVU190
+ 656 0062 FFF7FEFF 		bl	__aeabi_fmul
+ 657              	.LVL104:
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 658              		.loc 1 272 58 view .LVU191
+ 659 0066 C4F10902 		rsb	r2, r4, #9
+ 272:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 660              		.loc 1 272 7 view .LVU192
+ 661 006a 084B     		ldr	r3, .L45+4
+ 662 006c 53F82210 		ldr	r1, [r3, r2, lsl #2]	@ float
+ 663 0070 FFF7FEFF 		bl	__aeabi_fadd
+ 664              	.LVL105:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 665              		.loc 1 271 39 is_stmt 1 view .LVU193
+ 666 0074 0134     		adds	r4, r4, #1
+ 667              	.LVL106:
+ 668              	.L30:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 669              		.loc 1 271 16 view .LVU194
+ 670 0076 092C     		cmp	r4, #9
+ 671 0078 F1DD     		ble	.L35
+ 275:Libraries/ctrl_sdk/src/math_base.c **** }
+ 672              		.loc 1 275 2 view .LVU195
+ 673              	.LVL107:
+ 275:Libraries/ctrl_sdk/src/math_base.c **** }
+ 674              		.loc 1 275 2 is_stmt 0 view .LVU196
+ 675              	.LBE11:
+ 676              	.LBE10:
+ 292:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 677              		.loc 1 292 7 view .LVU197
+ 678 007a 0021     		movs	r1, #0
+ 679 007c FFF7FEFF 		bl	__aeabi_fadd
+ 680              	.LVL108:
+ 292:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 681              		.loc 1 292 7 view .LVU198
+ 682 0080 E9E7     		b	.L34
+ 683              	.LVL109:
+ 684              	.L42:
+ 685              	.LBB13:
+ 686              	.LBB12:
+ 271:Libraries/ctrl_sdk/src/math_base.c **** 		res = x * res + m_atan2_coefs_f[ATAN2_NB_COEFS_F32 - 1 - i];
+ 687              		.loc 1 271 9 view .LVU199
+ 688 0082 0124     		movs	r4, #1
+ 269:Libraries/ctrl_sdk/src/math_base.c **** 	int i = 1;
+ 689              		.loc 1 269 8 view .LVU200
+ 690 0084 0048     		ldr	r0, .L45
+ 691 0086 F6E7     		b	.L30
+ 692              	.L46:
+ 693              		.align	2
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 19
+
+
+ 694              	.L45:
+ 695 0088 A59204BD 		.word	-1123773787
+ 696 008c 00000000 		.word	m_atan2_coefs_f
+ 697 0090 DB0FC93F 		.word	1070141403
+ 698              	.LBE12:
+ 699              	.LBE13:
+ 700              		.cfi_endproc
+ 701              	.LFE8:
+ 703              		.section	.text.m_atan2f,"ax",%progbits
+ 704              		.align	1
+ 705              		.global	m_atan2f
+ 706              		.syntax unified
+ 707              		.thumb
+ 708              		.thumb_func
+ 710              	m_atan2f:
+ 711              	.LVL110:
+ 712              	.LFB9:
+ 301:Libraries/ctrl_sdk/src/math_base.c **** 
+ 302:Libraries/ctrl_sdk/src/math_base.c **** float m_atan2f(float y, float x)
+ 303:Libraries/ctrl_sdk/src/math_base.c **** {
+ 713              		.loc 1 303 1 is_stmt 1 view -0
+ 714              		.cfi_startproc
+ 715              		@ args = 0, pretend = 0, frame = 0
+ 716              		@ frame_needed = 0, uses_anonymous_args = 0
+ 717              		.loc 1 303 1 is_stmt 0 view .LVU202
+ 718 0000 38B5     		push	{r3, r4, r5, lr}
+ 719              	.LCFI5:
+ 720              		.cfi_def_cfa_offset 16
+ 721              		.cfi_offset 3, -16
+ 722              		.cfi_offset 4, -12
+ 723              		.cfi_offset 5, -8
+ 724              		.cfi_offset 14, -4
+ 725 0002 0546     		mov	r5, r0
+ 726 0004 0C46     		mov	r4, r1
+ 304:Libraries/ctrl_sdk/src/math_base.c **** 	float result = 0.0f;
+ 727              		.loc 1 304 2 is_stmt 1 view .LVU203
+ 728              	.LVL111:
+ 305:Libraries/ctrl_sdk/src/math_base.c **** 	if (x > 0.0f) {
+ 729              		.loc 1 305 2 view .LVU204
+ 730              		.loc 1 305 5 is_stmt 0 view .LVU205
+ 731 0006 0021     		movs	r1, #0
+ 732              	.LVL112:
+ 733              		.loc 1 305 5 view .LVU206
+ 734 0008 2046     		mov	r0, r4
+ 735              	.LVL113:
+ 736              		.loc 1 305 5 view .LVU207
+ 737 000a FFF7FEFF 		bl	__aeabi_fcmpgt
+ 738              	.LVL114:
+ 739 000e 40B1     		cbz	r0, .L65
+ 306:Libraries/ctrl_sdk/src/math_base.c **** 		result = m_atanf(y / x);
+ 740              		.loc 1 306 3 is_stmt 1 view .LVU208
+ 741              		.loc 1 306 12 is_stmt 0 view .LVU209
+ 742 0010 2146     		mov	r1, r4
+ 743 0012 2846     		mov	r0, r5
+ 744 0014 FFF7FEFF 		bl	__aeabi_fdiv
+ 745              	.LVL115:
+ 746 0018 FFF7FEFF 		bl	m_atanf
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 20
+
+
+ 747              	.LVL116:
+ 748 001c 0446     		mov	r4, r0
+ 749              	.LVL117:
+ 750              	.L47:
+ 307:Libraries/ctrl_sdk/src/math_base.c **** 	} else if (x < 0.0f) {
+ 308:Libraries/ctrl_sdk/src/math_base.c **** 		if (y > 0.0f) {
+ 309:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) + DEF_PI;
+ 310:Libraries/ctrl_sdk/src/math_base.c **** 		} else if (y < 0.0f) {
+ 311:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) - DEF_PI;
+ 312:Libraries/ctrl_sdk/src/math_base.c **** 		} else {
+ 313:Libraries/ctrl_sdk/src/math_base.c **** 			if (signbit(y)) {
+ 314:Libraries/ctrl_sdk/src/math_base.c **** 				result = -DEF_PI;
+ 315:Libraries/ctrl_sdk/src/math_base.c **** 			} else {
+ 316:Libraries/ctrl_sdk/src/math_base.c **** 				result = DEF_PI;
+ 317:Libraries/ctrl_sdk/src/math_base.c **** 			}
+ 318:Libraries/ctrl_sdk/src/math_base.c **** 		}
+ 319:Libraries/ctrl_sdk/src/math_base.c **** 	} else {
+ 320:Libraries/ctrl_sdk/src/math_base.c **** 		if (y > 0.0f) {
+ 321:Libraries/ctrl_sdk/src/math_base.c **** 			result = PIHALFF32;
+ 322:Libraries/ctrl_sdk/src/math_base.c **** 		}
+ 323:Libraries/ctrl_sdk/src/math_base.c **** 		if (y < 0.0f) {
+ 324:Libraries/ctrl_sdk/src/math_base.c **** 			result = -PIHALFF32;
+ 325:Libraries/ctrl_sdk/src/math_base.c **** 		}
+ 326:Libraries/ctrl_sdk/src/math_base.c **** 	}
+ 327:Libraries/ctrl_sdk/src/math_base.c **** 	return result;
+ 328:Libraries/ctrl_sdk/src/math_base.c **** }
+ 751              		.loc 1 328 1 view .LVU210
+ 752 001e 2046     		mov	r0, r4
+ 753 0020 38BD     		pop	{r3, r4, r5, pc}
+ 754              	.LVL118:
+ 755              	.L65:
+ 307:Libraries/ctrl_sdk/src/math_base.c **** 	} else if (x < 0.0f) {
+ 756              		.loc 1 307 9 is_stmt 1 view .LVU211
+ 307:Libraries/ctrl_sdk/src/math_base.c **** 	} else if (x < 0.0f) {
+ 757              		.loc 1 307 12 is_stmt 0 view .LVU212
+ 758 0022 0021     		movs	r1, #0
+ 759 0024 2046     		mov	r0, r4
+ 760 0026 FFF7FEFF 		bl	__aeabi_fcmplt
+ 761              	.LVL119:
+ 762 002a 68B9     		cbnz	r0, .L70
+ 320:Libraries/ctrl_sdk/src/math_base.c **** 			result = PIHALFF32;
+ 763              		.loc 1 320 3 is_stmt 1 view .LVU213
+ 320:Libraries/ctrl_sdk/src/math_base.c **** 			result = PIHALFF32;
+ 764              		.loc 1 320 6 is_stmt 0 view .LVU214
+ 765 002c 0021     		movs	r1, #0
+ 766 002e 2846     		mov	r0, r5
+ 767 0030 FFF7FEFF 		bl	__aeabi_fcmpgt
+ 768              	.LVL120:
+ 769 0034 60B3     		cbz	r0, .L71
+ 321:Libraries/ctrl_sdk/src/math_base.c **** 		}
+ 770              		.loc 1 321 11 view .LVU215
+ 771 0036 184C     		ldr	r4, .L73
+ 772              	.LVL121:
+ 773              	.L57:
+ 323:Libraries/ctrl_sdk/src/math_base.c **** 			result = -PIHALFF32;
+ 774              		.loc 1 323 3 is_stmt 1 view .LVU216
+ 323:Libraries/ctrl_sdk/src/math_base.c **** 			result = -PIHALFF32;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 21
+
+
+ 775              		.loc 1 323 6 is_stmt 0 view .LVU217
+ 776 0038 0021     		movs	r1, #0
+ 777 003a 2846     		mov	r0, r5
+ 778 003c FFF7FEFF 		bl	__aeabi_fcmplt
+ 779              	.LVL122:
+ 780 0040 0028     		cmp	r0, #0
+ 781 0042 ECD0     		beq	.L47
+ 324:Libraries/ctrl_sdk/src/math_base.c **** 		}
+ 782              		.loc 1 324 11 view .LVU218
+ 783 0044 154C     		ldr	r4, .L73+4
+ 784              	.LVL123:
+ 327:Libraries/ctrl_sdk/src/math_base.c **** }
+ 785              		.loc 1 327 2 is_stmt 1 view .LVU219
+ 327:Libraries/ctrl_sdk/src/math_base.c **** }
+ 786              		.loc 1 327 9 is_stmt 0 view .LVU220
+ 787 0046 EAE7     		b	.L47
+ 788              	.LVL124:
+ 789              	.L70:
+ 308:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) + DEF_PI;
+ 790              		.loc 1 308 3 is_stmt 1 view .LVU221
+ 308:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) + DEF_PI;
+ 791              		.loc 1 308 6 is_stmt 0 view .LVU222
+ 792 0048 0021     		movs	r1, #0
+ 793 004a 2846     		mov	r0, r5
+ 794 004c FFF7FEFF 		bl	__aeabi_fcmpgt
+ 795              	.LVL125:
+ 796 0050 50B1     		cbz	r0, .L67
+ 309:Libraries/ctrl_sdk/src/math_base.c **** 		} else if (y < 0.0f) {
+ 797              		.loc 1 309 4 is_stmt 1 view .LVU223
+ 309:Libraries/ctrl_sdk/src/math_base.c **** 		} else if (y < 0.0f) {
+ 798              		.loc 1 309 13 is_stmt 0 view .LVU224
+ 799 0052 2146     		mov	r1, r4
+ 800 0054 2846     		mov	r0, r5
+ 801 0056 FFF7FEFF 		bl	__aeabi_fdiv
+ 802              	.LVL126:
+ 803 005a FFF7FEFF 		bl	m_atanf
+ 804              	.LVL127:
+ 309:Libraries/ctrl_sdk/src/math_base.c **** 		} else if (y < 0.0f) {
+ 805              		.loc 1 309 11 view .LVU225
+ 806 005e 1049     		ldr	r1, .L73+8
+ 807 0060 FFF7FEFF 		bl	__aeabi_fadd
+ 808              	.LVL128:
+ 809 0064 0446     		mov	r4, r0
+ 810              	.LVL129:
+ 309:Libraries/ctrl_sdk/src/math_base.c **** 		} else if (y < 0.0f) {
+ 811              		.loc 1 309 11 view .LVU226
+ 812 0066 DAE7     		b	.L47
+ 813              	.LVL130:
+ 814              	.L67:
+ 310:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) - DEF_PI;
+ 815              		.loc 1 310 10 is_stmt 1 view .LVU227
+ 310:Libraries/ctrl_sdk/src/math_base.c **** 			result = m_atanf(y / x) - DEF_PI;
+ 816              		.loc 1 310 13 is_stmt 0 view .LVU228
+ 817 0068 0021     		movs	r1, #0
+ 818 006a 2846     		mov	r0, r5
+ 819 006c FFF7FEFF 		bl	__aeabi_fcmplt
+ 820              	.LVL131:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 22
+
+
+ 821 0070 18B9     		cbnz	r0, .L72
+ 313:Libraries/ctrl_sdk/src/math_base.c **** 				result = -DEF_PI;
+ 822              		.loc 1 313 4 is_stmt 1 view .LVU229
+ 313:Libraries/ctrl_sdk/src/math_base.c **** 				result = -DEF_PI;
+ 823              		.loc 1 313 7 is_stmt 0 view .LVU230
+ 824 0072 002D     		cmp	r5, #0
+ 825 0074 0EDA     		bge	.L58
+ 314:Libraries/ctrl_sdk/src/math_base.c **** 			} else {
+ 826              		.loc 1 314 12 view .LVU231
+ 827 0076 0B4C     		ldr	r4, .L73+12
+ 828              	.LVL132:
+ 314:Libraries/ctrl_sdk/src/math_base.c **** 			} else {
+ 829              		.loc 1 314 12 view .LVU232
+ 830 0078 D1E7     		b	.L47
+ 831              	.LVL133:
+ 832              	.L72:
+ 311:Libraries/ctrl_sdk/src/math_base.c **** 		} else {
+ 833              		.loc 1 311 4 is_stmt 1 view .LVU233
+ 311:Libraries/ctrl_sdk/src/math_base.c **** 		} else {
+ 834              		.loc 1 311 13 is_stmt 0 view .LVU234
+ 835 007a 2146     		mov	r1, r4
+ 836 007c 2846     		mov	r0, r5
+ 837 007e FFF7FEFF 		bl	__aeabi_fdiv
+ 838              	.LVL134:
+ 839 0082 FFF7FEFF 		bl	m_atanf
+ 840              	.LVL135:
+ 311:Libraries/ctrl_sdk/src/math_base.c **** 		} else {
+ 841              		.loc 1 311 11 view .LVU235
+ 842 0086 0649     		ldr	r1, .L73+8
+ 843 0088 FFF7FEFF 		bl	__aeabi_fsub
+ 844              	.LVL136:
+ 845 008c 0446     		mov	r4, r0
+ 846              	.LVL137:
+ 311:Libraries/ctrl_sdk/src/math_base.c **** 		} else {
+ 847              		.loc 1 311 11 view .LVU236
+ 848 008e C6E7     		b	.L47
+ 849              	.LVL138:
+ 850              	.L71:
+ 304:Libraries/ctrl_sdk/src/math_base.c **** 	if (x > 0.0f) {
+ 851              		.loc 1 304 8 view .LVU237
+ 852 0090 0024     		movs	r4, #0
+ 853              	.LVL139:
+ 304:Libraries/ctrl_sdk/src/math_base.c **** 	if (x > 0.0f) {
+ 854              		.loc 1 304 8 view .LVU238
+ 855 0092 D1E7     		b	.L57
+ 856              	.LVL140:
+ 857              	.L58:
+ 316:Libraries/ctrl_sdk/src/math_base.c **** 			}
+ 858              		.loc 1 316 12 view .LVU239
+ 859 0094 024C     		ldr	r4, .L73+8
+ 860              	.LVL141:
+ 316:Libraries/ctrl_sdk/src/math_base.c **** 			}
+ 861              		.loc 1 316 12 view .LVU240
+ 862 0096 C2E7     		b	.L47
+ 863              	.L74:
+ 864              		.align	2
+ 865              	.L73:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 23
+
+
+ 866 0098 DB0FC93F 		.word	1070141403
+ 867 009c DB0FC9BF 		.word	-1077342245
+ 868 00a0 DB0F4940 		.word	1078530011
+ 869 00a4 DB0F49C0 		.word	-1068953637
+ 870              		.cfi_endproc
+ 871              	.LFE9:
+ 873              		.section	.text.m_tanf,"ax",%progbits
+ 874              		.align	1
+ 875              		.global	m_tanf
+ 876              		.syntax unified
+ 877              		.thumb
+ 878              		.thumb_func
+ 880              	m_tanf:
+ 881              	.LVL142:
+ 882              	.LFB10:
+ 329:Libraries/ctrl_sdk/src/math_base.c **** 
+ 330:Libraries/ctrl_sdk/src/math_base.c **** inline float m_tanf(float x)
+ 331:Libraries/ctrl_sdk/src/math_base.c **** {
+ 883              		.loc 1 331 1 is_stmt 1 view -0
+ 884              		.cfi_startproc
+ 885              		@ args = 0, pretend = 0, frame = 0
+ 886              		@ frame_needed = 0, uses_anonymous_args = 0
+ 887              		.loc 1 331 1 is_stmt 0 view .LVU242
+ 888 0000 08B5     		push	{r3, lr}
+ 889              	.LCFI6:
+ 890              		.cfi_def_cfa_offset 8
+ 891              		.cfi_offset 3, -8
+ 892              		.cfi_offset 14, -4
+ 332:Libraries/ctrl_sdk/src/math_base.c **** 	return tanf(x);
+ 893              		.loc 1 332 2 is_stmt 1 view .LVU243
+ 894              		.loc 1 332 9 is_stmt 0 view .LVU244
+ 895 0002 FFF7FEFF 		bl	tanf
+ 896              	.LVL143:
+ 333:Libraries/ctrl_sdk/src/math_base.c **** }
+ 897              		.loc 1 333 1 view .LVU245
+ 898 0006 08BD     		pop	{r3, pc}
+ 899              		.cfi_endproc
+ 900              	.LFE10:
+ 902              		.section	.text.m_floorf,"ax",%progbits
+ 903              		.align	1
+ 904              		.global	m_floorf
+ 905              		.syntax unified
+ 906              		.thumb
+ 907              		.thumb_func
+ 909              	m_floorf:
+ 910              	.LVL144:
+ 911              	.LFB11:
+ 334:Libraries/ctrl_sdk/src/math_base.c **** 
+ 335:Libraries/ctrl_sdk/src/math_base.c **** inline float m_floorf(float x)
+ 336:Libraries/ctrl_sdk/src/math_base.c **** {
+ 912              		.loc 1 336 1 is_stmt 1 view -0
+ 913              		.cfi_startproc
+ 914              		@ args = 0, pretend = 0, frame = 0
+ 915              		@ frame_needed = 0, uses_anonymous_args = 0
+ 916              		.loc 1 336 1 is_stmt 0 view .LVU247
+ 917 0000 08B5     		push	{r3, lr}
+ 918              	.LCFI7:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 24
+
+
+ 919              		.cfi_def_cfa_offset 8
+ 920              		.cfi_offset 3, -8
+ 921              		.cfi_offset 14, -4
+ 337:Libraries/ctrl_sdk/src/math_base.c **** 	return floorf(x);
+ 922              		.loc 1 337 2 is_stmt 1 view .LVU248
+ 923              		.loc 1 337 9 is_stmt 0 view .LVU249
+ 924 0002 FFF7FEFF 		bl	floorf
+ 925              	.LVL145:
+ 338:Libraries/ctrl_sdk/src/math_base.c **** }
+ 926              		.loc 1 338 1 view .LVU250
+ 927 0006 08BD     		pop	{r3, pc}
+ 928              		.cfi_endproc
+ 929              	.LFE11:
+ 931              		.section	.text.m_ceilf,"ax",%progbits
+ 932              		.align	1
+ 933              		.global	m_ceilf
+ 934              		.syntax unified
+ 935              		.thumb
+ 936              		.thumb_func
+ 938              	m_ceilf:
+ 939              	.LVL146:
+ 940              	.LFB12:
+ 339:Libraries/ctrl_sdk/src/math_base.c **** 
+ 340:Libraries/ctrl_sdk/src/math_base.c **** inline float m_ceilf(float x)
+ 341:Libraries/ctrl_sdk/src/math_base.c **** {
+ 941              		.loc 1 341 1 is_stmt 1 view -0
+ 942              		.cfi_startproc
+ 943              		@ args = 0, pretend = 0, frame = 0
+ 944              		@ frame_needed = 0, uses_anonymous_args = 0
+ 945              		.loc 1 341 1 is_stmt 0 view .LVU252
+ 946 0000 08B5     		push	{r3, lr}
+ 947              	.LCFI8:
+ 948              		.cfi_def_cfa_offset 8
+ 949              		.cfi_offset 3, -8
+ 950              		.cfi_offset 14, -4
+ 342:Libraries/ctrl_sdk/src/math_base.c **** 	return ceilf(x);
+ 951              		.loc 1 342 2 is_stmt 1 view .LVU253
+ 952              		.loc 1 342 9 is_stmt 0 view .LVU254
+ 953 0002 FFF7FEFF 		bl	ceilf
+ 954              	.LVL147:
+ 343:Libraries/ctrl_sdk/src/math_base.c **** }
+ 955              		.loc 1 343 1 view .LVU255
+ 956 0006 08BD     		pop	{r3, pc}
+ 957              		.cfi_endproc
+ 958              	.LFE12:
+ 960              		.section	.text.m_fmodf,"ax",%progbits
+ 961              		.align	1
+ 962              		.global	m_fmodf
+ 963              		.syntax unified
+ 964              		.thumb
+ 965              		.thumb_func
+ 967              	m_fmodf:
+ 968              	.LVL148:
+ 969              	.LFB13:
+ 344:Libraries/ctrl_sdk/src/math_base.c **** 
+ 345:Libraries/ctrl_sdk/src/math_base.c **** inline float m_fmodf(float x, float y)
+ 346:Libraries/ctrl_sdk/src/math_base.c **** {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 25
+
+
+ 970              		.loc 1 346 1 is_stmt 1 view -0
+ 971              		.cfi_startproc
+ 972              		@ args = 0, pretend = 0, frame = 0
+ 973              		@ frame_needed = 0, uses_anonymous_args = 0
+ 974              		.loc 1 346 1 is_stmt 0 view .LVU257
+ 975 0000 08B5     		push	{r3, lr}
+ 976              	.LCFI9:
+ 977              		.cfi_def_cfa_offset 8
+ 978              		.cfi_offset 3, -8
+ 979              		.cfi_offset 14, -4
+ 347:Libraries/ctrl_sdk/src/math_base.c **** 	return fmodf(x, y);
+ 980              		.loc 1 347 2 is_stmt 1 view .LVU258
+ 981              		.loc 1 347 9 is_stmt 0 view .LVU259
+ 982 0002 FFF7FEFF 		bl	fmodf
+ 983              	.LVL149:
+ 348:Libraries/ctrl_sdk/src/math_base.c **** }...
+ 984              		.loc 1 348 1 view .LVU260
+ 985 0006 08BD     		pop	{r3, pc}
+ 986              		.cfi_endproc
+ 987              	.LFE13:
+ 989              		.section	.rodata.m_atan2_coefs_f,"a"
+ 990              		.align	2
+ 993              	m_atan2_coefs_f:
+ 994 0000 00000000 		.word	0
+ 995 0004 0100803F 		.word	1065353217
+ 996 0008 C90CC0B7 		.word	-1212150583
+ 997 000c E565AABE 		.word	-1096129051
+ 998 0010 435690BB 		.word	-1148168637
+ 999 0014 3C695D3E 		.word	1046309180
+ 1000 0018 EBFCA9BC 		.word	-1129710357
+ 1001 001c 08B732BE 		.word	-1103972600
+ 1002 0020 E745093E 		.word	1040795111
+ 1003 0024 A59204BD 		.word	-1123773787
+ 1004              		.section	.rodata.m_sin_table_f,"a"
+ 1005              		.align	2
+ 1008              	m_sin_table_f:
+ 1009 0000 00000000 		.word	0
+ 1010 0004 920E493C 		.word	1011420818
+ 1011 0008 B10AC93C 		.word	1019808433
+ 1012 000c 2BC3163D 		.word	1024901931
+ 1013 0010 2EFB483D 		.word	1028193070
+ 1014 0014 752B7B3D 		.word	1031482229
+ 1015 0018 04A9963D 		.word	1033283844
+ 1016 001c 80B6AF3D 		.word	1034925696
+ 1017 0020 36BDC83D 		.word	1036565814
+ 1018 0024 2FBCE13D 		.word	1038203951
+ 1019 0028 73B2FA3D 		.word	1039839859
+ 1020 002c 87CF093E 		.word	1040830343
+ 1021 0030 8340163E 		.word	1041645699
+ 1022 0034 B5AB223E 		.word	1042459573
+ 1023 0038 A2102F3E 		.word	1043271842
+ 1024 003c CF6E3B3E 		.word	1044082383
+ 1025 0040 C2C5473E 		.word	1044891074
+ 1026 0044 0115543E 		.word	1045697793
+ 1027 0048 135C603E 		.word	1046502419
+ 1028 004c 7F9A6C3E 		.word	1047304831
+ 1029 0050 CCCF783E 		.word	1048104908
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 26
+
+
+ 1030 0054 C07D823E 		.word	1048739264
+ 1031 0058 938E883E 		.word	1049136787
+ 1032 005c 229A8E3E 		.word	1049532962
+ 1033 0060 32A0943E 		.word	1049927730
+ 1034 0064 86A09A3E 		.word	1050321030
+ 1035 0068 E59AA03E 		.word	1050712805
+ 1036 006c 128FA63E 		.word	1051102994
+ 1037 0070 D47CAC3E 		.word	1051491540
+ 1038 0074 EF63B23E 		.word	1051878383
+ 1039 0078 2A44B83E 		.word	1052263466
+ 1040 007c 491DBE3E 		.word	1052646729
+ 1041 0080 15EFC33E 		.word	1053028117
+ 1042 0084 53B9C93E 		.word	1053407571
+ 1043 0088 CA7BCF3E 		.word	1053785034
+ 1044 008c 4136D53E 		.word	1054160449
+ 1045 0090 80E8DA3E 		.word	1054533760
+ 1046 0094 4F92E03E 		.word	1054904911
+ 1047 0098 7533E63E 		.word	1055273845
+ 1048 009c BBCBEB3E 		.word	1055640507
+ 1049 00a0 EA5AF13E 		.word	1056004842
+ 1050 00a4 CBE0F63E 		.word	1056366795
+ 1051 00a8 275DFC3E 		.word	1056726311
+ 1052 00ac E4E7003F 		.word	1057023972
+ 1053 00b0 3D9C033F 		.word	1057201213
+ 1054 00b4 824B063F 		.word	1057377154
+ 1055 00b8 9BF5083F 		.word	1057551771
+ 1056 00bc 6B9A0B3F 		.word	1057725035
+ 1057 00c0 DA390E3F 		.word	1057896922
+ 1058 00c4 CDD3103F 		.word	1058067405
+ 1059 00c8 2A68133F 		.word	1058236458
+ 1060 00cc D9F6153F 		.word	1058404057
+ 1061 00d0 C07F183F 		.word	1058570176
+ 1062 00d4 C6021B3F 		.word	1058734790
+ 1063 00d8 D17F1D3F 		.word	1058897873
+ 1064 00dc CBF61F3F 		.word	1059059403
+ 1065 00e0 9967223F 		.word	1059219353
+ 1066 00e4 25D2243F 		.word	1059377701
+ 1067 00e8 5636273F 		.word	1059534422
+ 1068 00ec 1594293F 		.word	1059689493
+ 1069 00f0 4AEB2B3F 		.word	1059842890
+ 1070 00f4 DE3B2E3F 		.word	1059994590
+ 1071 00f8 BB85303F 		.word	1060144571
+ 1072 00fc C9C8323F 		.word	1060292809
+ 1073 0100 F304353F 		.word	1060439283
+ 1074 0104 233A373F 		.word	1060583971
+ 1075 0108 4268393F 		.word	1060726850
+ 1076 010c 3B8F3B3F 		.word	1060867899
+ 1077 0110 F9AE3D3F 		.word	1061007097
+ 1078 0114 67C73F3F 		.word	1061144423
+ 1079 0118 70D8413F 		.word	1061279856
+ 1080 011c 01E2433F 		.word	1061413377
+ 1081 0120 03E4453F 		.word	1061544963
+ 1082 0124 65DE473F 		.word	1061674597
+ 1083 0128 12D1493F 		.word	1061802258
+ 1084 012c F8BB4B3F 		.word	1061927928
+ 1085 0130 029F4D3F 		.word	1062051586
+ 1086 0134 207A4F3F 		.word	1062173216
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 27
+
+
+ 1087 0138 3D4D513F 		.word	1062292797
+ 1088 013c 4918533F 		.word	1062410313
+ 1089 0140 31DB543F 		.word	1062525745
+ 1090 0144 E595563F 		.word	1062639077
+ 1091 0148 5348583F 		.word	1062750291
+ 1092 014c 6AF2593F 		.word	1062859370
+ 1093 0150 1A945B3F 		.word	1062966298
+ 1094 0154 532D5D3F 		.word	1063071059
+ 1095 0158 05BE5E3F 		.word	1063173637
+ 1096 015c 2146603F 		.word	1063274017
+ 1097 0160 97C5613F 		.word	1063372183
+ 1098 0164 5A3C633F 		.word	1063468122
+ 1099 0168 59AA643F 		.word	1063561817
+ 1100 016c 880F663F 		.word	1063653256
+ 1101 0170 D86B673F 		.word	1063742424
+ 1102 0174 3CBF683F 		.word	1063829308
+ 1103 0178 A7096A3F 		.word	1063913895
+ 1104 017c 0C4B6B3F 		.word	1063996172
+ 1105 0180 5E836C3F 		.word	1064076126
+ 1106 0184 93B26D3F 		.word	1064153747
+ 1107 0188 9ED86E3F 		.word	1064229022
+ 1108 018c 73F56F3F 		.word	1064301939
+ 1109 0190 0809713F 		.word	1064372488
+ 1110 0194 5213723F 		.word	1064440658
+ 1111 0198 4714733F 		.word	1064506439
+ 1112 019c DD0B743F 		.word	1064569821
+ 1113 01a0 0BFA743F 		.word	1064630795
+ 1114 01a4 C6DE753F 		.word	1064689350
+ 1115 01a8 07BA763F 		.word	1064745479
+ 1116 01ac C58B773F 		.word	1064799173
+ 1117 01b0 F853783F 		.word	1064850424
+ 1118 01b4 9812793F 		.word	1064899224
+ 1119 01b8 9DC7793F 		.word	1064945565
+ 1120 01bc 02737A3F 		.word	1064989442
+ 1121 01c0 BE147B3F 		.word	1065030846
+ 1122 01c4 CDAC7B3F 		.word	1065069773
+ 1123 01c8 283B7C3F 		.word	1065106216
+ 1124 01cc C9BF7C3F 		.word	1065140169
+ 1125 01d0 AC3A7D3F 		.word	1065171628
+ 1126 01d4 CCAB7D3F 		.word	1065200588
+ 1127 01d8 23137E3F 		.word	1065227043
+ 1128 01dc B0707E3F 		.word	1065250992
+ 1129 01e0 6DC47E3F 		.word	1065272429
+ 1130 01e4 580E7F3F 		.word	1065291352
+ 1131 01e8 6D4E7F3F 		.word	1065307757
+ 1132 01ec AB847F3F 		.word	1065321643
+ 1133 01f0 0FB17F3F 		.word	1065333007
+ 1134 01f4 97D37F3F 		.word	1065341847
+ 1135 01f8 43EC7F3F 		.word	1065348163
+ 1136 01fc 11FB7F3F 		.word	1065351953
+ 1137 0200 0000803F 		.word	1065353216
+ 1138 0204 11FB7F3F 		.word	1065351953
+ 1139 0208 43EC7F3F 		.word	1065348163
+ 1140 020c 97D37F3F 		.word	1065341847
+ 1141 0210 0FB17F3F 		.word	1065333007
+ 1142 0214 AB847F3F 		.word	1065321643
+ 1143 0218 6D4E7F3F 		.word	1065307757
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 28
+
+
+ 1144 021c 580E7F3F 		.word	1065291352
+ 1145 0220 6DC47E3F 		.word	1065272429
+ 1146 0224 B0707E3F 		.word	1065250992
+ 1147 0228 23137E3F 		.word	1065227043
+ 1148 022c CCAB7D3F 		.word	1065200588
+ 1149 0230 AC3A7D3F 		.word	1065171628
+ 1150 0234 C9BF7C3F 		.word	1065140169
+ 1151 0238 283B7C3F 		.word	1065106216
+ 1152 023c CDAC7B3F 		.word	1065069773
+ 1153 0240 BE147B3F 		.word	1065030846
+ 1154 0244 02737A3F 		.word	1064989442
+ 1155 0248 9DC7793F 		.word	1064945565
+ 1156 024c 9812793F 		.word	1064899224
+ 1157 0250 F853783F 		.word	1064850424
+ 1158 0254 C58B773F 		.word	1064799173
+ 1159 0258 07BA763F 		.word	1064745479
+ 1160 025c C6DE753F 		.word	1064689350
+ 1161 0260 0BFA743F 		.word	1064630795
+ 1162 0264 DD0B743F 		.word	1064569821
+ 1163 0268 4714733F 		.word	1064506439
+ 1164 026c 5213723F 		.word	1064440658
+ 1165 0270 0809713F 		.word	1064372488
+ 1166 0274 73F56F3F 		.word	1064301939
+ 1167 0278 9ED86E3F 		.word	1064229022
+ 1168 027c 93B26D3F 		.word	1064153747
+ 1169 0280 5E836C3F 		.word	1064076126
+ 1170 0284 0C4B6B3F 		.word	1063996172
+ 1171 0288 A7096A3F 		.word	1063913895
+ 1172 028c 3CBF683F 		.word	1063829308
+ 1173 0290 D86B673F 		.word	1063742424
+ 1174 0294 880F663F 		.word	1063653256
+ 1175 0298 59AA643F 		.word	1063561817
+ 1176 029c 5A3C633F 		.word	1063468122
+ 1177 02a0 97C5613F 		.word	1063372183
+ 1178 02a4 2146603F 		.word	1063274017
+ 1179 02a8 05BE5E3F 		.word	1063173637
+ 1180 02ac 532D5D3F 		.word	1063071059
+ 1181 02b0 1A945B3F 		.word	1062966298
+ 1182 02b4 6AF2593F 		.word	1062859370
+ 1183 02b8 5348583F 		.word	1062750291
+ 1184 02bc E595563F 		.word	1062639077
+ 1185 02c0 31DB543F 		.word	1062525745
+ 1186 02c4 4918533F 		.word	1062410313
+ 1187 02c8 3D4D513F 		.word	1062292797
+ 1188 02cc 207A4F3F 		.word	1062173216
+ 1189 02d0 029F4D3F 		.word	1062051586
+ 1190 02d4 F8BB4B3F 		.word	1061927928
+ 1191 02d8 12D1493F 		.word	1061802258
+ 1192 02dc 65DE473F 		.word	1061674597
+ 1193 02e0 03E4453F 		.word	1061544963
+ 1194 02e4 01E2433F 		.word	1061413377
+ 1195 02e8 70D8413F 		.word	1061279856
+ 1196 02ec 67C73F3F 		.word	1061144423
+ 1197 02f0 F9AE3D3F 		.word	1061007097
+ 1198 02f4 3B8F3B3F 		.word	1060867899
+ 1199 02f8 4268393F 		.word	1060726850
+ 1200 02fc 233A373F 		.word	1060583971
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 29
+
+
+ 1201 0300 F304353F 		.word	1060439283
+ 1202 0304 C9C8323F 		.word	1060292809
+ 1203 0308 BB85303F 		.word	1060144571
+ 1204 030c DE3B2E3F 		.word	1059994590
+ 1205 0310 4AEB2B3F 		.word	1059842890
+ 1206 0314 1594293F 		.word	1059689493
+ 1207 0318 5636273F 		.word	1059534422
+ 1208 031c 25D2243F 		.word	1059377701
+ 1209 0320 9967223F 		.word	1059219353
+ 1210 0324 CBF61F3F 		.word	1059059403
+ 1211 0328 D17F1D3F 		.word	1058897873
+ 1212 032c C6021B3F 		.word	1058734790
+ 1213 0330 C07F183F 		.word	1058570176
+ 1214 0334 D9F6153F 		.word	1058404057
+ 1215 0338 2A68133F 		.word	1058236458
+ 1216 033c CDD3103F 		.word	1058067405
+ 1217 0340 DA390E3F 		.word	1057896922
+ 1218 0344 6B9A0B3F 		.word	1057725035
+ 1219 0348 9BF5083F 		.word	1057551771
+ 1220 034c 824B063F 		.word	1057377154
+ 1221 0350 3D9C033F 		.word	1057201213
+ 1222 0354 E4E7003F 		.word	1057023972
+ 1223 0358 275DFC3E 		.word	1056726311
+ 1224 035c CBE0F63E 		.word	1056366795
+ 1225 0360 EA5AF13E 		.word	1056004842
+ 1226 0364 BBCBEB3E 		.word	1055640507
+ 1227 0368 7533E63E 		.word	1055273845
+ 1228 036c 4F92E03E 		.word	1054904911
+ 1229 0370 80E8DA3E 		.word	1054533760
+ 1230 0374 4136D53E 		.word	1054160449
+ 1231 0378 CA7BCF3E 		.word	1053785034
+ 1232 037c 53B9C93E 		.word	1053407571
+ 1233 0380 15EFC33E 		.word	1053028117
+ 1234 0384 491DBE3E 		.word	1052646729
+ 1235 0388 2A44B83E 		.word	1052263466
+ 1236 038c EF63B23E 		.word	1051878383
+ 1237 0390 D47CAC3E 		.word	1051491540
+ 1238 0394 128FA63E 		.word	1051102994
+ 1239 0398 E59AA03E 		.word	1050712805
+ 1240 039c 86A09A3E 		.word	1050321030
+ 1241 03a0 32A0943E 		.word	1049927730
+ 1242 03a4 229A8E3E 		.word	1049532962
+ 1243 03a8 938E883E 		.word	1049136787
+ 1244 03ac C07D823E 		.word	1048739264
+ 1245 03b0 CCCF783E 		.word	1048104908
+ 1246 03b4 7F9A6C3E 		.word	1047304831
+ 1247 03b8 135C603E 		.word	1046502419
+ 1248 03bc 0115543E 		.word	1045697793
+ 1249 03c0 C2C5473E 		.word	1044891074
+ 1250 03c4 CF6E3B3E 		.word	1044082383
+ 1251 03c8 A2102F3E 		.word	1043271842
+ 1252 03cc B5AB223E 		.word	1042459573
+ 1253 03d0 8340163E 		.word	1041645699
+ 1254 03d4 87CF093E 		.word	1040830343
+ 1255 03d8 73B2FA3D 		.word	1039839859
+ 1256 03dc 2FBCE13D 		.word	1038203951
+ 1257 03e0 36BDC83D 		.word	1036565814
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 30
+
+
+ 1258 03e4 80B6AF3D 		.word	1034925696
+ 1259 03e8 04A9963D 		.word	1033283844
+ 1260 03ec 752B7B3D 		.word	1031482229
+ 1261 03f0 2EFB483D 		.word	1028193070
+ 1262 03f4 2BC3163D 		.word	1024901931
+ 1263 03f8 B10AC93C 		.word	1019808433
+ 1264 03fc 920E493C 		.word	1011420818
+ 1265 0400 00000000 		.word	0
+ 1266 0404 920E49BC 		.word	-1136062830
+ 1267 0408 B10AC9BC 		.word	-1127675215
+ 1268 040c 2BC316BD 		.word	-1122581717
+ 1269 0410 2EFB48BD 		.word	-1119290578
+ 1270 0414 752B7BBD 		.word	-1116001419
+ 1271 0418 04A996BD 		.word	-1114199804
+ 1272 041c 80B6AFBD 		.word	-1112557952
+ 1273 0420 36BDC8BD 		.word	-1110917834
+ 1274 0424 2FBCE1BD 		.word	-1109279697
+ 1275 0428 73B2FABD 		.word	-1107643789
+ 1276 042c 87CF09BE 		.word	-1106653305
+ 1277 0430 834016BE 		.word	-1105837949
+ 1278 0434 B5AB22BE 		.word	-1105024075
+ 1279 0438 A2102FBE 		.word	-1104211806
+ 1280 043c CF6E3BBE 		.word	-1103401265
+ 1281 0440 C2C547BE 		.word	-1102592574
+ 1282 0444 011554BE 		.word	-1101785855
+ 1283 0448 135C60BE 		.word	-1100981229
+ 1284 044c 7F9A6CBE 		.word	-1100178817
+ 1285 0450 CCCF78BE 		.word	-1099378740
+ 1286 0454 C07D82BE 		.word	-1098744384
+ 1287 0458 938E88BE 		.word	-1098346861
+ 1288 045c 229A8EBE 		.word	-1097950686
+ 1289 0460 32A094BE 		.word	-1097555918
+ 1290 0464 86A09ABE 		.word	-1097162618
+ 1291 0468 E59AA0BE 		.word	-1096770843
+ 1292 046c 128FA6BE 		.word	-1096380654
+ 1293 0470 D47CACBE 		.word	-1095992108
+ 1294 0474 EF63B2BE 		.word	-1095605265
+ 1295 0478 2A44B8BE 		.word	-1095220182
+ 1296 047c 491DBEBE 		.word	-1094836919
+ 1297 0480 15EFC3BE 		.word	-1094455531
+ 1298 0484 53B9C9BE 		.word	-1094076077
+ 1299 0488 CA7BCFBE 		.word	-1093698614
+ 1300 048c 4136D5BE 		.word	-1093323199
+ 1301 0490 80E8DABE 		.word	-1092949888
+ 1302 0494 4F92E0BE 		.word	-1092578737
+ 1303 0498 7533E6BE 		.word	-1092209803
+ 1304 049c BBCBEBBE 		.word	-1091843141
+ 1305 04a0 EA5AF1BE 		.word	-1091478806
+ 1306 04a4 CBE0F6BE 		.word	-1091116853
+ 1307 04a8 275DFCBE 		.word	-1090757337
+ 1308 04ac E4E700BF 		.word	-1090459676
+ 1309 04b0 3D9C03BF 		.word	-1090282435
+ 1310 04b4 824B06BF 		.word	-1090106494
+ 1311 04b8 9BF508BF 		.word	-1089931877
+ 1312 04bc 6B9A0BBF 		.word	-1089758613
+ 1313 04c0 DA390EBF 		.word	-1089586726
+ 1314 04c4 CDD310BF 		.word	-1089416243
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 31
+
+
+ 1315 04c8 2A6813BF 		.word	-1089247190
+ 1316 04cc D9F615BF 		.word	-1089079591
+ 1317 04d0 C07F18BF 		.word	-1088913472
+ 1318 04d4 C6021BBF 		.word	-1088748858
+ 1319 04d8 D17F1DBF 		.word	-1088585775
+ 1320 04dc CBF61FBF 		.word	-1088424245
+ 1321 04e0 996722BF 		.word	-1088264295
+ 1322 04e4 25D224BF 		.word	-1088105947
+ 1323 04e8 563627BF 		.word	-1087949226
+ 1324 04ec 159429BF 		.word	-1087794155
+ 1325 04f0 4AEB2BBF 		.word	-1087640758
+ 1326 04f4 DE3B2EBF 		.word	-1087489058
+ 1327 04f8 BB8530BF 		.word	-1087339077
+ 1328 04fc C9C832BF 		.word	-1087190839
+ 1329 0500 F30435BF 		.word	-1087044365
+ 1330 0504 233A37BF 		.word	-1086899677
+ 1331 0508 426839BF 		.word	-1086756798
+ 1332 050c 3B8F3BBF 		.word	-1086615749
+ 1333 0510 F9AE3DBF 		.word	-1086476551
+ 1334 0514 67C73FBF 		.word	-1086339225
+ 1335 0518 70D841BF 		.word	-1086203792
+ 1336 051c 01E243BF 		.word	-1086070271
+ 1337 0520 03E445BF 		.word	-1085938685
+ 1338 0524 65DE47BF 		.word	-1085809051
+ 1339 0528 12D149BF 		.word	-1085681390
+ 1340 052c F8BB4BBF 		.word	-1085555720
+ 1341 0530 029F4DBF 		.word	-1085432062
+ 1342 0534 207A4FBF 		.word	-1085310432
+ 1343 0538 3D4D51BF 		.word	-1085190851
+ 1344 053c 491853BF 		.word	-1085073335
+ 1345 0540 31DB54BF 		.word	-1084957903
+ 1346 0544 E59556BF 		.word	-1084844571
+ 1347 0548 534858BF 		.word	-1084733357
+ 1348 054c 6AF259BF 		.word	-1084624278
+ 1349 0550 1A945BBF 		.word	-1084517350
+ 1350 0554 532D5DBF 		.word	-1084412589
+ 1351 0558 05BE5EBF 		.word	-1084310011
+ 1352 055c 214660BF 		.word	-1084209631
+ 1353 0560 97C561BF 		.word	-1084111465
+ 1354 0564 5A3C63BF 		.word	-1084015526
+ 1355 0568 59AA64BF 		.word	-1083921831
+ 1356 056c 880F66BF 		.word	-1083830392
+ 1357 0570 D86B67BF 		.word	-1083741224
+ 1358 0574 3CBF68BF 		.word	-1083654340
+ 1359 0578 A7096ABF 		.word	-1083569753
+ 1360 057c 0C4B6BBF 		.word	-1083487476
+ 1361 0580 5E836CBF 		.word	-1083407522
+ 1362 0584 93B26DBF 		.word	-1083329901
+ 1363 0588 9ED86EBF 		.word	-1083254626
+ 1364 058c 73F56FBF 		.word	-1083181709
+ 1365 0590 080971BF 		.word	-1083111160
+ 1366 0594 521372BF 		.word	-1083042990
+ 1367 0598 471473BF 		.word	-1082977209
+ 1368 059c DD0B74BF 		.word	-1082913827
+ 1369 05a0 0BFA74BF 		.word	-1082852853
+ 1370 05a4 C6DE75BF 		.word	-1082794298
+ 1371 05a8 07BA76BF 		.word	-1082738169
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 32
+
+
+ 1372 05ac C58B77BF 		.word	-1082684475
+ 1373 05b0 F85378BF 		.word	-1082633224
+ 1374 05b4 981279BF 		.word	-1082584424
+ 1375 05b8 9DC779BF 		.word	-1082538083
+ 1376 05bc 02737ABF 		.word	-1082494206
+ 1377 05c0 BE147BBF 		.word	-1082452802
+ 1378 05c4 CDAC7BBF 		.word	-1082413875
+ 1379 05c8 283B7CBF 		.word	-1082377432
+ 1380 05cc C9BF7CBF 		.word	-1082343479
+ 1381 05d0 AC3A7DBF 		.word	-1082312020
+ 1382 05d4 CCAB7DBF 		.word	-1082283060
+ 1383 05d8 23137EBF 		.word	-1082256605
+ 1384 05dc B0707EBF 		.word	-1082232656
+ 1385 05e0 6DC47EBF 		.word	-1082211219
+ 1386 05e4 580E7FBF 		.word	-1082192296
+ 1387 05e8 6D4E7FBF 		.word	-1082175891
+ 1388 05ec AB847FBF 		.word	-1082162005
+ 1389 05f0 0FB17FBF 		.word	-1082150641
+ 1390 05f4 97D37FBF 		.word	-1082141801
+ 1391 05f8 43EC7FBF 		.word	-1082135485
+ 1392 05fc 11FB7FBF 		.word	-1082131695
+ 1393 0600 000080BF 		.word	-1082130432
+ 1394 0604 11FB7FBF 		.word	-1082131695
+ 1395 0608 43EC7FBF 		.word	-1082135485
+ 1396 060c 97D37FBF 		.word	-1082141801
+ 1397 0610 0FB17FBF 		.word	-1082150641
+ 1398 0614 AB847FBF 		.word	-1082162005
+ 1399 0618 6D4E7FBF 		.word	-1082175891
+ 1400 061c 580E7FBF 		.word	-1082192296
+ 1401 0620 6DC47EBF 		.word	-1082211219
+ 1402 0624 B0707EBF 		.word	-1082232656
+ 1403 0628 23137EBF 		.word	-1082256605
+ 1404 062c CCAB7DBF 		.word	-1082283060
+ 1405 0630 AC3A7DBF 		.word	-1082312020
+ 1406 0634 C9BF7CBF 		.word	-1082343479
+ 1407 0638 283B7CBF 		.word	-1082377432
+ 1408 063c CDAC7BBF 		.word	-1082413875
+ 1409 0640 BE147BBF 		.word	-1082452802
+ 1410 0644 02737ABF 		.word	-1082494206
+ 1411 0648 9DC779BF 		.word	-1082538083
+ 1412 064c 981279BF 		.word	-1082584424
+ 1413 0650 F85378BF 		.word	-1082633224
+ 1414 0654 C58B77BF 		.word	-1082684475
+ 1415 0658 07BA76BF 		.word	-1082738169
+ 1416 065c C6DE75BF 		.word	-1082794298
+ 1417 0660 0BFA74BF 		.word	-1082852853
+ 1418 0664 DD0B74BF 		.word	-1082913827
+ 1419 0668 471473BF 		.word	-1082977209
+ 1420 066c 521372BF 		.word	-1083042990
+ 1421 0670 080971BF 		.word	-1083111160
+ 1422 0674 73F56FBF 		.word	-1083181709
+ 1423 0678 9ED86EBF 		.word	-1083254626
+ 1424 067c 93B26DBF 		.word	-1083329901
+ 1425 0680 5E836CBF 		.word	-1083407522
+ 1426 0684 0C4B6BBF 		.word	-1083487476
+ 1427 0688 A7096ABF 		.word	-1083569753
+ 1428 068c 3CBF68BF 		.word	-1083654340
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 33
+
+
+ 1429 0690 D86B67BF 		.word	-1083741224
+ 1430 0694 880F66BF 		.word	-1083830392
+ 1431 0698 59AA64BF 		.word	-1083921831
+ 1432 069c 5A3C63BF 		.word	-1084015526
+ 1433 06a0 97C561BF 		.word	-1084111465
+ 1434 06a4 214660BF 		.word	-1084209631
+ 1435 06a8 05BE5EBF 		.word	-1084310011
+ 1436 06ac 532D5DBF 		.word	-1084412589
+ 1437 06b0 1A945BBF 		.word	-1084517350
+ 1438 06b4 6AF259BF 		.word	-1084624278
+ 1439 06b8 534858BF 		.word	-1084733357
+ 1440 06bc E59556BF 		.word	-1084844571
+ 1441 06c0 31DB54BF 		.word	-1084957903
+ 1442 06c4 491853BF 		.word	-1085073335
+ 1443 06c8 3D4D51BF 		.word	-1085190851
+ 1444 06cc 207A4FBF 		.word	-1085310432
+ 1445 06d0 029F4DBF 		.word	-1085432062
+ 1446 06d4 F8BB4BBF 		.word	-1085555720
+ 1447 06d8 12D149BF 		.word	-1085681390
+ 1448 06dc 65DE47BF 		.word	-1085809051
+ 1449 06e0 03E445BF 		.word	-1085938685
+ 1450 06e4 01E243BF 		.word	-1086070271
+ 1451 06e8 70D841BF 		.word	-1086203792
+ 1452 06ec 67C73FBF 		.word	-1086339225
+ 1453 06f0 F9AE3DBF 		.word	-1086476551
+ 1454 06f4 3B8F3BBF 		.word	-1086615749
+ 1455 06f8 426839BF 		.word	-1086756798
+ 1456 06fc 233A37BF 		.word	-1086899677
+ 1457 0700 F30435BF 		.word	-1087044365
+ 1458 0704 C9C832BF 		.word	-1087190839
+ 1459 0708 BB8530BF 		.word	-1087339077
+ 1460 070c DE3B2EBF 		.word	-1087489058
+ 1461 0710 4AEB2BBF 		.word	-1087640758
+ 1462 0714 159429BF 		.word	-1087794155
+ 1463 0718 563627BF 		.word	-1087949226
+ 1464 071c 25D224BF 		.word	-1088105947
+ 1465 0720 996722BF 		.word	-1088264295
+ 1466 0724 CBF61FBF 		.word	-1088424245
+ 1467 0728 D17F1DBF 		.word	-1088585775
+ 1468 072c C6021BBF 		.word	-1088748858
+ 1469 0730 C07F18BF 		.word	-1088913472
+ 1470 0734 D9F615BF 		.word	-1089079591
+ 1471 0738 2A6813BF 		.word	-1089247190
+ 1472 073c CDD310BF 		.word	-1089416243
+ 1473 0740 DA390EBF 		.word	-1089586726
+ 1474 0744 6B9A0BBF 		.word	-1089758613
+ 1475 0748 9BF508BF 		.word	-1089931877
+ 1476 074c 824B06BF 		.word	-1090106494
+ 1477 0750 3D9C03BF 		.word	-1090282435
+ 1478 0754 E4E700BF 		.word	-1090459676
+ 1479 0758 275DFCBE 		.word	-1090757337
+ 1480 075c CBE0F6BE 		.word	-1091116853
+ 1481 0760 EA5AF1BE 		.word	-1091478806
+ 1482 0764 BBCBEBBE 		.word	-1091843141
+ 1483 0768 7533E6BE 		.word	-1092209803
+ 1484 076c 4F92E0BE 		.word	-1092578737
+ 1485 0770 80E8DABE 		.word	-1092949888
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 34
+
+
+ 1486 0774 4136D5BE 		.word	-1093323199
+ 1487 0778 CA7BCFBE 		.word	-1093698614
+ 1488 077c 53B9C9BE 		.word	-1094076077
+ 1489 0780 15EFC3BE 		.word	-1094455531
+ 1490 0784 491DBEBE 		.word	-1094836919
+ 1491 0788 2A44B8BE 		.word	-1095220182
+ 1492 078c EF63B2BE 		.word	-1095605265
+ 1493 0790 D47CACBE 		.word	-1095992108
+ 1494 0794 128FA6BE 		.word	-1096380654
+ 1495 0798 E59AA0BE 		.word	-1096770843
+ 1496 079c 86A09ABE 		.word	-1097162618
+ 1497 07a0 32A094BE 		.word	-1097555918
+ 1498 07a4 229A8EBE 		.word	-1097950686
+ 1499 07a8 938E88BE 		.word	-1098346861
+ 1500 07ac C07D82BE 		.word	-1098744384
+ 1501 07b0 CCCF78BE 		.word	-1099378740
+ 1502 07b4 7F9A6CBE 		.word	-1100178817
+ 1503 07b8 135C60BE 		.word	-1100981229
+ 1504 07bc 011554BE 		.word	-1101785855
+ 1505 07c0 C2C547BE 		.word	-1102592574
+ 1506 07c4 CF6E3BBE 		.word	-1103401265
+ 1507 07c8 A2102FBE 		.word	-1104211806
+ 1508 07cc B5AB22BE 		.word	-1105024075
+ 1509 07d0 834016BE 		.word	-1105837949
+ 1510 07d4 87CF09BE 		.word	-1106653305
+ 1511 07d8 73B2FABD 		.word	-1107643789
+ 1512 07dc 2FBCE1BD 		.word	-1109279697
+ 1513 07e0 36BDC8BD 		.word	-1110917834
+ 1514 07e4 80B6AFBD 		.word	-1112557952
+ 1515 07e8 04A996BD 		.word	-1114199804
+ 1516 07ec 752B7BBD 		.word	-1116001419
+ 1517 07f0 2EFB48BD 		.word	-1119290578
+ 1518 07f4 2BC316BD 		.word	-1122581717
+ 1519 07f8 B10AC9BC 		.word	-1127675215
+ 1520 07fc 920E49BC 		.word	-1136062830
+ 1521 0800 00000080 		.word	-2147483648
+ 1522              		.text
+ 1523              	.Letext0:
+ 1524              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1525              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1526              		.file 4 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\math.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s 			page 35
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 math_base.c
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:21     .text.m_rsqrtf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:27     .text.m_rsqrtf:00000000 m_rsqrtf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:95     .text.m_rsqrtf:00000038 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:100    .text.m_sqrtf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:106    .text.m_sqrtf:00000000 m_sqrtf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:177    .text.m_sqrtf:0000003c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:188    .text.m_sinf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:194    .text.m_sinf:00000000 m_sinf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:347    .text.m_sinf:00000094 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:1008   .rodata.m_sin_table_f:00000000 m_sin_table_f
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:353    .text.m_cosf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:359    .text.m_cosf:00000000 m_cosf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:514    .text.m_cosf:0000009c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:522    .text.m_atanf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:528    .text.m_atanf:00000000 m_atanf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:695    .text.m_atanf:00000088 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:993    .rodata.m_atan2_coefs_f:00000000 m_atan2_coefs_f
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:704    .text.m_atan2f:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:710    .text.m_atan2f:00000000 m_atan2f
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:866    .text.m_atan2f:00000098 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:874    .text.m_tanf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:880    .text.m_tanf:00000000 m_tanf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:903    .text.m_floorf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:909    .text.m_floorf:00000000 m_floorf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:932    .text.m_ceilf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:938    .text.m_ceilf:00000000 m_ceilf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:961    .text.m_fmodf:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:967    .text.m_fmodf:00000000 m_fmodf
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:990    .rodata.m_atan2_coefs_f:00000000 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccALXYO7.s:1005   .rodata.m_sin_table_f:00000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_fsub
+__aeabi_f2iz
+__aeabi_fcmplt
+__aeabi_i2f
+__aeabi_f2uiz
+__aeabi_ui2f
+__aeabi_fadd
+__aeabi_fcmpgt
+__aeabi_fdiv
+tanf
+floorf
+ceilf
+fmodf

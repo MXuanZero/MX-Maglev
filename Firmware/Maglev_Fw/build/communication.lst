@@ -1,0 +1,162 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"communication.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "./UserApp/communication.c"
+  18              		.section	.text.uart_print,"ax",%progbits
+  19              		.align	1
+  20              		.global	uart_print
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	uart_print:
+  26              	.LVL0:
+  27              	.LFB123:
+   1:./UserApp/communication.c **** /* Includes ------------------------------------------------------------------*/
+   2:./UserApp/communication.c **** #include <stdarg.h>
+   3:./UserApp/communication.c **** #include "usart.h"
+   4:./UserApp/communication.c **** #include "lib_printf.h"
+   5:./UserApp/communication.c **** #include "communication.h"
+   6:./UserApp/communication.c **** /* Private define ------------------------------------------------------------*/
+   7:./UserApp/communication.c **** #define DEF_LIB_LOG_LINE_BUF_SIZE 64
+   8:./UserApp/communication.c **** /* Private macro -------------------------------------------------------------*/
+   9:./UserApp/communication.c **** /* Private typedef -----------------------------------------------------------*/
+  10:./UserApp/communication.c **** /* Private variables ---------------------------------------------------------*/
+  11:./UserApp/communication.c **** static char string_buffer[DEF_LIB_LOG_LINE_BUF_SIZE] = {0};
+  12:./UserApp/communication.c **** /* Private function prototypes -----------------------------------------------*/
+  13:./UserApp/communication.c **** /* Private functions ---------------------------------------------------------*/
+  14:./UserApp/communication.c **** void uart_print(const char *const fmt, ...)
+  15:./UserApp/communication.c **** {
+  28              		.loc 1 15 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 4, pretend = 16, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 1
+  32              		.loc 1 15 1 is_stmt 0 view .LVU1
+  33 0000 0FB4     		push	{r0, r1, r2, r3}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 16
+  36              		.cfi_offset 0, -16
+  37              		.cfi_offset 1, -12
+  38              		.cfi_offset 2, -8
+  39              		.cfi_offset 3, -4
+  40 0002 10B5     		push	{r4, lr}
+  41              	.LCFI1:
+  42              		.cfi_def_cfa_offset 24
+  43              		.cfi_offset 4, -24
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s 			page 2
+
+
+  44              		.cfi_offset 14, -20
+  45 0004 82B0     		sub	sp, sp, #8
+  46              	.LCFI2:
+  47              		.cfi_def_cfa_offset 32
+  48 0006 04AB     		add	r3, sp, #16
+  49 0008 53F8042B 		ldr	r2, [r3], #4
+  16:./UserApp/communication.c **** 	int len = 0;
+  50              		.loc 1 16 2 is_stmt 1 view .LVU2
+  51              	.LVL1:
+  17:./UserApp/communication.c **** 	va_list  args;
+  52              		.loc 1 17 2 view .LVU3
+  18:./UserApp/communication.c **** 	va_start(args, fmt);
+  53              		.loc 1 18 2 view .LVU4
+  54 000c 0193     		str	r3, [sp, #4]
+  19:./UserApp/communication.c **** 	len += lib_vsnprintf(string_buffer, DEF_LIB_LOG_LINE_BUF_SIZE, fmt, args);
+  55              		.loc 1 19 2 view .LVU5
+  56              		.loc 1 19 9 is_stmt 0 view .LVU6
+  57 000e 084C     		ldr	r4, .L3
+  58 0010 4021     		movs	r1, #64
+  59 0012 2046     		mov	r0, r4
+  60 0014 FFF7FEFF 		bl	lib_vsnprintf
+  61              	.LVL2:
+  20:./UserApp/communication.c **** 	va_end(args);
+  62              		.loc 1 20 2 is_stmt 1 view .LVU7
+  21:./UserApp/communication.c **** 	HAL_UART_Transmit(&huart1, (uint8_t *)string_buffer, len, 0x40);
+  63              		.loc 1 21 2 view .LVU8
+  64 0018 4023     		movs	r3, #64
+  65 001a 82B2     		uxth	r2, r0
+  66 001c 2146     		mov	r1, r4
+  67 001e 0548     		ldr	r0, .L3+4
+  68              	.LVL3:
+  69              		.loc 1 21 2 is_stmt 0 view .LVU9
+  70 0020 FFF7FEFF 		bl	HAL_UART_Transmit
+  71              	.LVL4:
+  22:./UserApp/communication.c **** }...
+  72              		.loc 1 22 1 view .LVU10
+  73 0024 02B0     		add	sp, sp, #8
+  74              	.LCFI3:
+  75              		.cfi_def_cfa_offset 24
+  76              		@ sp needed
+  77 0026 BDE81040 		pop	{r4, lr}
+  78              	.LCFI4:
+  79              		.cfi_restore 14
+  80              		.cfi_restore 4
+  81              		.cfi_def_cfa_offset 16
+  82 002a 04B0     		add	sp, sp, #16
+  83              	.LCFI5:
+  84              		.cfi_restore 3
+  85              		.cfi_restore 2
+  86              		.cfi_restore 1
+  87              		.cfi_restore 0
+  88              		.cfi_def_cfa_offset 0
+  89 002c 7047     		bx	lr
+  90              	.L4:
+  91 002e 00BF     		.align	2
+  92              	.L3:
+  93 0030 00000000 		.word	string_buffer
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s 			page 3
+
+
+  94 0034 00000000 		.word	huart1
+  95              		.cfi_endproc
+  96              	.LFE123:
+  98              		.section	.bss.string_buffer,"aw",%nobits
+  99              		.align	2
+ 102              	string_buffer:
+ 103 0000 00000000 		.space	64
+ 103      00000000 
+ 103      00000000 
+ 103      00000000 
+ 103      00000000 
+ 104              		.text
+ 105              	.Letext0:
+ 106              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stdarg.h"
+ 107              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 108              		.file 4 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 109              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 110              		.file 6 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ 111              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 112              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 113              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 114              		.file 10 "Libraries/ctrl_sdk/inc/lib_printf.h"
+ 115              		.file 11 "<built-in>"
+ 116              		.file 12 "Core/Inc/usart.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 communication.c
+C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s:19     .text.uart_print:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s:25     .text.uart_print:00000000 uart_print
+C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s:93     .text.uart_print:00000030 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s:102    .bss.string_buffer:00000000 string_buffer
+C:\Users\Mxuan\AppData\Local\Temp\ccrSD2Wf.s:99     .bss.string_buffer:00000000 $d
+
+UNDEFINED SYMBOLS
+lib_vsnprintf
+HAL_UART_Transmit
+huart1

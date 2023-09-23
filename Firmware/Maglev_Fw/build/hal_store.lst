@@ -1,0 +1,1629 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"hal_store.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_sdk/src/hal_store.c"
+  18              		.section	.text.hal_store_init_list,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	hal_store_init_list:
+  25              	.LFB0:
+   1:Libraries/ctrl_sdk/src/hal_store.c **** /* Includes ------------------------------------------------------------------*/
+   2:Libraries/ctrl_sdk/src/hal_store.c **** #include <string.h>
+   3:Libraries/ctrl_sdk/src/hal_store.c **** #include "hal_store.h"
+   4:Libraries/ctrl_sdk/src/hal_store.c **** /* Private define ------------------------------------------------------------*/
+   5:Libraries/ctrl_sdk/src/hal_store.c **** /* Private macro -------------------------------------------------------------*/
+   6:Libraries/ctrl_sdk/src/hal_store.c **** #define DEF_HAL_STORE_MALLOC(x) malloc(x)
+   7:Libraries/ctrl_sdk/src/hal_store.c **** #define DEF_HAL_STORE_FREE(x) free(x)
+   8:Libraries/ctrl_sdk/src/hal_store.c **** #define DEF_HAL_STORE_INIT_EMPTY 1 // 创建链表后是否需要清零
+   9:Libraries/ctrl_sdk/src/hal_store.c **** 
+  10:Libraries/ctrl_sdk/src/hal_store.c **** /* Private typedef -----------------------------------------------------------*/
+  11:Libraries/ctrl_sdk/src/hal_store.c **** /* Private variables ---------------------------------------------------------*/
+  12:Libraries/ctrl_sdk/src/hal_store.c **** static lib_list_t hal_store_map[HAL_STORE_MAP_LIST_SIZE] = { 0 };
+  13:Libraries/ctrl_sdk/src/hal_store.c **** static uint16_t hal_store_node_num = 0;
+  14:Libraries/ctrl_sdk/src/hal_store.c **** 
+  15:Libraries/ctrl_sdk/src/hal_store.c **** /* Private function prototypes -----------------------------------------------*/
+  16:Libraries/ctrl_sdk/src/hal_store.c **** /**
+  17:Libraries/ctrl_sdk/src/hal_store.c ****  * @brief 初始化链表头节点
+  18:Libraries/ctrl_sdk/src/hal_store.c ****  */
+  19:Libraries/ctrl_sdk/src/hal_store.c **** static void hal_store_init_list(void);
+  20:Libraries/ctrl_sdk/src/hal_store.c **** 
+  21:Libraries/ctrl_sdk/src/hal_store.c **** /**
+  22:Libraries/ctrl_sdk/src/hal_store.c ****  * @brief 创建节点
+  23:Libraries/ctrl_sdk/src/hal_store.c ****  */
+  24:Libraries/ctrl_sdk/src/hal_store.c **** static inline hal_store_node_t *hal_store_create_node(uint16_t uid);
+  25:Libraries/ctrl_sdk/src/hal_store.c **** 
+  26:Libraries/ctrl_sdk/src/hal_store.c **** /**
+  27:Libraries/ctrl_sdk/src/hal_store.c ****  * @brief  删除节点
+  28:Libraries/ctrl_sdk/src/hal_store.c ****  */
+  29:Libraries/ctrl_sdk/src/hal_store.c **** static inline void hal_store_del_node(uint16_t uid, hal_store_node_t *node);
+  30:Libraries/ctrl_sdk/src/hal_store.c **** 
+  31:Libraries/ctrl_sdk/src/hal_store.c **** /* Private functions ---------------------------------------------------------*/
+  32:Libraries/ctrl_sdk/src/hal_store.c **** static void hal_store_init_list(void)
+  33:Libraries/ctrl_sdk/src/hal_store.c **** {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 2
+
+
+  26              		.loc 1 33 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 10B5     		push	{r4, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  34:Libraries/ctrl_sdk/src/hal_store.c **** 	for (uint16_t i = 0; i < HAL_STORE_MAP_LIST_SIZE; ++i) {
+  35              		.loc 1 34 2 view .LVU1
+  36              	.LBB2:
+  37              		.loc 1 34 7 view .LVU2
+  38              	.LVL0:
+  39              		.loc 1 34 16 is_stmt 0 view .LVU3
+  40 0002 0024     		movs	r4, #0
+  41              		.loc 1 34 2 view .LVU4
+  42 0004 09E0     		b	.L2
+  43              	.LVL1:
+  44              	.L3:
+  35:Libraries/ctrl_sdk/src/hal_store.c **** 		lib_list_init(&hal_store_map[i], HAL_STORE_NODE_SIZE);
+  45              		.loc 1 35 3 is_stmt 1 discriminator 3 view .LVU5
+  46 0006 04EB4402 		add	r2, r4, r4, lsl #1
+  47 000a 9300     		lsls	r3, r2, #2
+  48 000c 1C21     		movs	r1, #28
+  49 000e 0448     		ldr	r0, .L5
+  50 0010 1844     		add	r0, r0, r3
+  51 0012 FFF7FEFF 		bl	lib_list_init
+  52              	.LVL2:
+  34:Libraries/ctrl_sdk/src/hal_store.c **** 	for (uint16_t i = 0; i < HAL_STORE_MAP_LIST_SIZE; ++i) {
+  53              		.loc 1 34 52 discriminator 3 view .LVU6
+  54 0016 0134     		adds	r4, r4, #1
+  55              	.LVL3:
+  34:Libraries/ctrl_sdk/src/hal_store.c **** 	for (uint16_t i = 0; i < HAL_STORE_MAP_LIST_SIZE; ++i) {
+  56              		.loc 1 34 52 is_stmt 0 discriminator 3 view .LVU7
+  57 0018 A4B2     		uxth	r4, r4
+  58              	.LVL4:
+  59              	.L2:
+  34:Libraries/ctrl_sdk/src/hal_store.c **** 	for (uint16_t i = 0; i < HAL_STORE_MAP_LIST_SIZE; ++i) {
+  60              		.loc 1 34 25 is_stmt 1 discriminator 1 view .LVU8
+  61 001a 0C2C     		cmp	r4, #12
+  62 001c F3D9     		bls	.L3
+  63              	.LBE2:
+  36:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  37:Libraries/ctrl_sdk/src/hal_store.c **** }
+  64              		.loc 1 37 1 is_stmt 0 view .LVU9
+  65 001e 10BD     		pop	{r4, pc}
+  66              	.LVL5:
+  67              	.L6:
+  68              		.loc 1 37 1 view .LVU10
+  69              		.align	2
+  70              	.L5:
+  71 0020 00000000 		.word	hal_store_map
+  72              		.cfi_endproc
+  73              	.LFE0:
+  75              		.section	.text.hal_store_create_node,"ax",%progbits
+  76              		.align	1
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 3
+
+
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  81              	hal_store_create_node:
+  82              	.LVL6:
+  83              	.LFB1:
+  38:Libraries/ctrl_sdk/src/hal_store.c **** 
+  39:Libraries/ctrl_sdk/src/hal_store.c **** static inline hal_store_node_t *hal_store_create_node(uint16_t uid)
+  40:Libraries/ctrl_sdk/src/hal_store.c **** {
+  84              		.loc 1 40 1 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  88              		.loc 1 40 1 is_stmt 0 view .LVU12
+  89 0000 38B5     		push	{r3, r4, r5, lr}
+  90              	.LCFI1:
+  91              		.cfi_def_cfa_offset 16
+  92              		.cfi_offset 3, -16
+  93              		.cfi_offset 4, -12
+  94              		.cfi_offset 5, -8
+  95              		.cfi_offset 14, -4
+  96 0002 0446     		mov	r4, r0
+  41:Libraries/ctrl_sdk/src/hal_store.c **** 	void *new = DEF_HAL_STORE_MALLOC(HAL_STORE_NODE_SIZE);
+  97              		.loc 1 41 2 is_stmt 1 view .LVU13
+  98              		.loc 1 41 14 is_stmt 0 view .LVU14
+  99 0004 1C20     		movs	r0, #28
+ 100              	.LVL7:
+ 101              		.loc 1 41 14 view .LVU15
+ 102 0006 FFF7FEFF 		bl	malloc
+ 103              	.LVL8:
+  42:Libraries/ctrl_sdk/src/hal_store.c **** 	if (new == NULL) {
+ 104              		.loc 1 42 2 is_stmt 1 view .LVU16
+ 105              		.loc 1 42 5 is_stmt 0 view .LVU17
+ 106 000a 0546     		mov	r5, r0
+ 107 000c D0B1     		cbz	r0, .L7
+  43:Libraries/ctrl_sdk/src/hal_store.c **** 		return NULL;
+  44:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  45:Libraries/ctrl_sdk/src/hal_store.c **** #if DEF_HAL_STORE_INIT_EMPTY == 1
+  46:Libraries/ctrl_sdk/src/hal_store.c **** 	memset(new, 0, HAL_STORE_NODE_SIZE);
+ 108              		.loc 1 46 2 is_stmt 1 view .LVU18
+ 109 000e 0023     		movs	r3, #0
+ 110 0010 0360     		str	r3, [r0]	@ unaligned
+ 111 0012 4360     		str	r3, [r0, #4]	@ unaligned
+ 112 0014 8360     		str	r3, [r0, #8]	@ unaligned
+ 113 0016 C360     		str	r3, [r0, #12]	@ unaligned
+ 114 0018 0361     		str	r3, [r0, #16]	@ unaligned
+ 115 001a 4361     		str	r3, [r0, #20]	@ unaligned
+ 116 001c 8361     		str	r3, [r0, #24]	@ unaligned
+  47:Libraries/ctrl_sdk/src/hal_store.c **** #endif
+  48:Libraries/ctrl_sdk/src/hal_store.c **** 
+  49:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_node_t *node = (lib_node_t *)((char *)new +
+ 117              		.loc 1 49 2 view .LVU19
+ 118              	.LVL9:
+  50:Libraries/ctrl_sdk/src/hal_store.c **** 					  addr_offset(hal_store_node_t, node));
+  51:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_inc_tail(&hal_store_map[uid % HAL_STORE_MAP_LIST_SIZE], node);
+ 119              		.loc 1 51 2 view .LVU20
+ 120              		.loc 1 51 39 is_stmt 0 view .LVU21
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 4
+
+
+ 121 001e 0A4B     		ldr	r3, .L10
+ 122 0020 A3FB0423 		umull	r2, r3, r3, r4
+ 123 0024 9B08     		lsrs	r3, r3, #2
+ 124 0026 03EB4302 		add	r2, r3, r3, lsl #1
+ 125 002a 03EB8203 		add	r3, r3, r2, lsl #2
+ 126 002e E01A     		subs	r0, r4, r3
+ 127              	.LVL10:
+ 128              		.loc 1 51 39 view .LVU22
+ 129 0030 80B2     		uxth	r0, r0
+ 130              		.loc 1 51 2 view .LVU23
+ 131 0032 00EB4000 		add	r0, r0, r0, lsl #1
+ 132 0036 05F11401 		add	r1, r5, #20
+ 133              	.LVL11:
+ 134              		.loc 1 51 2 view .LVU24
+ 135 003a 044B     		ldr	r3, .L10+4
+ 136 003c 03EB8000 		add	r0, r3, r0, lsl #2
+ 137 0040 FFF7FEFF 		bl	lib_list_inc_tail
+ 138              	.LVL12:
+  52:Libraries/ctrl_sdk/src/hal_store.c **** 	return new;
+ 139              		.loc 1 52 2 is_stmt 1 view .LVU25
+ 140              	.L7:
+  53:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 141              		.loc 1 53 1 is_stmt 0 view .LVU26
+ 142 0044 2846     		mov	r0, r5
+ 143 0046 38BD     		pop	{r3, r4, r5, pc}
+ 144              	.LVL13:
+ 145              	.L11:
+ 146              		.loc 1 53 1 view .LVU27
+ 147              		.align	2
+ 148              	.L10:
+ 149 0048 4FECC44E 		.word	1321528399
+ 150 004c 00000000 		.word	hal_store_map
+ 151              		.cfi_endproc
+ 152              	.LFE1:
+ 154              		.section	.text.hal_store_del_node,"ax",%progbits
+ 155              		.align	1
+ 156              		.syntax unified
+ 157              		.thumb
+ 158              		.thumb_func
+ 160              	hal_store_del_node:
+ 161              	.LVL14:
+ 162              	.LFB2:
+  54:Libraries/ctrl_sdk/src/hal_store.c **** 
+  55:Libraries/ctrl_sdk/src/hal_store.c **** static inline void hal_store_del_node(uint16_t uid, hal_store_node_t *node)
+  56:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 163              		.loc 1 56 1 is_stmt 1 view -0
+ 164              		.cfi_startproc
+ 165              		@ args = 0, pretend = 0, frame = 0
+ 166              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167              		.loc 1 56 1 is_stmt 0 view .LVU29
+ 168 0000 10B5     		push	{r4, lr}
+ 169              	.LCFI2:
+ 170              		.cfi_def_cfa_offset 8
+ 171              		.cfi_offset 4, -8
+ 172              		.cfi_offset 14, -4
+ 173 0002 0C46     		mov	r4, r1
+  57:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_delete(&hal_store_map[uid % HAL_STORE_MAP_LIST_SIZE],
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 5
+
+
+ 174              		.loc 1 57 2 is_stmt 1 view .LVU30
+ 175              		.loc 1 57 37 is_stmt 0 view .LVU31
+ 176 0004 0A4B     		ldr	r3, .L14
+ 177 0006 A3FB0023 		umull	r2, r3, r3, r0
+ 178 000a 9B08     		lsrs	r3, r3, #2
+ 179 000c 03EB4302 		add	r2, r3, r3, lsl #1
+ 180 0010 03EB8203 		add	r3, r3, r2, lsl #2
+ 181 0014 C01A     		subs	r0, r0, r3
+ 182              	.LVL15:
+ 183              		.loc 1 57 37 view .LVU32
+ 184 0016 80B2     		uxth	r0, r0
+ 185              		.loc 1 57 2 view .LVU33
+ 186 0018 00EB4000 		add	r0, r0, r0, lsl #1
+ 187 001c 1431     		adds	r1, r1, #20
+ 188              	.LVL16:
+ 189              		.loc 1 57 2 view .LVU34
+ 190 001e 054B     		ldr	r3, .L14+4
+ 191 0020 03EB8000 		add	r0, r3, r0, lsl #2
+ 192 0024 FFF7FEFF 		bl	lib_list_delete
+ 193              	.LVL17:
+  58:Libraries/ctrl_sdk/src/hal_store.c **** 			&node->node);
+  59:Libraries/ctrl_sdk/src/hal_store.c **** 	DEF_HAL_STORE_FREE(node);
+ 194              		.loc 1 59 2 is_stmt 1 view .LVU35
+ 195 0028 2046     		mov	r0, r4
+ 196 002a FFF7FEFF 		bl	free
+ 197              	.LVL18:
+  60:Libraries/ctrl_sdk/src/hal_store.c **** 	node = NULL;
+ 198              		.loc 1 60 2 view .LVU36
+  61:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 199              		.loc 1 61 1 is_stmt 0 view .LVU37
+ 200 002e 10BD     		pop	{r4, pc}
+ 201              	.L15:
+ 202              		.align	2
+ 203              	.L14:
+ 204 0030 4FECC44E 		.word	1321528399
+ 205 0034 00000000 		.word	hal_store_map
+ 206              		.cfi_endproc
+ 207              	.LFE2:
+ 209              		.section	.text.hal_store_init,"ax",%progbits
+ 210              		.align	1
+ 211              		.global	hal_store_init
+ 212              		.syntax unified
+ 213              		.thumb
+ 214              		.thumb_func
+ 216              	hal_store_init:
+ 217              	.LFB3:
+  62:Libraries/ctrl_sdk/src/hal_store.c **** 
+  63:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_init(void)
+  64:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 218              		.loc 1 64 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222 0000 08B5     		push	{r3, lr}
+ 223              	.LCFI3:
+ 224              		.cfi_def_cfa_offset 8
+ 225              		.cfi_offset 3, -8
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 6
+
+
+ 226              		.cfi_offset 14, -4
+  65:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_init_list();
+ 227              		.loc 1 65 2 view .LVU39
+ 228 0002 FFF7FEFF 		bl	hal_store_init_list
+ 229              	.LVL19:
+  66:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_port_init();
+ 230              		.loc 1 66 2 view .LVU40
+ 231 0006 FFF7FEFF 		bl	hal_store_port_init
+ 232              	.LVL20:
+  67:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 233              		.loc 1 67 2 view .LVU41
+  68:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 234              		.loc 1 68 1 is_stmt 0 view .LVU42
+ 235 000a 0020     		movs	r0, #0
+ 236 000c 08BD     		pop	{r3, pc}
+ 237              		.cfi_endproc
+ 238              	.LFE3:
+ 240              		.section	.text.hal_store_find,"ax",%progbits
+ 241              		.align	1
+ 242              		.global	hal_store_find
+ 243              		.syntax unified
+ 244              		.thumb
+ 245              		.thumb_func
+ 247              	hal_store_find:
+ 248              	.LVL21:
+ 249              	.LFB5:
+  69:Libraries/ctrl_sdk/src/hal_store.c **** 
+  70:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_reg(hal_store_info_t *info)
+  71:Libraries/ctrl_sdk/src/hal_store.c **** {
+  72:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+  73:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_ERROR;
+  74:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  75:Libraries/ctrl_sdk/src/hal_store.c **** 
+  76:Libraries/ctrl_sdk/src/hal_store.c **** 	/* find */
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info->uid == 0 || info->size == 0) {
+  78:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+  79:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  80:Libraries/ctrl_sdk/src/hal_store.c **** 	if (hal_store_find(info->uid) != NULL) {
+  81:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+  82:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  83:Libraries/ctrl_sdk/src/hal_store.c **** 
+  84:Libraries/ctrl_sdk/src/hal_store.c **** 	/* add */
+  85:Libraries/ctrl_sdk/src/hal_store.c **** 	if (hal_store_node_num >= HAL_STORE_PARAM_NUM_MAX) {
+  86:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_FULL;
+  87:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  88:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_node_t *node = hal_store_create_node(info->uid);
+  89:Libraries/ctrl_sdk/src/hal_store.c **** 	if (node == NULL) {
+  90:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+  91:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+  92:Libraries/ctrl_sdk/src/hal_store.c **** 	memcpy(&node->info, info, HAL_STORE_INFO_SIZE);
+  93:Libraries/ctrl_sdk/src/hal_store.c **** 	++hal_store_node_num;
+  94:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+  95:Libraries/ctrl_sdk/src/hal_store.c **** }
+  96:Libraries/ctrl_sdk/src/hal_store.c **** 
+  97:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_info_t *hal_store_find(uint16_t uid)
+  98:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 250              		.loc 1 98 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 7
+
+
+ 251              		.cfi_startproc
+ 252              		@ args = 0, pretend = 0, frame = 0
+ 253              		@ frame_needed = 0, uses_anonymous_args = 0
+ 254              		@ link register save eliminated.
+  99:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_node_t *node = NULL;
+ 255              		.loc 1 99 2 view .LVU44
+ 100:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_node_t *store_node = NULL;
+ 256              		.loc 1 100 2 view .LVU45
+ 101:Libraries/ctrl_sdk/src/hal_store.c **** 	if (uid == 0) {
+ 257              		.loc 1 101 2 view .LVU46
+ 258              		.loc 1 101 5 is_stmt 0 view .LVU47
+ 259 0000 0246     		mov	r2, r0
+ 260 0002 C0B1     		cbz	r0, .L23
+ 102:Libraries/ctrl_sdk/src/hal_store.c **** 		return NULL;
+ 103:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 104:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_t *list = &hal_store_map[uid % HAL_STORE_MAP_LIST_SIZE];
+ 261              		.loc 1 104 2 is_stmt 1 view .LVU48
+ 262              		.loc 1 104 40 is_stmt 0 view .LVU49
+ 263 0004 0D4B     		ldr	r3, .L26
+ 264 0006 A3FB0013 		umull	r1, r3, r3, r0
+ 265 000a 9B08     		lsrs	r3, r3, #2
+ 266 000c 03EB4301 		add	r1, r3, r3, lsl #1
+ 267 0010 03EB8103 		add	r3, r3, r1, lsl #2
+ 268 0014 C31A     		subs	r3, r0, r3
+ 269 0016 9BB2     		uxth	r3, r3
+ 270              	.LVL22:
+ 105:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_for_each(list, node) {
+ 271              		.loc 1 105 2 is_stmt 1 view .LVU50
+ 272 0018 03EB4303 		add	r3, r3, r3, lsl #1
+ 273              	.LVL23:
+ 274              		.loc 1 105 2 is_stmt 0 view .LVU51
+ 275 001c 0849     		ldr	r1, .L26+4
+ 276              	.LVL24:
+ 277              		.loc 1 105 2 view .LVU52
+ 278 001e 51F82300 		ldr	r0, [r1, r3, lsl #2]
+ 279              	.LVL25:
+ 280              	.L20:
+ 281              		.loc 1 105 2 is_stmt 1 discriminator 5 view .LVU53
+ 282 0022 38B1     		cbz	r0, .L24
+ 106:Libraries/ctrl_sdk/src/hal_store.c **** 		store_node = container_addr(node, hal_store_node_t, node);
+ 283              		.loc 1 106 3 view .LVU54
+ 284              	.LVL26:
+ 107:Libraries/ctrl_sdk/src/hal_store.c **** 		if (store_node->info.uid == uid) {
+ 285              		.loc 1 107 3 view .LVU55
+ 286              		.loc 1 107 23 is_stmt 0 view .LVU56
+ 287 0024 30F8063C 		ldrh	r3, [r0, #-6]
+ 288              		.loc 1 107 6 view .LVU57
+ 289 0028 9342     		cmp	r3, r2
+ 290 002a 01D0     		beq	.L25
+ 105:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_for_each(list, node) {
+ 291              		.loc 1 105 2 is_stmt 1 discriminator 6 view .LVU58
+ 292 002c 0068     		ldr	r0, [r0]
+ 293              	.LVL27:
+ 105:Libraries/ctrl_sdk/src/hal_store.c **** 	lib_list_for_each(list, node) {
+ 294              		.loc 1 105 2 is_stmt 0 discriminator 6 view .LVU59
+ 295 002e F8E7     		b	.L20
+ 296              	.LVL28:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 8
+
+
+ 297              	.L25:
+ 108:Libraries/ctrl_sdk/src/hal_store.c **** 			return &store_node->info;
+ 298              		.loc 1 108 4 is_stmt 1 view .LVU60
+ 299              		.loc 1 108 11 is_stmt 0 view .LVU61
+ 300 0030 1438     		subs	r0, r0, #20
+ 301              	.LVL29:
+ 302              		.loc 1 108 11 view .LVU62
+ 303 0032 7047     		bx	lr
+ 304              	.LVL30:
+ 305              	.L24:
+ 306              		.loc 1 108 11 view .LVU63
+ 307 0034 7047     		bx	lr
+ 308              	.LVL31:
+ 309              	.L23:
+ 102:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 310              		.loc 1 102 10 view .LVU64
+ 311 0036 0020     		movs	r0, #0
+ 312              	.LVL32:
+ 109:Libraries/ctrl_sdk/src/hal_store.c **** 		}
+ 110:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 111:Libraries/ctrl_sdk/src/hal_store.c **** 	return NULL;
+ 112:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 313              		.loc 1 112 1 view .LVU65
+ 314 0038 7047     		bx	lr
+ 315              	.L27:
+ 316 003a 00BF     		.align	2
+ 317              	.L26:
+ 318 003c 4FECC44E 		.word	1321528399
+ 319 0040 00000000 		.word	hal_store_map
+ 320              		.cfi_endproc
+ 321              	.LFE5:
+ 323              		.section	.text.hal_store_reg,"ax",%progbits
+ 324              		.align	1
+ 325              		.global	hal_store_reg
+ 326              		.syntax unified
+ 327              		.thumb
+ 328              		.thumb_func
+ 330              	hal_store_reg:
+ 331              	.LVL33:
+ 332              	.LFB4:
+  71:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 333              		.loc 1 71 1 is_stmt 1 view -0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 0, uses_anonymous_args = 0
+  72:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_ERROR;
+ 337              		.loc 1 72 2 view .LVU67
+  72:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_ERROR;
+ 338              		.loc 1 72 5 is_stmt 0 view .LVU68
+ 339 0000 20B3     		cbz	r0, .L30
+  71:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 340              		.loc 1 71 1 view .LVU69
+ 341 0002 38B5     		push	{r3, r4, r5, lr}
+ 342              	.LCFI4:
+ 343              		.cfi_def_cfa_offset 16
+ 344              		.cfi_offset 3, -16
+ 345              		.cfi_offset 4, -12
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 9
+
+
+ 346              		.cfi_offset 5, -8
+ 347              		.cfi_offset 14, -4
+ 348 0004 0446     		mov	r4, r0
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 349              		.loc 1 77 2 is_stmt 1 view .LVU70
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 350              		.loc 1 77 10 is_stmt 0 view .LVU71
+ 351 0006 C589     		ldrh	r5, [r0, #14]
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 352              		.loc 1 77 5 view .LVU72
+ 353 0008 15B3     		cbz	r5, .L31
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 354              		.loc 1 77 28 discriminator 1 view .LVU73
+ 355 000a 8368     		ldr	r3, [r0, #8]
+  77:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 356              		.loc 1 77 21 discriminator 1 view .LVU74
+ 357 000c 13B3     		cbz	r3, .L32
+  80:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 358              		.loc 1 80 2 is_stmt 1 view .LVU75
+  80:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 359              		.loc 1 80 6 is_stmt 0 view .LVU76
+ 360 000e 2846     		mov	r0, r5
+ 361              	.LVL34:
+  80:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 362              		.loc 1 80 6 view .LVU77
+ 363 0010 FFF7FEFF 		bl	hal_store_find
+ 364              	.LVL35:
+  80:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 365              		.loc 1 80 5 view .LVU78
+ 366 0014 00BB     		cbnz	r0, .L33
+  85:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_FULL;
+ 367              		.loc 1 85 2 is_stmt 1 view .LVU79
+  85:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_FULL;
+ 368              		.loc 1 85 25 is_stmt 0 view .LVU80
+ 369 0016 134B     		ldr	r3, .L40
+ 370 0018 1A88     		ldrh	r2, [r3]
+  85:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_FULL;
+ 371              		.loc 1 85 5 view .LVU81
+ 372 001a 4FF6FF73 		movw	r3, #65535
+ 373 001e 9A42     		cmp	r2, r3
+ 374 0020 1CD0     		beq	.L34
+  88:Libraries/ctrl_sdk/src/hal_store.c **** 	if (node == NULL) {
+ 375              		.loc 1 88 2 is_stmt 1 view .LVU82
+  88:Libraries/ctrl_sdk/src/hal_store.c **** 	if (node == NULL) {
+ 376              		.loc 1 88 27 is_stmt 0 view .LVU83
+ 377 0022 2846     		mov	r0, r5
+ 378 0024 FFF7FEFF 		bl	hal_store_create_node
+ 379              	.LVL36:
+  89:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 380              		.loc 1 89 2 is_stmt 1 view .LVU84
+  89:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_CREATE_ERROR;
+ 381              		.loc 1 89 5 is_stmt 0 view .LVU85
+ 382 0028 0346     		mov	r3, r0
+ 383 002a C8B1     		cbz	r0, .L35
+  92:Libraries/ctrl_sdk/src/hal_store.c **** 	++hal_store_node_num;
+ 384              		.loc 1 92 2 is_stmt 1 view .LVU86
+ 385 002c 2268     		ldr	r2, [r4]	@ unaligned
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 10
+
+
+ 386 002e 6568     		ldr	r5, [r4, #4]	@ unaligned
+ 387 0030 A068     		ldr	r0, [r4, #8]	@ unaligned
+ 388              	.LVL37:
+  92:Libraries/ctrl_sdk/src/hal_store.c **** 	++hal_store_node_num;
+ 389              		.loc 1 92 2 is_stmt 0 view .LVU87
+ 390 0032 E168     		ldr	r1, [r4, #12]	@ unaligned
+ 391 0034 1A60     		str	r2, [r3]	@ unaligned
+ 392 0036 5D60     		str	r5, [r3, #4]	@ unaligned
+ 393 0038 9860     		str	r0, [r3, #8]	@ unaligned
+ 394 003a D960     		str	r1, [r3, #12]	@ unaligned
+ 395 003c 2269     		ldr	r2, [r4, #16]	@ unaligned
+ 396 003e 1A61     		str	r2, [r3, #16]	@ unaligned
+  93:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 397              		.loc 1 93 2 is_stmt 1 view .LVU88
+ 398 0040 084A     		ldr	r2, .L40
+ 399 0042 1388     		ldrh	r3, [r2]
+ 400              	.LVL38:
+  93:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 401              		.loc 1 93 2 is_stmt 0 view .LVU89
+ 402 0044 0133     		adds	r3, r3, #1
+ 403 0046 1380     		strh	r3, [r2]	@ movhi
+  94:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 404              		.loc 1 94 2 is_stmt 1 view .LVU90
+  94:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 405              		.loc 1 94 9 is_stmt 0 view .LVU91
+ 406 0048 0020     		movs	r0, #0
+ 407 004a 04E0     		b	.L29
+ 408              	.LVL39:
+ 409              	.L30:
+ 410              	.LCFI5:
+ 411              		.cfi_def_cfa_offset 0
+ 412              		.cfi_restore 3
+ 413              		.cfi_restore 4
+ 414              		.cfi_restore 5
+ 415              		.cfi_restore 14
+  73:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 416              		.loc 1 73 10 view .LVU92
+ 417 004c 0120     		movs	r0, #1
+ 418              	.LVL40:
+  95:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 419              		.loc 1 95 1 view .LVU93
+ 420 004e 7047     		bx	lr
+ 421              	.LVL41:
+ 422              	.L31:
+ 423              	.LCFI6:
+ 424              		.cfi_def_cfa_offset 16
+ 425              		.cfi_offset 3, -16
+ 426              		.cfi_offset 4, -12
+ 427              		.cfi_offset 5, -8
+ 428              		.cfi_offset 14, -4
+  78:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 429              		.loc 1 78 10 view .LVU94
+ 430 0050 0220     		movs	r0, #2
+ 431              	.LVL42:
+  78:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 432              		.loc 1 78 10 view .LVU95
+ 433 0052 00E0     		b	.L29
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 11
+
+
+ 434              	.LVL43:
+ 435              	.L32:
+  78:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 436              		.loc 1 78 10 view .LVU96
+ 437 0054 0220     		movs	r0, #2
+ 438              	.LVL44:
+ 439              	.L29:
+  95:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 440              		.loc 1 95 1 view .LVU97
+ 441 0056 38BD     		pop	{r3, r4, r5, pc}
+ 442              	.LVL45:
+ 443              	.L33:
+  81:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 444              		.loc 1 81 10 view .LVU98
+ 445 0058 0220     		movs	r0, #2
+ 446 005a FCE7     		b	.L29
+ 447              	.L34:
+  86:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 448              		.loc 1 86 10 view .LVU99
+ 449 005c 0320     		movs	r0, #3
+ 450 005e FAE7     		b	.L29
+ 451              	.LVL46:
+ 452              	.L35:
+  90:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 453              		.loc 1 90 10 view .LVU100
+ 454 0060 0220     		movs	r0, #2
+ 455              	.LVL47:
+  90:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 456              		.loc 1 90 10 view .LVU101
+ 457 0062 F8E7     		b	.L29
+ 458              	.L41:
+ 459              		.align	2
+ 460              	.L40:
+ 461 0064 00000000 		.word	hal_store_node_num
+ 462              		.cfi_endproc
+ 463              	.LFE4:
+ 465              		.section	.text.hal_store_set_param,"ax",%progbits
+ 466              		.align	1
+ 467              		.global	hal_store_set_param
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 472              	hal_store_set_param:
+ 473              	.LVL48:
+ 474              	.LFB6:
+ 113:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 114:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_set_param(uint16_t uid, void *param,
+ 115:Libraries/ctrl_sdk/src/hal_store.c **** 				    void *param2)
+ 116:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 475              		.loc 1 116 1 is_stmt 1 view -0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 479              		.loc 1 117 2 view .LVU103
+ 118:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_update_cb update_cb_fn = NULL;
+ 480              		.loc 1 118 2 view .LVU104
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 12
+
+
+ 119:Libraries/ctrl_sdk/src/hal_store.c **** 	if (uid == 0) {
+ 481              		.loc 1 119 2 view .LVU105
+ 482              		.loc 1 119 5 is_stmt 0 view .LVU106
+ 483 0000 08B9     		cbnz	r0, .L52
+ 120:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_ERROR;
+ 484              		.loc 1 120 10 view .LVU107
+ 485 0002 0120     		movs	r0, #1
+ 486              	.LVL49:
+ 121:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 122:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 123:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 124:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 125:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 126:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 127:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 128:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info->write == HAL_STORE_WRITE_PRESERVE) {
+ 129:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_WRITE_ERROR;
+ 130:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 131:Libraries/ctrl_sdk/src/hal_store.c **** 	memcpy(info->data, param, info->size);
+ 132:Libraries/ctrl_sdk/src/hal_store.c **** 	/* 更新回调函数 */
+ 133:Libraries/ctrl_sdk/src/hal_store.c **** 	update_cb_fn = info->update_cb_fn;
+ 134:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 135:Libraries/ctrl_sdk/src/hal_store.c **** 	if (update_cb_fn != NULL) {
+ 136:Libraries/ctrl_sdk/src/hal_store.c **** 		update_cb_fn(param, param2);
+ 137:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 138:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 139:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 487              		.loc 1 139 1 view .LVU108
+ 488 0004 7047     		bx	lr
+ 489              	.LVL50:
+ 490              	.L52:
+ 116:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 491              		.loc 1 116 1 view .LVU109
+ 492 0006 70B5     		push	{r4, r5, r6, lr}
+ 493              	.LCFI7:
+ 494              		.cfi_def_cfa_offset 16
+ 495              		.cfi_offset 4, -16
+ 496              		.cfi_offset 5, -12
+ 497              		.cfi_offset 6, -8
+ 498              		.cfi_offset 14, -4
+ 499 0008 0D46     		mov	r5, r1
+ 500 000a 1446     		mov	r4, r2
+ 501 000c 0646     		mov	r6, r0
+ 122:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 502              		.loc 1 122 2 is_stmt 1 view .LVU110
+ 503 000e FFF7FEFF 		bl	hal_store_port_lock
+ 504              	.LVL51:
+ 124:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 505              		.loc 1 124 2 view .LVU111
+ 124:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 506              		.loc 1 124 9 is_stmt 0 view .LVU112
+ 507 0012 3046     		mov	r0, r6
+ 508 0014 FFF7FEFF 		bl	hal_store_find
+ 509              	.LVL52:
+ 125:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 510              		.loc 1 125 2 is_stmt 1 view .LVU113
+ 125:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 13
+
+
+ 511              		.loc 1 125 5 is_stmt 0 view .LVU114
+ 512 0018 0646     		mov	r6, r0
+ 513 001a 78B1     		cbz	r0, .L45
+ 128:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_WRITE_ERROR;
+ 514              		.loc 1 128 2 is_stmt 1 view .LVU115
+ 128:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_WRITE_ERROR;
+ 515              		.loc 1 128 10 is_stmt 0 view .LVU116
+ 516 001c 437C     		ldrb	r3, [r0, #17]	@ zero_extendqisi2
+ 128:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_WRITE_ERROR;
+ 517              		.loc 1 128 5 view .LVU117
+ 518 001e 7BB9     		cbnz	r3, .L46
+ 131:Libraries/ctrl_sdk/src/hal_store.c **** 	/* 更新回调函数 */
+ 519              		.loc 1 131 2 is_stmt 1 view .LVU118
+ 520 0020 8268     		ldr	r2, [r0, #8]
+ 521 0022 2946     		mov	r1, r5
+ 522 0024 4068     		ldr	r0, [r0, #4]
+ 523              	.LVL53:
+ 131:Libraries/ctrl_sdk/src/hal_store.c **** 	/* 更新回调函数 */
+ 524              		.loc 1 131 2 is_stmt 0 view .LVU119
+ 525 0026 FFF7FEFF 		bl	memcpy
+ 526              	.LVL54:
+ 133:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 527              		.loc 1 133 2 is_stmt 1 view .LVU120
+ 133:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 528              		.loc 1 133 15 is_stmt 0 view .LVU121
+ 529 002a 3668     		ldr	r6, [r6]
+ 530              	.LVL55:
+ 134:Libraries/ctrl_sdk/src/hal_store.c **** 	if (update_cb_fn != NULL) {
+ 531              		.loc 1 134 2 is_stmt 1 view .LVU122
+ 532 002c FFF7FEFF 		bl	hal_store_port_unlock
+ 533              	.LVL56:
+ 135:Libraries/ctrl_sdk/src/hal_store.c **** 		update_cb_fn(param, param2);
+ 534              		.loc 1 135 2 view .LVU123
+ 135:Libraries/ctrl_sdk/src/hal_store.c **** 		update_cb_fn(param, param2);
+ 535              		.loc 1 135 5 is_stmt 0 view .LVU124
+ 536 0030 46B1     		cbz	r6, .L47
+ 136:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 537              		.loc 1 136 3 is_stmt 1 view .LVU125
+ 538 0032 2146     		mov	r1, r4
+ 539 0034 2846     		mov	r0, r5
+ 540 0036 B047     		blx	r6
+ 541              	.LVL57:
+ 138:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 542              		.loc 1 138 9 is_stmt 0 view .LVU126
+ 543 0038 0020     		movs	r0, #0
+ 544              	.LVL58:
+ 545              	.L43:
+ 546              		.loc 1 139 1 view .LVU127
+ 547 003a 70BD     		pop	{r4, r5, r6, pc}
+ 548              	.LVL59:
+ 549              	.L45:
+ 126:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 550              		.loc 1 126 10 view .LVU128
+ 551 003c 0420     		movs	r0, #4
+ 552              	.LVL60:
+ 126:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 553              		.loc 1 126 10 view .LVU129
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 14
+
+
+ 554 003e FCE7     		b	.L43
+ 555              	.LVL61:
+ 556              	.L46:
+ 129:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 557              		.loc 1 129 10 view .LVU130
+ 558 0040 0620     		movs	r0, #6
+ 559              	.LVL62:
+ 129:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 560              		.loc 1 129 10 view .LVU131
+ 561 0042 FAE7     		b	.L43
+ 562              	.LVL63:
+ 563              	.L47:
+ 138:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 564              		.loc 1 138 9 view .LVU132
+ 565 0044 0020     		movs	r0, #0
+ 566 0046 F8E7     		b	.L43
+ 567              		.cfi_endproc
+ 568              	.LFE6:
+ 570              		.section	.text.hal_store_get_param,"ax",%progbits
+ 571              		.align	1
+ 572              		.global	hal_store_get_param
+ 573              		.syntax unified
+ 574              		.thumb
+ 575              		.thumb_func
+ 577              	hal_store_get_param:
+ 578              	.LVL64:
+ 579              	.LFB7:
+ 140:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 141:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_get_param(uint16_t uid, void *data)
+ 142:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 580              		.loc 1 142 1 is_stmt 1 view -0
+ 581              		.cfi_startproc
+ 582              		@ args = 0, pretend = 0, frame = 0
+ 583              		@ frame_needed = 0, uses_anonymous_args = 0
+ 584              		.loc 1 142 1 is_stmt 0 view .LVU134
+ 585 0000 38B5     		push	{r3, r4, r5, lr}
+ 586              	.LCFI8:
+ 587              		.cfi_def_cfa_offset 16
+ 588              		.cfi_offset 3, -16
+ 589              		.cfi_offset 4, -12
+ 590              		.cfi_offset 5, -8
+ 591              		.cfi_offset 14, -4
+ 592 0002 0446     		mov	r4, r0
+ 593 0004 0D46     		mov	r5, r1
+ 143:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 594              		.loc 1 143 2 is_stmt 1 view .LVU135
+ 595              	.LVL65:
+ 144:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 596              		.loc 1 144 2 view .LVU136
+ 597 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 598              	.LVL66:
+ 145:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 146:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 599              		.loc 1 146 2 view .LVU137
+ 600              		.loc 1 146 9 is_stmt 0 view .LVU138
+ 601 000a 2046     		mov	r0, r4
+ 602 000c FFF7FEFF 		bl	hal_store_find
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 15
+
+
+ 603              	.LVL67:
+ 147:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 604              		.loc 1 147 2 is_stmt 1 view .LVU139
+ 605              		.loc 1 147 5 is_stmt 0 view .LVU140
+ 606 0010 50B1     		cbz	r0, .L55
+ 148:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 149:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 150:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info->read == HAL_STORE_READ_PRESERVE) {
+ 607              		.loc 1 150 2 is_stmt 1 view .LVU141
+ 608              		.loc 1 150 10 is_stmt 0 view .LVU142
+ 609 0012 027C     		ldrb	r2, [r0, #16]	@ zero_extendqisi2
+ 610              		.loc 1 150 5 view .LVU143
+ 611 0014 52B9     		cbnz	r2, .L56
+ 151:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_READ_ERROR;
+ 152:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 153:Libraries/ctrl_sdk/src/hal_store.c **** 	memcpy(data, info->data, info->size);
+ 612              		.loc 1 153 2 is_stmt 1 view .LVU144
+ 613 0016 8268     		ldr	r2, [r0, #8]
+ 614 0018 4168     		ldr	r1, [r0, #4]
+ 615 001a 2846     		mov	r0, r5
+ 616              	.LVL68:
+ 617              		.loc 1 153 2 is_stmt 0 view .LVU145
+ 618 001c FFF7FEFF 		bl	memcpy
+ 619              	.LVL69:
+ 154:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 620              		.loc 1 154 2 is_stmt 1 view .LVU146
+ 621 0020 FFF7FEFF 		bl	hal_store_port_unlock
+ 622              	.LVL70:
+ 155:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 623              		.loc 1 155 2 view .LVU147
+ 624              		.loc 1 155 9 is_stmt 0 view .LVU148
+ 625 0024 0020     		movs	r0, #0
+ 626              	.L54:
+ 156:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 627              		.loc 1 156 1 view .LVU149
+ 628 0026 38BD     		pop	{r3, r4, r5, pc}
+ 629              	.LVL71:
+ 630              	.L55:
+ 148:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 631              		.loc 1 148 10 view .LVU150
+ 632 0028 0420     		movs	r0, #4
+ 633              	.LVL72:
+ 148:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 634              		.loc 1 148 10 view .LVU151
+ 635 002a FCE7     		b	.L54
+ 636              	.LVL73:
+ 637              	.L56:
+ 151:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 638              		.loc 1 151 10 view .LVU152
+ 639 002c 0520     		movs	r0, #5
+ 640              	.LVL74:
+ 151:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 641              		.loc 1 151 10 view .LVU153
+ 642 002e FAE7     		b	.L54
+ 643              		.cfi_endproc
+ 644              	.LFE7:
+ 646              		.section	.text.hal_store_get_size,"ax",%progbits
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 16
+
+
+ 647              		.align	1
+ 648              		.global	hal_store_get_size
+ 649              		.syntax unified
+ 650              		.thumb
+ 651              		.thumb_func
+ 653              	hal_store_get_size:
+ 654              	.LVL75:
+ 655              	.LFB8:
+ 157:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 158:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_get_size(uint16_t uid, uint32_t *size)
+ 159:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 656              		.loc 1 159 1 is_stmt 1 view -0
+ 657              		.cfi_startproc
+ 658              		@ args = 0, pretend = 0, frame = 0
+ 659              		@ frame_needed = 0, uses_anonymous_args = 0
+ 660              		.loc 1 159 1 is_stmt 0 view .LVU155
+ 661 0000 38B5     		push	{r3, r4, r5, lr}
+ 662              	.LCFI9:
+ 663              		.cfi_def_cfa_offset 16
+ 664              		.cfi_offset 3, -16
+ 665              		.cfi_offset 4, -12
+ 666              		.cfi_offset 5, -8
+ 667              		.cfi_offset 14, -4
+ 668 0002 0446     		mov	r4, r0
+ 669 0004 0D46     		mov	r5, r1
+ 160:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 670              		.loc 1 160 2 is_stmt 1 view .LVU156
+ 671              	.LVL76:
+ 161:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 672              		.loc 1 161 2 view .LVU157
+ 673 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 674              	.LVL77:
+ 162:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 163:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 675              		.loc 1 163 2 view .LVU158
+ 676              		.loc 1 163 9 is_stmt 0 view .LVU159
+ 677 000a 2046     		mov	r0, r4
+ 678 000c FFF7FEFF 		bl	hal_store_find
+ 679              	.LVL78:
+ 164:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 680              		.loc 1 164 2 is_stmt 1 view .LVU160
+ 681              		.loc 1 164 5 is_stmt 0 view .LVU161
+ 682 0010 28B1     		cbz	r0, .L60
+ 165:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 166:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 167:Libraries/ctrl_sdk/src/hal_store.c **** 	*size = info->size;
+ 683              		.loc 1 167 2 is_stmt 1 view .LVU162
+ 684              		.loc 1 167 14 is_stmt 0 view .LVU163
+ 685 0012 8368     		ldr	r3, [r0, #8]
+ 686              		.loc 1 167 8 view .LVU164
+ 687 0014 2B60     		str	r3, [r5]
+ 168:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 688              		.loc 1 168 2 is_stmt 1 view .LVU165
+ 689 0016 FFF7FEFF 		bl	hal_store_port_unlock
+ 690              	.LVL79:
+ 169:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 691              		.loc 1 169 2 view .LVU166
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 17
+
+
+ 692              		.loc 1 169 9 is_stmt 0 view .LVU167
+ 693 001a 0020     		movs	r0, #0
+ 694              	.L59:
+ 170:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 695              		.loc 1 170 1 view .LVU168
+ 696 001c 38BD     		pop	{r3, r4, r5, pc}
+ 697              	.LVL80:
+ 698              	.L60:
+ 165:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 699              		.loc 1 165 10 view .LVU169
+ 700 001e 0420     		movs	r0, #4
+ 701              	.LVL81:
+ 165:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 702              		.loc 1 165 10 view .LVU170
+ 703 0020 FCE7     		b	.L59
+ 704              		.cfi_endproc
+ 705              	.LFE8:
+ 707              		.section	.text.hal_store_set_cb,"ax",%progbits
+ 708              		.align	1
+ 709              		.global	hal_store_set_cb
+ 710              		.syntax unified
+ 711              		.thumb
+ 712              		.thumb_func
+ 714              	hal_store_set_cb:
+ 715              	.LVL82:
+ 716              	.LFB9:
+ 171:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 172:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_set_cb(uint16_t uid, hal_store_update_cb fn)
+ 173:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 717              		.loc 1 173 1 is_stmt 1 view -0
+ 718              		.cfi_startproc
+ 719              		@ args = 0, pretend = 0, frame = 0
+ 720              		@ frame_needed = 0, uses_anonymous_args = 0
+ 721              		.loc 1 173 1 is_stmt 0 view .LVU172
+ 722 0000 38B5     		push	{r3, r4, r5, lr}
+ 723              	.LCFI10:
+ 724              		.cfi_def_cfa_offset 16
+ 725              		.cfi_offset 3, -16
+ 726              		.cfi_offset 4, -12
+ 727              		.cfi_offset 5, -8
+ 728              		.cfi_offset 14, -4
+ 729 0002 0446     		mov	r4, r0
+ 730 0004 0D46     		mov	r5, r1
+ 174:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 731              		.loc 1 174 2 is_stmt 1 view .LVU173
+ 732              	.LVL83:
+ 175:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 733              		.loc 1 175 2 view .LVU174
+ 734 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 735              	.LVL84:
+ 176:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 177:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 736              		.loc 1 177 2 view .LVU175
+ 737              		.loc 1 177 9 is_stmt 0 view .LVU176
+ 738 000a 2046     		mov	r0, r4
+ 739 000c FFF7FEFF 		bl	hal_store_find
+ 740              	.LVL85:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 18
+
+
+ 178:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 741              		.loc 1 178 2 is_stmt 1 view .LVU177
+ 742              		.loc 1 178 5 is_stmt 0 view .LVU178
+ 743 0010 20B1     		cbz	r0, .L64
+ 179:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 180:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 181:Libraries/ctrl_sdk/src/hal_store.c **** 	info->update_cb_fn = fn;
+ 744              		.loc 1 181 2 is_stmt 1 view .LVU179
+ 745              		.loc 1 181 21 is_stmt 0 view .LVU180
+ 746 0012 0560     		str	r5, [r0]
+ 182:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 747              		.loc 1 182 2 is_stmt 1 view .LVU181
+ 748 0014 FFF7FEFF 		bl	hal_store_port_unlock
+ 749              	.LVL86:
+ 183:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 750              		.loc 1 183 2 view .LVU182
+ 751              		.loc 1 183 9 is_stmt 0 view .LVU183
+ 752 0018 0020     		movs	r0, #0
+ 753              	.L63:
+ 184:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 754              		.loc 1 184 1 view .LVU184
+ 755 001a 38BD     		pop	{r3, r4, r5, pc}
+ 756              	.LVL87:
+ 757              	.L64:
+ 179:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 758              		.loc 1 179 10 view .LVU185
+ 759 001c 0420     		movs	r0, #4
+ 760              	.LVL88:
+ 179:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 761              		.loc 1 179 10 view .LVU186
+ 762 001e FCE7     		b	.L63
+ 763              		.cfi_endproc
+ 764              	.LFE9:
+ 766              		.section	.text.hal_store_del_update_cb,"ax",%progbits
+ 767              		.align	1
+ 768              		.global	hal_store_del_update_cb
+ 769              		.syntax unified
+ 770              		.thumb
+ 771              		.thumb_func
+ 773              	hal_store_del_update_cb:
+ 774              	.LVL89:
+ 775              	.LFB10:
+ 185:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 186:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_del_update_cb(uint16_t uid)
+ 187:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 776              		.loc 1 187 1 is_stmt 1 view -0
+ 777              		.cfi_startproc
+ 778              		@ args = 0, pretend = 0, frame = 0
+ 779              		@ frame_needed = 0, uses_anonymous_args = 0
+ 780              		.loc 1 187 1 is_stmt 0 view .LVU188
+ 781 0000 08B5     		push	{r3, lr}
+ 782              	.LCFI11:
+ 783              		.cfi_def_cfa_offset 8
+ 784              		.cfi_offset 3, -8
+ 785              		.cfi_offset 14, -4
+ 188:Libraries/ctrl_sdk/src/hal_store.c **** 	return hal_store_set_cb(uid, NULL);
+ 786              		.loc 1 188 2 is_stmt 1 view .LVU189
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 19
+
+
+ 787              		.loc 1 188 9 is_stmt 0 view .LVU190
+ 788 0002 0021     		movs	r1, #0
+ 789 0004 FFF7FEFF 		bl	hal_store_set_cb
+ 790              	.LVL90:
+ 189:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 791              		.loc 1 189 1 view .LVU191
+ 792 0008 08BD     		pop	{r3, pc}
+ 793              		.cfi_endproc
+ 794              	.LFE10:
+ 796              		.section	.text.hal_store_del,"ax",%progbits
+ 797              		.align	1
+ 798              		.global	hal_store_del
+ 799              		.syntax unified
+ 800              		.thumb
+ 801              		.thumb_func
+ 803              	hal_store_del:
+ 804              	.LVL91:
+ 805              	.LFB11:
+ 190:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 191:Libraries/ctrl_sdk/src/hal_store.c **** /**
+ 192:Libraries/ctrl_sdk/src/hal_store.c ****  * @brief 删除该uid的节点
+ 193:Libraries/ctrl_sdk/src/hal_store.c ****  */
+ 194:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_del(uint16_t uid)
+ 195:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 806              		.loc 1 195 1 is_stmt 1 view -0
+ 807              		.cfi_startproc
+ 808              		@ args = 0, pretend = 0, frame = 0
+ 809              		@ frame_needed = 0, uses_anonymous_args = 0
+ 810              		.loc 1 195 1 is_stmt 0 view .LVU193
+ 811 0000 10B5     		push	{r4, lr}
+ 812              	.LCFI12:
+ 813              		.cfi_def_cfa_offset 8
+ 814              		.cfi_offset 4, -8
+ 815              		.cfi_offset 14, -4
+ 816 0002 0446     		mov	r4, r0
+ 196:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 817              		.loc 1 196 2 is_stmt 1 view .LVU194
+ 818              	.LVL92:
+ 197:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 819              		.loc 1 197 2 view .LVU195
+ 820 0004 FFF7FEFF 		bl	hal_store_port_lock
+ 821              	.LVL93:
+ 198:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 199:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 822              		.loc 1 199 2 view .LVU196
+ 823              		.loc 1 199 9 is_stmt 0 view .LVU197
+ 824 0008 2046     		mov	r0, r4
+ 825 000a FFF7FEFF 		bl	hal_store_find
+ 826              	.LVL94:
+ 200:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 827              		.loc 1 200 2 is_stmt 1 view .LVU198
+ 828              		.loc 1 200 5 is_stmt 0 view .LVU199
+ 829 000e 58B1     		cbz	r0, .L70
+ 830 0010 0146     		mov	r1, r0
+ 201:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 202:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 203:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_node_t *node = container_addr(info, hal_store_node_t, info);
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 20
+
+
+ 831              		.loc 1 203 2 is_stmt 1 view .LVU200
+ 832              	.LVL95:
+ 204:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_del_node(uid, node);
+ 833              		.loc 1 204 2 view .LVU201
+ 834 0012 2046     		mov	r0, r4
+ 835              	.LVL96:
+ 836              		.loc 1 204 2 is_stmt 0 view .LVU202
+ 837 0014 FFF7FEFF 		bl	hal_store_del_node
+ 838              	.LVL97:
+ 205:Libraries/ctrl_sdk/src/hal_store.c **** 	--hal_store_node_num;
+ 839              		.loc 1 205 2 is_stmt 1 view .LVU203
+ 840 0018 044A     		ldr	r2, .L72
+ 841 001a 1388     		ldrh	r3, [r2]
+ 842 001c 013B     		subs	r3, r3, #1
+ 843 001e 1380     		strh	r3, [r2]	@ movhi
+ 206:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 207:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 844              		.loc 1 207 2 view .LVU204
+ 845 0020 FFF7FEFF 		bl	hal_store_port_unlock
+ 846              	.LVL98:
+ 208:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 847              		.loc 1 208 2 view .LVU205
+ 848              		.loc 1 208 9 is_stmt 0 view .LVU206
+ 849 0024 0020     		movs	r0, #0
+ 850              	.LVL99:
+ 851              	.L69:
+ 209:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 852              		.loc 1 209 1 view .LVU207
+ 853 0026 10BD     		pop	{r4, pc}
+ 854              	.LVL100:
+ 855              	.L70:
+ 201:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 856              		.loc 1 201 10 view .LVU208
+ 857 0028 0420     		movs	r0, #4
+ 858              	.LVL101:
+ 201:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 859              		.loc 1 201 10 view .LVU209
+ 860 002a FCE7     		b	.L69
+ 861              	.L73:
+ 862              		.align	2
+ 863              	.L72:
+ 864 002c 00000000 		.word	hal_store_node_num
+ 865              		.cfi_endproc
+ 866              	.LFE11:
+ 868              		.section	.text.hal_store_del_all,"ax",%progbits
+ 869              		.align	1
+ 870              		.global	hal_store_del_all
+ 871              		.syntax unified
+ 872              		.thumb
+ 873              		.thumb_func
+ 875              	hal_store_del_all:
+ 876              	.LFB12:
+ 210:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 211:Libraries/ctrl_sdk/src/hal_store.c **** void hal_store_del_all(void)
+ 212:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 877              		.loc 1 212 1 is_stmt 1 view -0
+ 878              		.cfi_startproc
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 21
+
+
+ 879              		@ args = 0, pretend = 0, frame = 0
+ 880              		@ frame_needed = 0, uses_anonymous_args = 0
+ 881 0000 08B5     		push	{r3, lr}
+ 882              	.LCFI13:
+ 883              		.cfi_def_cfa_offset 8
+ 884              		.cfi_offset 3, -8
+ 885              		.cfi_offset 14, -4
+ 213:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 886              		.loc 1 213 2 view .LVU211
+ 887 0002 FFF7FEFF 		bl	hal_store_port_lock
+ 888              	.LVL102:
+ 214:Libraries/ctrl_sdk/src/hal_store.c **** 	// for(uint16_t i = 0; i < HAL_STORE_MAP_LIST_SIZE; ++i)
+ 215:Libraries/ctrl_sdk/src/hal_store.c **** 	// {
+ 216:Libraries/ctrl_sdk/src/hal_store.c **** 	// }
+ 217:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 889              		.loc 1 217 2 view .LVU212
+ 890 0006 FFF7FEFF 		bl	hal_store_port_unlock
+ 891              	.LVL103:
+ 218:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 892              		.loc 1 218 1 is_stmt 0 view .LVU213
+ 893 000a 08BD     		pop	{r3, pc}
+ 894              		.cfi_endproc
+ 895              	.LFE12:
+ 897              		.section	.text.hal_store_set_read_permission,"ax",%progbits
+ 898              		.align	1
+ 899              		.global	hal_store_set_read_permission
+ 900              		.syntax unified
+ 901              		.thumb
+ 902              		.thumb_func
+ 904              	hal_store_set_read_permission:
+ 905              	.LVL104:
+ 906              	.LFB13:
+ 219:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 220:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_set_read_permission(uint16_t uid, _Bool i)
+ 221:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 907              		.loc 1 221 1 is_stmt 1 view -0
+ 908              		.cfi_startproc
+ 909              		@ args = 0, pretend = 0, frame = 0
+ 910              		@ frame_needed = 0, uses_anonymous_args = 0
+ 911              		.loc 1 221 1 is_stmt 0 view .LVU215
+ 912 0000 38B5     		push	{r3, r4, r5, lr}
+ 913              	.LCFI14:
+ 914              		.cfi_def_cfa_offset 16
+ 915              		.cfi_offset 3, -16
+ 916              		.cfi_offset 4, -12
+ 917              		.cfi_offset 5, -8
+ 918              		.cfi_offset 14, -4
+ 919 0002 0446     		mov	r4, r0
+ 920 0004 0D46     		mov	r5, r1
+ 222:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 921              		.loc 1 222 2 is_stmt 1 view .LVU216
+ 922              	.LVL105:
+ 223:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 923              		.loc 1 223 2 view .LVU217
+ 924 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 925              	.LVL106:
+ 224:Libraries/ctrl_sdk/src/hal_store.c **** 
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 22
+
+
+ 225:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 926              		.loc 1 225 2 view .LVU218
+ 927              		.loc 1 225 9 is_stmt 0 view .LVU219
+ 928 000a 2046     		mov	r0, r4
+ 929 000c FFF7FEFF 		bl	hal_store_find
+ 930              	.LVL107:
+ 226:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 931              		.loc 1 226 2 is_stmt 1 view .LVU220
+ 932              		.loc 1 226 5 is_stmt 0 view .LVU221
+ 933 0010 20B1     		cbz	r0, .L78
+ 227:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 228:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 229:Libraries/ctrl_sdk/src/hal_store.c **** 	info->read = i;
+ 934              		.loc 1 229 2 is_stmt 1 view .LVU222
+ 935              		.loc 1 229 13 is_stmt 0 view .LVU223
+ 936 0012 0574     		strb	r5, [r0, #16]
+ 230:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 231:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 937              		.loc 1 231 2 is_stmt 1 view .LVU224
+ 938 0014 FFF7FEFF 		bl	hal_store_port_unlock
+ 939              	.LVL108:
+ 232:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 940              		.loc 1 232 2 view .LVU225
+ 941              		.loc 1 232 9 is_stmt 0 view .LVU226
+ 942 0018 0020     		movs	r0, #0
+ 943              	.L77:
+ 233:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 944              		.loc 1 233 1 view .LVU227
+ 945 001a 38BD     		pop	{r3, r4, r5, pc}
+ 946              	.LVL109:
+ 947              	.L78:
+ 227:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 948              		.loc 1 227 10 view .LVU228
+ 949 001c 0420     		movs	r0, #4
+ 950              	.LVL110:
+ 227:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 951              		.loc 1 227 10 view .LVU229
+ 952 001e FCE7     		b	.L77
+ 953              		.cfi_endproc
+ 954              	.LFE13:
+ 956              		.section	.text.hal_store_get_read_permission,"ax",%progbits
+ 957              		.align	1
+ 958              		.global	hal_store_get_read_permission
+ 959              		.syntax unified
+ 960              		.thumb
+ 961              		.thumb_func
+ 963              	hal_store_get_read_permission:
+ 964              	.LVL111:
+ 965              	.LFB14:
+ 234:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 235:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_get_read_permission(uint16_t uid, _Bool *i)
+ 236:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 966              		.loc 1 236 1 is_stmt 1 view -0
+ 967              		.cfi_startproc
+ 968              		@ args = 0, pretend = 0, frame = 0
+ 969              		@ frame_needed = 0, uses_anonymous_args = 0
+ 970              		.loc 1 236 1 is_stmt 0 view .LVU231
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 23
+
+
+ 971 0000 38B5     		push	{r3, r4, r5, lr}
+ 972              	.LCFI15:
+ 973              		.cfi_def_cfa_offset 16
+ 974              		.cfi_offset 3, -16
+ 975              		.cfi_offset 4, -12
+ 976              		.cfi_offset 5, -8
+ 977              		.cfi_offset 14, -4
+ 978 0002 0446     		mov	r4, r0
+ 979 0004 0D46     		mov	r5, r1
+ 237:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 980              		.loc 1 237 2 is_stmt 1 view .LVU232
+ 981              	.LVL112:
+ 238:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 982              		.loc 1 238 2 view .LVU233
+ 983 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 984              	.LVL113:
+ 239:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 240:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 985              		.loc 1 240 2 view .LVU234
+ 986              		.loc 1 240 9 is_stmt 0 view .LVU235
+ 987 000a 2046     		mov	r0, r4
+ 988 000c FFF7FEFF 		bl	hal_store_find
+ 989              	.LVL114:
+ 241:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 990              		.loc 1 241 2 is_stmt 1 view .LVU236
+ 991              		.loc 1 241 5 is_stmt 0 view .LVU237
+ 992 0010 28B1     		cbz	r0, .L82
+ 242:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 243:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 244:Libraries/ctrl_sdk/src/hal_store.c **** 	*i = info->read;
+ 993              		.loc 1 244 2 is_stmt 1 view .LVU238
+ 994              		.loc 1 244 11 is_stmt 0 view .LVU239
+ 995 0012 037C     		ldrb	r3, [r0, #16]	@ zero_extendqisi2
+ 996              		.loc 1 244 5 view .LVU240
+ 997 0014 2B70     		strb	r3, [r5]
+ 245:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 246:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 998              		.loc 1 246 2 is_stmt 1 view .LVU241
+ 999 0016 FFF7FEFF 		bl	hal_store_port_unlock
+ 1000              	.LVL115:
+ 247:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 1001              		.loc 1 247 2 view .LVU242
+ 1002              		.loc 1 247 9 is_stmt 0 view .LVU243
+ 1003 001a 0020     		movs	r0, #0
+ 1004              	.L81:
+ 248:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 1005              		.loc 1 248 1 view .LVU244
+ 1006 001c 38BD     		pop	{r3, r4, r5, pc}
+ 1007              	.LVL116:
+ 1008              	.L82:
+ 242:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1009              		.loc 1 242 10 view .LVU245
+ 1010 001e 0420     		movs	r0, #4
+ 1011              	.LVL117:
+ 242:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1012              		.loc 1 242 10 view .LVU246
+ 1013 0020 FCE7     		b	.L81
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 24
+
+
+ 1014              		.cfi_endproc
+ 1015              	.LFE14:
+ 1017              		.section	.text.hal_store_set_write_permission,"ax",%progbits
+ 1018              		.align	1
+ 1019              		.global	hal_store_set_write_permission
+ 1020              		.syntax unified
+ 1021              		.thumb
+ 1022              		.thumb_func
+ 1024              	hal_store_set_write_permission:
+ 1025              	.LVL118:
+ 1026              	.LFB15:
+ 249:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 250:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_set_write_permission(uint16_t uid, _Bool i)
+ 251:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 1027              		.loc 1 251 1 is_stmt 1 view -0
+ 1028              		.cfi_startproc
+ 1029              		@ args = 0, pretend = 0, frame = 0
+ 1030              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1031              		.loc 1 251 1 is_stmt 0 view .LVU248
+ 1032 0000 38B5     		push	{r3, r4, r5, lr}
+ 1033              	.LCFI16:
+ 1034              		.cfi_def_cfa_offset 16
+ 1035              		.cfi_offset 3, -16
+ 1036              		.cfi_offset 4, -12
+ 1037              		.cfi_offset 5, -8
+ 1038              		.cfi_offset 14, -4
+ 1039 0002 0446     		mov	r4, r0
+ 1040 0004 0D46     		mov	r5, r1
+ 252:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 1041              		.loc 1 252 2 is_stmt 1 view .LVU249
+ 1042              	.LVL119:
+ 253:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 1043              		.loc 1 253 2 view .LVU250
+ 1044 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 1045              	.LVL120:
+ 254:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 255:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 1046              		.loc 1 255 2 view .LVU251
+ 1047              		.loc 1 255 9 is_stmt 0 view .LVU252
+ 1048 000a 2046     		mov	r0, r4
+ 1049 000c FFF7FEFF 		bl	hal_store_find
+ 1050              	.LVL121:
+ 256:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 1051              		.loc 1 256 2 is_stmt 1 view .LVU253
+ 1052              		.loc 1 256 5 is_stmt 0 view .LVU254
+ 1053 0010 20B1     		cbz	r0, .L86
+ 257:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 258:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 259:Libraries/ctrl_sdk/src/hal_store.c **** 	info->write = i;
+ 1054              		.loc 1 259 2 is_stmt 1 view .LVU255
+ 1055              		.loc 1 259 14 is_stmt 0 view .LVU256
+ 1056 0012 4574     		strb	r5, [r0, #17]
+ 260:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 261:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 1057              		.loc 1 261 2 is_stmt 1 view .LVU257
+ 1058 0014 FFF7FEFF 		bl	hal_store_port_unlock
+ 1059              	.LVL122:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 25
+
+
+ 262:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 1060              		.loc 1 262 2 view .LVU258
+ 1061              		.loc 1 262 9 is_stmt 0 view .LVU259
+ 1062 0018 0020     		movs	r0, #0
+ 1063              	.L85:
+ 263:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 1064              		.loc 1 263 1 view .LVU260
+ 1065 001a 38BD     		pop	{r3, r4, r5, pc}
+ 1066              	.LVL123:
+ 1067              	.L86:
+ 257:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1068              		.loc 1 257 10 view .LVU261
+ 1069 001c 0420     		movs	r0, #4
+ 1070              	.LVL124:
+ 257:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1071              		.loc 1 257 10 view .LVU262
+ 1072 001e FCE7     		b	.L85
+ 1073              		.cfi_endproc
+ 1074              	.LFE15:
+ 1076              		.section	.text.hal_store_get_write_permission,"ax",%progbits
+ 1077              		.align	1
+ 1078              		.global	hal_store_get_write_permission
+ 1079              		.syntax unified
+ 1080              		.thumb
+ 1081              		.thumb_func
+ 1083              	hal_store_get_write_permission:
+ 1084              	.LVL125:
+ 1085              	.LFB16:
+ 264:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 265:Libraries/ctrl_sdk/src/hal_store.c **** hal_store_status hal_store_get_write_permission(uint16_t uid, _Bool *i)
+ 266:Libraries/ctrl_sdk/src/hal_store.c **** {
+ 1086              		.loc 1 266 1 is_stmt 1 view -0
+ 1087              		.cfi_startproc
+ 1088              		@ args = 0, pretend = 0, frame = 0
+ 1089              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1090              		.loc 1 266 1 is_stmt 0 view .LVU264
+ 1091 0000 38B5     		push	{r3, r4, r5, lr}
+ 1092              	.LCFI17:
+ 1093              		.cfi_def_cfa_offset 16
+ 1094              		.cfi_offset 3, -16
+ 1095              		.cfi_offset 4, -12
+ 1096              		.cfi_offset 5, -8
+ 1097              		.cfi_offset 14, -4
+ 1098 0002 0446     		mov	r4, r0
+ 1099 0004 0D46     		mov	r5, r1
+ 267:Libraries/ctrl_sdk/src/hal_store.c **** 	hal_store_info_t *info = NULL;
+ 1100              		.loc 1 267 2 is_stmt 1 view .LVU265
+ 1101              	.LVL126:
+ 268:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_LOCK();
+ 1102              		.loc 1 268 2 view .LVU266
+ 1103 0006 FFF7FEFF 		bl	hal_store_port_lock
+ 1104              	.LVL127:
+ 269:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 270:Libraries/ctrl_sdk/src/hal_store.c **** 	info = hal_store_find(uid);
+ 1105              		.loc 1 270 2 view .LVU267
+ 1106              		.loc 1 270 9 is_stmt 0 view .LVU268
+ 1107 000a 2046     		mov	r0, r4
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 26
+
+
+ 1108 000c FFF7FEFF 		bl	hal_store_find
+ 1109              	.LVL128:
+ 271:Libraries/ctrl_sdk/src/hal_store.c **** 	if (info == NULL) {
+ 1110              		.loc 1 271 2 is_stmt 1 view .LVU269
+ 1111              		.loc 1 271 5 is_stmt 0 view .LVU270
+ 1112 0010 28B1     		cbz	r0, .L90
+ 272:Libraries/ctrl_sdk/src/hal_store.c **** 		return HAL_STORE_NOT_FIND;
+ 273:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 274:Libraries/ctrl_sdk/src/hal_store.c **** 	*i = info->write;
+ 1113              		.loc 1 274 2 is_stmt 1 view .LVU271
+ 1114              		.loc 1 274 11 is_stmt 0 view .LVU272
+ 1115 0012 437C     		ldrb	r3, [r0, #17]	@ zero_extendqisi2
+ 1116              		.loc 1 274 5 view .LVU273
+ 1117 0014 2B70     		strb	r3, [r5]
+ 275:Libraries/ctrl_sdk/src/hal_store.c **** 
+ 276:Libraries/ctrl_sdk/src/hal_store.c **** 	HAL_STORE_UNLOCK();
+ 1118              		.loc 1 276 2 is_stmt 1 view .LVU274
+ 1119 0016 FFF7FEFF 		bl	hal_store_port_unlock
+ 1120              	.LVL129:
+ 277:Libraries/ctrl_sdk/src/hal_store.c **** 	return HAL_STORE_OK;
+ 1121              		.loc 1 277 2 view .LVU275
+ 1122              		.loc 1 277 9 is_stmt 0 view .LVU276
+ 1123 001a 0020     		movs	r0, #0
+ 1124              	.L89:
+ 278:Libraries/ctrl_sdk/src/hal_store.c **** }
+ 1125              		.loc 1 278 1 view .LVU277
+ 1126 001c 38BD     		pop	{r3, r4, r5, pc}
+ 1127              	.LVL130:
+ 1128              	.L90:
+ 272:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1129              		.loc 1 272 10 view .LVU278
+ 1130 001e 0420     		movs	r0, #4
+ 1131              	.LVL131:
+ 272:Libraries/ctrl_sdk/src/hal_store.c **** 	}
+ 1132              		.loc 1 272 10 view .LVU279
+ 1133 0020 FCE7     		b	.L89
+ 1134              		.cfi_endproc
+ 1135              	.LFE16:
+ 1137              		.section	.bss.hal_store_node_num,"aw",%nobits
+ 1138              		.align	1
+ 1141              	hal_store_node_num:
+ 1142 0000 0000     		.space	2
+ 1143              		.section	.bss.hal_store_map,"aw",%nobits
+ 1144              		.align	2
+ 1147              	hal_store_map:
+ 1148 0000 00000000 		.space	156
+ 1148      00000000 
+ 1148      00000000 
+ 1148      00000000 
+ 1148      00000000 
+ 1149              		.text
+ 1150              	.Letext0:
+ 1151              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ 1152              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1153              		.file 4 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1154              		.file 5 "Libraries/ctrl_sdk/inc/lib_list.h"
+ 1155              		.file 6 "Libraries/ctrl_sdk/inc/hal_store.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 27
+
+
+ 1156              		.file 7 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\stdlib.h"
+ 1157              		.file 8 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\string.h"
+ 1158              		.file 9 "<built-in>"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 28
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 hal_store.c
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:19     .text.hal_store_init_list:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:24     .text.hal_store_init_list:00000000 hal_store_init_list
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:71     .text.hal_store_init_list:00000020 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1147   .bss.hal_store_map:00000000 hal_store_map
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:76     .text.hal_store_create_node:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:81     .text.hal_store_create_node:00000000 hal_store_create_node
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:149    .text.hal_store_create_node:00000048 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:155    .text.hal_store_del_node:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:160    .text.hal_store_del_node:00000000 hal_store_del_node
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:204    .text.hal_store_del_node:00000030 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:210    .text.hal_store_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:216    .text.hal_store_init:00000000 hal_store_init
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:241    .text.hal_store_find:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:247    .text.hal_store_find:00000000 hal_store_find
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:318    .text.hal_store_find:0000003c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:324    .text.hal_store_reg:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:330    .text.hal_store_reg:00000000 hal_store_reg
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:461    .text.hal_store_reg:00000064 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1141   .bss.hal_store_node_num:00000000 hal_store_node_num
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:466    .text.hal_store_set_param:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:472    .text.hal_store_set_param:00000000 hal_store_set_param
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:571    .text.hal_store_get_param:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:577    .text.hal_store_get_param:00000000 hal_store_get_param
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:647    .text.hal_store_get_size:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:653    .text.hal_store_get_size:00000000 hal_store_get_size
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:708    .text.hal_store_set_cb:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:714    .text.hal_store_set_cb:00000000 hal_store_set_cb
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:767    .text.hal_store_del_update_cb:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:773    .text.hal_store_del_update_cb:00000000 hal_store_del_update_cb
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:797    .text.hal_store_del:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:803    .text.hal_store_del:00000000 hal_store_del
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:864    .text.hal_store_del:0000002c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:869    .text.hal_store_del_all:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:875    .text.hal_store_del_all:00000000 hal_store_del_all
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:898    .text.hal_store_set_read_permission:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:904    .text.hal_store_set_read_permission:00000000 hal_store_set_read_permission
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:957    .text.hal_store_get_read_permission:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:963    .text.hal_store_get_read_permission:00000000 hal_store_get_read_permission
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1018   .text.hal_store_set_write_permission:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1024   .text.hal_store_set_write_permission:00000000 hal_store_set_write_permission
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1077   .text.hal_store_get_write_permission:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1083   .text.hal_store_get_write_permission:00000000 hal_store_get_write_permission
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1138   .bss.hal_store_node_num:00000000 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s:1144   .bss.hal_store_map:00000000 $d
+
+UNDEFINED SYMBOLS
+lib_list_init
+malloc
+lib_list_inc_tail
+lib_list_delete
+free
+hal_store_port_init
+hal_store_port_lock
+memcpy
+hal_store_port_unlock
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccya8UBv.s 			page 29
+
+

@@ -1,0 +1,1999 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"biquad_filter.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_drv/imu/biquad_filter.c"
+  18              		.section	.text.nullFilterApply,"ax",%progbits
+  19              		.align	1
+  20              		.global	nullFilterApply
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	nullFilterApply:
+  26              	.LVL0:
+  27              	.LFB2:
+   1:Libraries/ctrl_drv/imu/biquad_filter.c **** #include <stdbool.h>
+   2:Libraries/ctrl_drv/imu/biquad_filter.c **** #include <stdint.h>
+   3:Libraries/ctrl_drv/imu/biquad_filter.c **** #include <string.h>
+   4:Libraries/ctrl_drv/imu/biquad_filter.c **** #include <math.h>
+   5:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+   6:Libraries/ctrl_drv/imu/biquad_filter.c **** #include "biquad_filter.h"
+   7:Libraries/ctrl_drv/imu/biquad_filter.c **** #include "filter_math.h"
+   8:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+   9:Libraries/ctrl_drv/imu/biquad_filter.c **** #define BIQUAD_Q 1.0f / sqrtf(2.0f)     /* quality factor - 2nd order butterworth*/
+  10:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  11:Libraries/ctrl_drv/imu/biquad_filter.c **** // NULL filter
+  12:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  13:Libraries/ctrl_drv/imu/biquad_filter.c **** float nullFilterApply(filter_t *filter, float input)
+  14:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+  28              		.loc 1 14 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  15:Libraries/ctrl_drv/imu/biquad_filter.c ****     (void) (filter);
+  33              		.loc 1 15 5 view .LVU1
+  16:Libraries/ctrl_drv/imu/biquad_filter.c ****     return input;
+  34              		.loc 1 16 5 view .LVU2
+  17:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+  35              		.loc 1 17 1 is_stmt 0 view .LVU3
+  36 0000 0846     		mov	r0, r1
+  37              	.LVL1:
+  38              		.loc 1 17 1 view .LVU4
+  39 0002 7047     		bx	lr
+  40              		.cfi_endproc
+  41              	.LFE2:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 2
+
+
+  43              		.global	__aeabi_fmul
+  44              		.global	__aeabi_fdiv
+  45              		.global	__aeabi_fadd
+  46              		.section	.text.pt1FilterGain,"ax",%progbits
+  47              		.align	1
+  48              		.global	pt1FilterGain
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  53              	pt1FilterGain:
+  54              	.LVL2:
+  55              	.LFB3:
+  18:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  19:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  20:Libraries/ctrl_drv/imu/biquad_filter.c **** // PT1 Low Pass filter
+  21:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  22:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt1FilterGain(float f_cut, float dT)
+  23:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+  56              		.loc 1 23 1 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 0
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              		.loc 1 23 1 is_stmt 0 view .LVU6
+  61 0000 10B5     		push	{r4, lr}
+  62              	.LCFI0:
+  63              		.cfi_def_cfa_offset 8
+  64              		.cfi_offset 4, -8
+  65              		.cfi_offset 14, -4
+  66 0002 0C46     		mov	r4, r1
+  24:Libraries/ctrl_drv/imu/biquad_filter.c ****     float RC = 1 / (2 * M_PIf * f_cut);
+  67              		.loc 1 24 5 is_stmt 1 view .LVU7
+  68              		.loc 1 24 31 is_stmt 0 view .LVU8
+  69 0004 0749     		ldr	r1, .L4
+  70              	.LVL3:
+  71              		.loc 1 24 31 view .LVU9
+  72 0006 FFF7FEFF 		bl	__aeabi_fmul
+  73              	.LVL4:
+  74              		.loc 1 24 31 view .LVU10
+  75 000a 0146     		mov	r1, r0
+  76              		.loc 1 24 11 view .LVU11
+  77 000c 4FF07E50 		mov	r0, #1065353216
+  78 0010 FFF7FEFF 		bl	__aeabi_fdiv
+  79              	.LVL5:
+  25:Libraries/ctrl_drv/imu/biquad_filter.c ****     return dT / (RC + dT);
+  80              		.loc 1 25 5 is_stmt 1 view .LVU12
+  81              		.loc 1 25 21 is_stmt 0 view .LVU13
+  82 0014 2146     		mov	r1, r4
+  83 0016 FFF7FEFF 		bl	__aeabi_fadd
+  84              	.LVL6:
+  85              		.loc 1 25 21 view .LVU14
+  86 001a 0146     		mov	r1, r0
+  87              		.loc 1 25 15 view .LVU15
+  88 001c 2046     		mov	r0, r4
+  89 001e FFF7FEFF 		bl	__aeabi_fdiv
+  90              	.LVL7:
+  26:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+  91              		.loc 1 26 1 view .LVU16
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 3
+
+
+  92 0022 10BD     		pop	{r4, pc}
+  93              	.LVL8:
+  94              	.L5:
+  95              		.loc 1 26 1 view .LVU17
+  96              		.align	2
+  97              	.L4:
+  98 0024 DB0FC940 		.word	1086918619
+  99              		.cfi_endproc
+ 100              	.LFE3:
+ 102              		.section	.text.pt1FilterInit,"ax",%progbits
+ 103              		.align	1
+ 104              		.global	pt1FilterInit
+ 105              		.syntax unified
+ 106              		.thumb
+ 107              		.thumb_func
+ 109              	pt1FilterInit:
+ 110              	.LVL9:
+ 111              	.LFB4:
+  27:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  28:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt1FilterInit(pt1Filter_t *filter, float k)
+  29:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 112              		.loc 1 29 1 is_stmt 1 view -0
+ 113              		.cfi_startproc
+ 114              		@ args = 0, pretend = 0, frame = 0
+ 115              		@ frame_needed = 0, uses_anonymous_args = 0
+ 116              		@ link register save eliminated.
+  30:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = 0.0f;
+ 117              		.loc 1 30 5 view .LVU19
+ 118              		.loc 1 30 19 is_stmt 0 view .LVU20
+ 119 0000 0023     		movs	r3, #0
+ 120 0002 0360     		str	r3, [r0]	@ float
+  31:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 121              		.loc 1 31 5 is_stmt 1 view .LVU21
+ 122              		.loc 1 31 15 is_stmt 0 view .LVU22
+ 123 0004 4160     		str	r1, [r0, #4]	@ float
+  32:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 124              		.loc 1 32 1 view .LVU23
+ 125 0006 7047     		bx	lr
+ 126              		.cfi_endproc
+ 127              	.LFE4:
+ 129              		.section	.text.pt1FilterUpdateCutoff,"ax",%progbits
+ 130              		.align	1
+ 131              		.global	pt1FilterUpdateCutoff
+ 132              		.syntax unified
+ 133              		.thumb
+ 134              		.thumb_func
+ 136              	pt1FilterUpdateCutoff:
+ 137              	.LVL10:
+ 138              	.LFB5:
+  33:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  34:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt1FilterUpdateCutoff(pt1Filter_t *filter, float k)
+  35:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 139              		.loc 1 35 1 is_stmt 1 view -0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              		@ link register save eliminated.
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 4
+
+
+  36:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 144              		.loc 1 36 5 view .LVU25
+ 145              		.loc 1 36 15 is_stmt 0 view .LVU26
+ 146 0000 4160     		str	r1, [r0, #4]	@ float
+  37:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 147              		.loc 1 37 1 view .LVU27
+ 148 0002 7047     		bx	lr
+ 149              		.cfi_endproc
+ 150              	.LFE5:
+ 152              		.global	__aeabi_fsub
+ 153              		.section	.text.pt1FilterApply,"ax",%progbits
+ 154              		.align	1
+ 155              		.global	pt1FilterApply
+ 156              		.syntax unified
+ 157              		.thumb
+ 158              		.thumb_func
+ 160              	pt1FilterApply:
+ 161              	.LVL11:
+ 162              	.LFB6:
+  38:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  39:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt1FilterApply(pt1Filter_t *filter, float input)
+  40:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 163              		.loc 1 40 1 is_stmt 1 view -0
+ 164              		.cfi_startproc
+ 165              		@ args = 0, pretend = 0, frame = 0
+ 166              		@ frame_needed = 0, uses_anonymous_args = 0
+ 167              		.loc 1 40 1 is_stmt 0 view .LVU29
+ 168 0000 70B5     		push	{r4, r5, r6, lr}
+ 169              	.LCFI1:
+ 170              		.cfi_def_cfa_offset 16
+ 171              		.cfi_offset 4, -16
+ 172              		.cfi_offset 5, -12
+ 173              		.cfi_offset 6, -8
+ 174              		.cfi_offset 14, -4
+ 175 0002 0446     		mov	r4, r0
+ 176 0004 0846     		mov	r0, r1
+ 177              	.LVL12:
+  41:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = filter->state + filter->k * (input - filter->state);
+ 178              		.loc 1 41 5 is_stmt 1 view .LVU30
+ 179              		.loc 1 41 27 is_stmt 0 view .LVU31
+ 180 0006 2568     		ldr	r5, [r4]	@ float
+ 181              		.loc 1 41 43 view .LVU32
+ 182 0008 6668     		ldr	r6, [r4, #4]	@ float
+ 183              		.loc 1 41 56 view .LVU33
+ 184 000a 2946     		mov	r1, r5
+ 185              	.LVL13:
+ 186              		.loc 1 41 56 view .LVU34
+ 187 000c FFF7FEFF 		bl	__aeabi_fsub
+ 188              	.LVL14:
+ 189              		.loc 1 41 56 view .LVU35
+ 190 0010 0146     		mov	r1, r0
+ 191              		.loc 1 41 47 view .LVU36
+ 192 0012 3046     		mov	r0, r6
+ 193 0014 FFF7FEFF 		bl	__aeabi_fmul
+ 194              	.LVL15:
+ 195 0018 0146     		mov	r1, r0
+ 196              		.loc 1 41 35 view .LVU37
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 5
+
+
+ 197 001a 2846     		mov	r0, r5
+ 198 001c FFF7FEFF 		bl	__aeabi_fadd
+ 199              	.LVL16:
+ 200              		.loc 1 41 19 view .LVU38
+ 201 0020 2060     		str	r0, [r4]	@ float
+  42:Libraries/ctrl_drv/imu/biquad_filter.c ****     return filter->state;
+ 202              		.loc 1 42 5 is_stmt 1 view .LVU39
+  43:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 203              		.loc 1 43 1 is_stmt 0 view .LVU40
+ 204 0022 70BD     		pop	{r4, r5, r6, pc}
+ 205              		.loc 1 43 1 view .LVU41
+ 206              		.cfi_endproc
+ 207              	.LFE6:
+ 209              		.section	.text.pt2FilterGain,"ax",%progbits
+ 210              		.align	1
+ 211              		.global	pt2FilterGain
+ 212              		.syntax unified
+ 213              		.thumb
+ 214              		.thumb_func
+ 216              	pt2FilterGain:
+ 217              	.LVL17:
+ 218              	.LFB7:
+  44:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  45:Libraries/ctrl_drv/imu/biquad_filter.c **** // PT2 Low Pass filter
+  46:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  47:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt2FilterGain(float f_cut, float dT)
+  48:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 219              		.loc 1 48 1 is_stmt 1 view -0
+ 220              		.cfi_startproc
+ 221              		@ args = 0, pretend = 0, frame = 0
+ 222              		@ frame_needed = 0, uses_anonymous_args = 0
+ 223              		.loc 1 48 1 is_stmt 0 view .LVU43
+ 224 0000 10B5     		push	{r4, lr}
+ 225              	.LCFI2:
+ 226              		.cfi_def_cfa_offset 8
+ 227              		.cfi_offset 4, -8
+ 228              		.cfi_offset 14, -4
+ 229 0002 0C46     		mov	r4, r1
+  49:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float order = 2.0f;
+ 230              		.loc 1 49 5 is_stmt 1 view .LVU44
+ 231              	.LVL18:
+  50:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float orderCutoffCorrection = 1 / sqrtf(powf(2, 1.0f / order) - 1);
+ 232              		.loc 1 50 5 view .LVU45
+  51:Libraries/ctrl_drv/imu/biquad_filter.c ****     float RC = 1 / (2 * orderCutoffCorrection * M_PIf * f_cut);
+ 233              		.loc 1 51 5 view .LVU46
+ 234              		.loc 1 51 55 is_stmt 0 view .LVU47
+ 235 0004 0749     		ldr	r1, .L12
+ 236              	.LVL19:
+ 237              		.loc 1 51 55 view .LVU48
+ 238 0006 FFF7FEFF 		bl	__aeabi_fmul
+ 239              	.LVL20:
+ 240              		.loc 1 51 55 view .LVU49
+ 241 000a 0146     		mov	r1, r0
+ 242              		.loc 1 51 11 view .LVU50
+ 243 000c 4FF07E50 		mov	r0, #1065353216
+ 244 0010 FFF7FEFF 		bl	__aeabi_fdiv
+ 245              	.LVL21:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 6
+
+
+  52:Libraries/ctrl_drv/imu/biquad_filter.c ****     // float RC = 1 / (2 * 1.553773974f * M_PIf * f_cut);
+  53:Libraries/ctrl_drv/imu/biquad_filter.c ****     // where 1.553773974 = 1 / sqrt( (2^(1 / order) - 1) ) and order is 2
+  54:Libraries/ctrl_drv/imu/biquad_filter.c ****     return dT / (RC + dT);
+ 246              		.loc 1 54 5 is_stmt 1 view .LVU51
+ 247              		.loc 1 54 21 is_stmt 0 view .LVU52
+ 248 0014 2146     		mov	r1, r4
+ 249 0016 FFF7FEFF 		bl	__aeabi_fadd
+ 250              	.LVL22:
+ 251              		.loc 1 54 21 view .LVU53
+ 252 001a 0146     		mov	r1, r0
+ 253              		.loc 1 54 15 view .LVU54
+ 254 001c 2046     		mov	r0, r4
+ 255 001e FFF7FEFF 		bl	__aeabi_fdiv
+ 256              	.LVL23:
+  55:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 257              		.loc 1 55 1 view .LVU55
+ 258 0022 10BD     		pop	{r4, pc}
+ 259              	.LVL24:
+ 260              	.L13:
+ 261              		.loc 1 55 1 view .LVU56
+ 262              		.align	2
+ 263              	.L12:
+ 264 0024 D2331C41 		.word	1092367314
+ 265              		.cfi_endproc
+ 266              	.LFE7:
+ 268              		.section	.text.pt2FilterInit,"ax",%progbits
+ 269              		.align	1
+ 270              		.global	pt2FilterInit
+ 271              		.syntax unified
+ 272              		.thumb
+ 273              		.thumb_func
+ 275              	pt2FilterInit:
+ 276              	.LVL25:
+ 277              	.LFB8:
+  56:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  57:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt2FilterInit(pt2Filter_t *filter, float k)
+  58:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 278              		.loc 1 58 1 is_stmt 1 view -0
+ 279              		.cfi_startproc
+ 280              		@ args = 0, pretend = 0, frame = 0
+ 281              		@ frame_needed = 0, uses_anonymous_args = 0
+ 282              		@ link register save eliminated.
+  59:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = 0.0f;
+ 283              		.loc 1 59 5 view .LVU58
+ 284              		.loc 1 59 19 is_stmt 0 view .LVU59
+ 285 0000 0023     		movs	r3, #0
+ 286 0002 0360     		str	r3, [r0]	@ float
+  60:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state1 = 0.0f;
+ 287              		.loc 1 60 5 is_stmt 1 view .LVU60
+ 288              		.loc 1 60 20 is_stmt 0 view .LVU61
+ 289 0004 4360     		str	r3, [r0, #4]	@ float
+  61:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 290              		.loc 1 61 5 is_stmt 1 view .LVU62
+ 291              		.loc 1 61 15 is_stmt 0 view .LVU63
+ 292 0006 8160     		str	r1, [r0, #8]	@ float
+  62:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 293              		.loc 1 62 1 view .LVU64
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 7
+
+
+ 294 0008 7047     		bx	lr
+ 295              		.cfi_endproc
+ 296              	.LFE8:
+ 298              		.section	.text.pt2FilterUpdateCutoff,"ax",%progbits
+ 299              		.align	1
+ 300              		.global	pt2FilterUpdateCutoff
+ 301              		.syntax unified
+ 302              		.thumb
+ 303              		.thumb_func
+ 305              	pt2FilterUpdateCutoff:
+ 306              	.LVL26:
+ 307              	.LFB9:
+  63:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  64:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt2FilterUpdateCutoff(pt2Filter_t *filter, float k)
+  65:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 308              		.loc 1 65 1 is_stmt 1 view -0
+ 309              		.cfi_startproc
+ 310              		@ args = 0, pretend = 0, frame = 0
+ 311              		@ frame_needed = 0, uses_anonymous_args = 0
+ 312              		@ link register save eliminated.
+  66:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 313              		.loc 1 66 5 view .LVU66
+ 314              		.loc 1 66 15 is_stmt 0 view .LVU67
+ 315 0000 8160     		str	r1, [r0, #8]	@ float
+  67:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 316              		.loc 1 67 1 view .LVU68
+ 317 0002 7047     		bx	lr
+ 318              		.cfi_endproc
+ 319              	.LFE9:
+ 321              		.section	.text.pt2FilterApply,"ax",%progbits
+ 322              		.align	1
+ 323              		.global	pt2FilterApply
+ 324              		.syntax unified
+ 325              		.thumb
+ 326              		.thumb_func
+ 328              	pt2FilterApply:
+ 329              	.LVL27:
+ 330              	.LFB10:
+  68:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  69:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt2FilterApply(pt2Filter_t *filter, float input)
+  70:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 331              		.loc 1 70 1 is_stmt 1 view -0
+ 332              		.cfi_startproc
+ 333              		@ args = 0, pretend = 0, frame = 0
+ 334              		@ frame_needed = 0, uses_anonymous_args = 0
+ 335              		.loc 1 70 1 is_stmt 0 view .LVU70
+ 336 0000 70B5     		push	{r4, r5, r6, lr}
+ 337              	.LCFI3:
+ 338              		.cfi_def_cfa_offset 16
+ 339              		.cfi_offset 4, -16
+ 340              		.cfi_offset 5, -12
+ 341              		.cfi_offset 6, -8
+ 342              		.cfi_offset 14, -4
+ 343 0002 0446     		mov	r4, r0
+ 344 0004 0846     		mov	r0, r1
+ 345              	.LVL28:
+  71:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state1 = filter->state1 + filter->k * (input - filter->state1);
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 8
+
+
+ 346              		.loc 1 71 5 is_stmt 1 view .LVU71
+ 347              		.loc 1 71 28 is_stmt 0 view .LVU72
+ 348 0006 6568     		ldr	r5, [r4, #4]	@ float
+ 349              		.loc 1 71 45 view .LVU73
+ 350 0008 A668     		ldr	r6, [r4, #8]	@ float
+ 351              		.loc 1 71 58 view .LVU74
+ 352 000a 2946     		mov	r1, r5
+ 353              	.LVL29:
+ 354              		.loc 1 71 58 view .LVU75
+ 355 000c FFF7FEFF 		bl	__aeabi_fsub
+ 356              	.LVL30:
+ 357              		.loc 1 71 58 view .LVU76
+ 358 0010 0146     		mov	r1, r0
+ 359              		.loc 1 71 49 view .LVU77
+ 360 0012 3046     		mov	r0, r6
+ 361 0014 FFF7FEFF 		bl	__aeabi_fmul
+ 362              	.LVL31:
+ 363 0018 0146     		mov	r1, r0
+ 364              		.loc 1 71 37 view .LVU78
+ 365 001a 2846     		mov	r0, r5
+ 366 001c FFF7FEFF 		bl	__aeabi_fadd
+ 367              	.LVL32:
+ 368              		.loc 1 71 20 view .LVU79
+ 369 0020 6060     		str	r0, [r4, #4]	@ float
+  72:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = filter->state + filter->k * (filter->state1 - filter->state);
+ 370              		.loc 1 72 5 is_stmt 1 view .LVU80
+ 371              		.loc 1 72 27 is_stmt 0 view .LVU81
+ 372 0022 2568     		ldr	r5, [r4]	@ float
+ 373              		.loc 1 72 65 view .LVU82
+ 374 0024 2946     		mov	r1, r5
+ 375 0026 FFF7FEFF 		bl	__aeabi_fsub
+ 376              	.LVL33:
+ 377 002a 0146     		mov	r1, r0
+ 378              		.loc 1 72 47 view .LVU83
+ 379 002c 3046     		mov	r0, r6
+ 380 002e FFF7FEFF 		bl	__aeabi_fmul
+ 381              	.LVL34:
+ 382 0032 0146     		mov	r1, r0
+ 383              		.loc 1 72 35 view .LVU84
+ 384 0034 2846     		mov	r0, r5
+ 385 0036 FFF7FEFF 		bl	__aeabi_fadd
+ 386              	.LVL35:
+ 387              		.loc 1 72 19 view .LVU85
+ 388 003a 2060     		str	r0, [r4]	@ float
+  73:Libraries/ctrl_drv/imu/biquad_filter.c ****     return filter->state;
+ 389              		.loc 1 73 5 is_stmt 1 view .LVU86
+  74:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 390              		.loc 1 74 1 is_stmt 0 view .LVU87
+ 391 003c 70BD     		pop	{r4, r5, r6, pc}
+ 392              		.loc 1 74 1 view .LVU88
+ 393              		.cfi_endproc
+ 394              	.LFE10:
+ 396              		.section	.text.pt3FilterGain,"ax",%progbits
+ 397              		.align	1
+ 398              		.global	pt3FilterGain
+ 399              		.syntax unified
+ 400              		.thumb
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 9
+
+
+ 401              		.thumb_func
+ 403              	pt3FilterGain:
+ 404              	.LVL36:
+ 405              	.LFB11:
+  75:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  76:Libraries/ctrl_drv/imu/biquad_filter.c **** // PT3 Low Pass filter
+  77:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  78:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt3FilterGain(float f_cut, float dT)
+  79:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 406              		.loc 1 79 1 is_stmt 1 view -0
+ 407              		.cfi_startproc
+ 408              		@ args = 0, pretend = 0, frame = 0
+ 409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 410              		.loc 1 79 1 is_stmt 0 view .LVU90
+ 411 0000 10B5     		push	{r4, lr}
+ 412              	.LCFI4:
+ 413              		.cfi_def_cfa_offset 8
+ 414              		.cfi_offset 4, -8
+ 415              		.cfi_offset 14, -4
+ 416 0002 0C46     		mov	r4, r1
+  80:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float order = 3.0f;
+ 417              		.loc 1 80 5 is_stmt 1 view .LVU91
+ 418              	.LVL37:
+  81:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float orderCutoffCorrection = 1 / sqrtf(powf(2, 1.0f / order) - 1);
+ 419              		.loc 1 81 5 view .LVU92
+  82:Libraries/ctrl_drv/imu/biquad_filter.c ****     float RC = 1 / (2 * orderCutoffCorrection * M_PIf * f_cut);
+ 420              		.loc 1 82 5 view .LVU93
+ 421              		.loc 1 82 55 is_stmt 0 view .LVU94
+ 422 0004 0749     		ldr	r1, .L20
+ 423              	.LVL38:
+ 424              		.loc 1 82 55 view .LVU95
+ 425 0006 FFF7FEFF 		bl	__aeabi_fmul
+ 426              	.LVL39:
+ 427              		.loc 1 82 55 view .LVU96
+ 428 000a 0146     		mov	r1, r0
+ 429              		.loc 1 82 11 view .LVU97
+ 430 000c 4FF07E50 		mov	r0, #1065353216
+ 431 0010 FFF7FEFF 		bl	__aeabi_fdiv
+ 432              	.LVL40:
+  83:Libraries/ctrl_drv/imu/biquad_filter.c ****     // float RC = 1 / (2 * 1.961459177f * M_PIf * f_cut);
+  84:Libraries/ctrl_drv/imu/biquad_filter.c ****     // where 1.961459177 = 1 / sqrt( (2^(1 / order) - 1) ) and order is 3
+  85:Libraries/ctrl_drv/imu/biquad_filter.c ****     return dT / (RC + dT);
+ 433              		.loc 1 85 5 is_stmt 1 view .LVU98
+ 434              		.loc 1 85 21 is_stmt 0 view .LVU99
+ 435 0014 2146     		mov	r1, r4
+ 436 0016 FFF7FEFF 		bl	__aeabi_fadd
+ 437              	.LVL41:
+ 438              		.loc 1 85 21 view .LVU100
+ 439 001a 0146     		mov	r1, r0
+ 440              		.loc 1 85 15 view .LVU101
+ 441 001c 2046     		mov	r0, r4
+ 442 001e FFF7FEFF 		bl	__aeabi_fdiv
+ 443              	.LVL42:
+  86:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 444              		.loc 1 86 1 view .LVU102
+ 445 0022 10BD     		pop	{r4, pc}
+ 446              	.LVL43:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 10
+
+
+ 447              	.L21:
+ 448              		.loc 1 86 1 view .LVU103
+ 449              		.align	2
+ 450              	.L20:
+ 451 0024 F82F4541 		.word	1095053304
+ 452              		.cfi_endproc
+ 453              	.LFE11:
+ 455              		.section	.text.pt3FilterInit,"ax",%progbits
+ 456              		.align	1
+ 457              		.global	pt3FilterInit
+ 458              		.syntax unified
+ 459              		.thumb
+ 460              		.thumb_func
+ 462              	pt3FilterInit:
+ 463              	.LVL44:
+ 464              	.LFB12:
+  87:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  88:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt3FilterInit(pt3Filter_t *filter, float k)
+  89:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 465              		.loc 1 89 1 is_stmt 1 view -0
+ 466              		.cfi_startproc
+ 467              		@ args = 0, pretend = 0, frame = 0
+ 468              		@ frame_needed = 0, uses_anonymous_args = 0
+ 469              		@ link register save eliminated.
+  90:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = 0.0f;
+ 470              		.loc 1 90 5 view .LVU105
+ 471              		.loc 1 90 19 is_stmt 0 view .LVU106
+ 472 0000 0023     		movs	r3, #0
+ 473 0002 0360     		str	r3, [r0]	@ float
+  91:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state1 = 0.0f;
+ 474              		.loc 1 91 5 is_stmt 1 view .LVU107
+ 475              		.loc 1 91 20 is_stmt 0 view .LVU108
+ 476 0004 4360     		str	r3, [r0, #4]	@ float
+  92:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state2 = 0.0f;
+ 477              		.loc 1 92 5 is_stmt 1 view .LVU109
+ 478              		.loc 1 92 20 is_stmt 0 view .LVU110
+ 479 0006 8360     		str	r3, [r0, #8]	@ float
+  93:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 480              		.loc 1 93 5 is_stmt 1 view .LVU111
+ 481              		.loc 1 93 15 is_stmt 0 view .LVU112
+ 482 0008 C160     		str	r1, [r0, #12]	@ float
+  94:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 483              		.loc 1 94 1 view .LVU113
+ 484 000a 7047     		bx	lr
+ 485              		.cfi_endproc
+ 486              	.LFE12:
+ 488              		.section	.text.pt3FilterUpdateCutoff,"ax",%progbits
+ 489              		.align	1
+ 490              		.global	pt3FilterUpdateCutoff
+ 491              		.syntax unified
+ 492              		.thumb
+ 493              		.thumb_func
+ 495              	pt3FilterUpdateCutoff:
+ 496              	.LVL45:
+ 497              	.LFB13:
+  95:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+  96:Libraries/ctrl_drv/imu/biquad_filter.c **** void pt3FilterUpdateCutoff(pt3Filter_t *filter, float k)
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 11
+
+
+  97:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 498              		.loc 1 97 1 is_stmt 1 view -0
+ 499              		.cfi_startproc
+ 500              		@ args = 0, pretend = 0, frame = 0
+ 501              		@ frame_needed = 0, uses_anonymous_args = 0
+ 502              		@ link register save eliminated.
+  98:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->k = k;
+ 503              		.loc 1 98 5 view .LVU115
+ 504              		.loc 1 98 15 is_stmt 0 view .LVU116
+ 505 0000 C160     		str	r1, [r0, #12]	@ float
+  99:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 506              		.loc 1 99 1 view .LVU117
+ 507 0002 7047     		bx	lr
+ 508              		.cfi_endproc
+ 509              	.LFE13:
+ 511              		.section	.text.pt3FilterApply,"ax",%progbits
+ 512              		.align	1
+ 513              		.global	pt3FilterApply
+ 514              		.syntax unified
+ 515              		.thumb
+ 516              		.thumb_func
+ 518              	pt3FilterApply:
+ 519              	.LVL46:
+ 520              	.LFB14:
+ 100:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 101:Libraries/ctrl_drv/imu/biquad_filter.c **** float pt3FilterApply(pt3Filter_t *filter, float input)
+ 102:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 521              		.loc 1 102 1 is_stmt 1 view -0
+ 522              		.cfi_startproc
+ 523              		@ args = 0, pretend = 0, frame = 0
+ 524              		@ frame_needed = 0, uses_anonymous_args = 0
+ 525              		.loc 1 102 1 is_stmt 0 view .LVU119
+ 526 0000 70B5     		push	{r4, r5, r6, lr}
+ 527              	.LCFI5:
+ 528              		.cfi_def_cfa_offset 16
+ 529              		.cfi_offset 4, -16
+ 530              		.cfi_offset 5, -12
+ 531              		.cfi_offset 6, -8
+ 532              		.cfi_offset 14, -4
+ 533 0002 0446     		mov	r4, r0
+ 534 0004 0846     		mov	r0, r1
+ 535              	.LVL47:
+ 103:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state1 = filter->state1 + filter->k * (input - filter->state1);
+ 536              		.loc 1 103 5 is_stmt 1 view .LVU120
+ 537              		.loc 1 103 28 is_stmt 0 view .LVU121
+ 538 0006 6668     		ldr	r6, [r4, #4]	@ float
+ 539              		.loc 1 103 45 view .LVU122
+ 540 0008 E568     		ldr	r5, [r4, #12]	@ float
+ 541              		.loc 1 103 58 view .LVU123
+ 542 000a 3146     		mov	r1, r6
+ 543              	.LVL48:
+ 544              		.loc 1 103 58 view .LVU124
+ 545 000c FFF7FEFF 		bl	__aeabi_fsub
+ 546              	.LVL49:
+ 547              		.loc 1 103 58 view .LVU125
+ 548 0010 0146     		mov	r1, r0
+ 549              		.loc 1 103 49 view .LVU126
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 12
+
+
+ 550 0012 2846     		mov	r0, r5
+ 551 0014 FFF7FEFF 		bl	__aeabi_fmul
+ 552              	.LVL50:
+ 553 0018 0146     		mov	r1, r0
+ 554              		.loc 1 103 37 view .LVU127
+ 555 001a 3046     		mov	r0, r6
+ 556 001c FFF7FEFF 		bl	__aeabi_fadd
+ 557              	.LVL51:
+ 558              		.loc 1 103 20 view .LVU128
+ 559 0020 6060     		str	r0, [r4, #4]	@ float
+ 104:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state2 = filter->state2 + filter->k * (filter->state1 - filter->state2);
+ 560              		.loc 1 104 5 is_stmt 1 view .LVU129
+ 561              		.loc 1 104 28 is_stmt 0 view .LVU130
+ 562 0022 A668     		ldr	r6, [r4, #8]	@ float
+ 563              		.loc 1 104 67 view .LVU131
+ 564 0024 3146     		mov	r1, r6
+ 565 0026 FFF7FEFF 		bl	__aeabi_fsub
+ 566              	.LVL52:
+ 567 002a 0146     		mov	r1, r0
+ 568              		.loc 1 104 49 view .LVU132
+ 569 002c 2846     		mov	r0, r5
+ 570 002e FFF7FEFF 		bl	__aeabi_fmul
+ 571              	.LVL53:
+ 572 0032 0146     		mov	r1, r0
+ 573              		.loc 1 104 37 view .LVU133
+ 574 0034 3046     		mov	r0, r6
+ 575 0036 FFF7FEFF 		bl	__aeabi_fadd
+ 576              	.LVL54:
+ 577              		.loc 1 104 20 view .LVU134
+ 578 003a A060     		str	r0, [r4, #8]	@ float
+ 105:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = filter->state + filter->k * (filter->state2 - filter->state);
+ 579              		.loc 1 105 5 is_stmt 1 view .LVU135
+ 580              		.loc 1 105 27 is_stmt 0 view .LVU136
+ 581 003c 2668     		ldr	r6, [r4]	@ float
+ 582              		.loc 1 105 65 view .LVU137
+ 583 003e 3146     		mov	r1, r6
+ 584 0040 FFF7FEFF 		bl	__aeabi_fsub
+ 585              	.LVL55:
+ 586 0044 0146     		mov	r1, r0
+ 587              		.loc 1 105 47 view .LVU138
+ 588 0046 2846     		mov	r0, r5
+ 589 0048 FFF7FEFF 		bl	__aeabi_fmul
+ 590              	.LVL56:
+ 591 004c 0146     		mov	r1, r0
+ 592              		.loc 1 105 35 view .LVU139
+ 593 004e 3046     		mov	r0, r6
+ 594 0050 FFF7FEFF 		bl	__aeabi_fadd
+ 595              	.LVL57:
+ 596              		.loc 1 105 19 view .LVU140
+ 597 0054 2060     		str	r0, [r4]	@ float
+ 106:Libraries/ctrl_drv/imu/biquad_filter.c ****     return filter->state;
+ 598              		.loc 1 106 5 is_stmt 1 view .LVU141
+ 107:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 599              		.loc 1 107 1 is_stmt 0 view .LVU142
+ 600 0056 70BD     		pop	{r4, r5, r6, pc}
+ 601              		.loc 1 107 1 view .LVU143
+ 602              		.cfi_endproc
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 13
+
+
+ 603              	.LFE14:
+ 605              		.section	.text.slewFilterInit,"ax",%progbits
+ 606              		.align	1
+ 607              		.global	slewFilterInit
+ 608              		.syntax unified
+ 609              		.thumb
+ 610              		.thumb_func
+ 612              	slewFilterInit:
+ 613              	.LVL58:
+ 614              	.LFB15:
+ 108:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 109:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 110:Libraries/ctrl_drv/imu/biquad_filter.c **** // Slew filter with limit
+ 111:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 112:Libraries/ctrl_drv/imu/biquad_filter.c **** void slewFilterInit(slewFilter_t *filter, float slewLimit, float threshold)
+ 113:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 615              		.loc 1 113 1 is_stmt 1 view -0
+ 616              		.cfi_startproc
+ 617              		@ args = 0, pretend = 0, frame = 0
+ 618              		@ frame_needed = 0, uses_anonymous_args = 0
+ 619              		@ link register save eliminated.
+ 114:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->state = 0.0f;
+ 620              		.loc 1 114 5 view .LVU145
+ 621              		.loc 1 114 19 is_stmt 0 view .LVU146
+ 622 0000 0023     		movs	r3, #0
+ 623 0002 0360     		str	r3, [r0]	@ float
+ 115:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->slewLimit = slewLimit;
+ 624              		.loc 1 115 5 is_stmt 1 view .LVU147
+ 625              		.loc 1 115 23 is_stmt 0 view .LVU148
+ 626 0004 4160     		str	r1, [r0, #4]	@ float
+ 116:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->threshold = threshold;
+ 627              		.loc 1 116 5 is_stmt 1 view .LVU149
+ 628              		.loc 1 116 23 is_stmt 0 view .LVU150
+ 629 0006 8260     		str	r2, [r0, #8]	@ float
+ 117:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 630              		.loc 1 117 1 view .LVU151
+ 631 0008 7047     		bx	lr
+ 632              		.cfi_endproc
+ 633              	.LFE15:
+ 635              		.global	__aeabi_fcmpge
+ 636              		.global	__aeabi_fcmple
+ 637              		.section	.text.slewFilterApply,"ax",%progbits
+ 638              		.align	1
+ 639              		.global	slewFilterApply
+ 640              		.syntax unified
+ 641              		.thumb
+ 642              		.thumb_func
+ 644              	slewFilterApply:
+ 645              	.LVL59:
+ 646              	.LFB16:
+ 118:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 119:Libraries/ctrl_drv/imu/biquad_filter.c **** float slewFilterApply(slewFilter_t *filter, float input)
+ 120:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 647              		.loc 1 120 1 is_stmt 1 view -0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 14
+
+
+ 651              		.loc 1 120 1 is_stmt 0 view .LVU153
+ 652 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 653              	.LCFI6:
+ 654              		.cfi_def_cfa_offset 24
+ 655              		.cfi_offset 3, -24
+ 656              		.cfi_offset 4, -20
+ 657              		.cfi_offset 5, -16
+ 658              		.cfi_offset 6, -12
+ 659              		.cfi_offset 7, -8
+ 660              		.cfi_offset 14, -4
+ 661 0002 0446     		mov	r4, r0
+ 662 0004 0D46     		mov	r5, r1
+ 121:Libraries/ctrl_drv/imu/biquad_filter.c ****     if (filter->state >= filter->threshold)
+ 663              		.loc 1 121 5 is_stmt 1 view .LVU154
+ 664              		.loc 1 121 15 is_stmt 0 view .LVU155
+ 665 0006 0768     		ldr	r7, [r0]	@ float
+ 666              		.loc 1 121 32 view .LVU156
+ 667 0008 8668     		ldr	r6, [r0, #8]	@ float
+ 668              		.loc 1 121 8 view .LVU157
+ 669 000a 3146     		mov	r1, r6
+ 670              	.LVL60:
+ 671              		.loc 1 121 8 view .LVU158
+ 672 000c 3846     		mov	r0, r7
+ 673              	.LVL61:
+ 674              		.loc 1 121 8 view .LVU159
+ 675 000e FFF7FEFF 		bl	__aeabi_fcmpge
+ 676              	.LVL62:
+ 677 0012 50B1     		cbz	r0, .L39
+ 122:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 123:Libraries/ctrl_drv/imu/biquad_filter.c ****         if (input >= filter->state - filter->slewLimit)
+ 678              		.loc 1 123 9 is_stmt 1 view .LVU160
+ 679              		.loc 1 123 36 is_stmt 0 view .LVU161
+ 680 0014 6168     		ldr	r1, [r4, #4]	@ float
+ 681 0016 3846     		mov	r0, r7
+ 682 0018 FFF7FEFF 		bl	__aeabi_fsub
+ 683              	.LVL63:
+ 684              		.loc 1 123 12 view .LVU162
+ 685 001c 2946     		mov	r1, r5
+ 686 001e FFF7FEFF 		bl	__aeabi_fcmple
+ 687              	.LVL64:
+ 688 0022 00B1     		cbz	r0, .L30
+ 124:Libraries/ctrl_drv/imu/biquad_filter.c ****         {
+ 125:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->state = input;
+ 689              		.loc 1 125 13 is_stmt 1 view .LVU163
+ 690              		.loc 1 125 27 is_stmt 0 view .LVU164
+ 691 0024 2560     		str	r5, [r4]	@ float
+ 692              	.L30:
+ 126:Libraries/ctrl_drv/imu/biquad_filter.c ****         }
+ 127:Libraries/ctrl_drv/imu/biquad_filter.c ****     } else if (filter->state <= -filter->threshold)
+ 128:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 129:Libraries/ctrl_drv/imu/biquad_filter.c ****         if (input <= filter->state + filter->slewLimit)
+ 130:Libraries/ctrl_drv/imu/biquad_filter.c ****         {
+ 131:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->state = input;
+ 132:Libraries/ctrl_drv/imu/biquad_filter.c ****         }
+ 133:Libraries/ctrl_drv/imu/biquad_filter.c ****     } else
+ 134:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 135:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->state = input;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 15
+
+
+ 136:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 137:Libraries/ctrl_drv/imu/biquad_filter.c ****     return filter->state;
+ 693              		.loc 1 137 5 is_stmt 1 view .LVU165
+ 138:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 694              		.loc 1 138 1 is_stmt 0 view .LVU166
+ 695 0026 2068     		ldr	r0, [r4]	@ float
+ 696 0028 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 697              	.LVL65:
+ 698              	.L39:
+ 127:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 699              		.loc 1 127 12 is_stmt 1 view .LVU167
+ 127:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 700              		.loc 1 127 33 is_stmt 0 view .LVU168
+ 701 002a 06F10041 		add	r1, r6, #-2147483648
+ 127:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 702              		.loc 1 127 15 view .LVU169
+ 703 002e 3846     		mov	r0, r7
+ 704 0030 FFF7FEFF 		bl	__aeabi_fcmple
+ 705              	.LVL66:
+ 706 0034 50B1     		cbz	r0, .L40
+ 129:Libraries/ctrl_drv/imu/biquad_filter.c ****         {
+ 707              		.loc 1 129 9 is_stmt 1 view .LVU170
+ 129:Libraries/ctrl_drv/imu/biquad_filter.c ****         {
+ 708              		.loc 1 129 36 is_stmt 0 view .LVU171
+ 709 0036 6168     		ldr	r1, [r4, #4]	@ float
+ 710 0038 3846     		mov	r0, r7
+ 711 003a FFF7FEFF 		bl	__aeabi_fadd
+ 712              	.LVL67:
+ 129:Libraries/ctrl_drv/imu/biquad_filter.c ****         {
+ 713              		.loc 1 129 12 view .LVU172
+ 714 003e 2946     		mov	r1, r5
+ 715 0040 FFF7FEFF 		bl	__aeabi_fcmpge
+ 716              	.LVL68:
+ 717 0044 0028     		cmp	r0, #0
+ 718 0046 EED0     		beq	.L30
+ 131:Libraries/ctrl_drv/imu/biquad_filter.c ****         }
+ 719              		.loc 1 131 13 is_stmt 1 view .LVU173
+ 131:Libraries/ctrl_drv/imu/biquad_filter.c ****         }
+ 720              		.loc 1 131 27 is_stmt 0 view .LVU174
+ 721 0048 2560     		str	r5, [r4]	@ float
+ 722 004a ECE7     		b	.L30
+ 723              	.L40:
+ 135:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 724              		.loc 1 135 9 is_stmt 1 view .LVU175
+ 135:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 725              		.loc 1 135 23 is_stmt 0 view .LVU176
+ 726 004c 2560     		str	r5, [r4]	@ float
+ 727 004e EAE7     		b	.L30
+ 728              		.cfi_endproc
+ 729              	.LFE16:
+ 731              		.section	.text.filterGetNotchQ,"ax",%progbits
+ 732              		.align	1
+ 733              		.global	filterGetNotchQ
+ 734              		.syntax unified
+ 735              		.thumb
+ 736              		.thumb_func
+ 738              	filterGetNotchQ:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 16
+
+
+ 739              	.LVL69:
+ 740              	.LFB17:
+ 139:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 140:Libraries/ctrl_drv/imu/biquad_filter.c **** // get notch filter Q given center frequency (f0) and lower cutoff frequency (f1)
+ 141:Libraries/ctrl_drv/imu/biquad_filter.c **** // Q = f0 / (f2 - f1) ; f2 = f0^2 / f1
+ 142:Libraries/ctrl_drv/imu/biquad_filter.c **** float filterGetNotchQ(float centerFreq, float cutoffFreq)
+ 143:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 741              		.loc 1 143 1 is_stmt 1 view -0
+ 742              		.cfi_startproc
+ 743              		@ args = 0, pretend = 0, frame = 0
+ 744              		@ frame_needed = 0, uses_anonymous_args = 0
+ 745              		.loc 1 143 1 is_stmt 0 view .LVU178
+ 746 0000 70B5     		push	{r4, r5, r6, lr}
+ 747              	.LCFI7:
+ 748              		.cfi_def_cfa_offset 16
+ 749              		.cfi_offset 4, -16
+ 750              		.cfi_offset 5, -12
+ 751              		.cfi_offset 6, -8
+ 752              		.cfi_offset 14, -4
+ 753 0002 0546     		mov	r5, r0
+ 754 0004 0C46     		mov	r4, r1
+ 144:Libraries/ctrl_drv/imu/biquad_filter.c ****     return centerFreq * cutoffFreq / (centerFreq * centerFreq - cutoffFreq * cutoffFreq);
+ 755              		.loc 1 144 5 is_stmt 1 view .LVU179
+ 756              		.loc 1 144 23 is_stmt 0 view .LVU180
+ 757 0006 FFF7FEFF 		bl	__aeabi_fmul
+ 758              	.LVL70:
+ 759              		.loc 1 144 23 view .LVU181
+ 760 000a 0646     		mov	r6, r0
+ 761              		.loc 1 144 50 view .LVU182
+ 762 000c 2946     		mov	r1, r5
+ 763 000e 2846     		mov	r0, r5
+ 764 0010 FFF7FEFF 		bl	__aeabi_fmul
+ 765              	.LVL71:
+ 766 0014 0546     		mov	r5, r0
+ 767              	.LVL72:
+ 768              		.loc 1 144 76 view .LVU183
+ 769 0016 2146     		mov	r1, r4
+ 770 0018 2046     		mov	r0, r4
+ 771 001a FFF7FEFF 		bl	__aeabi_fmul
+ 772              	.LVL73:
+ 773 001e 0146     		mov	r1, r0
+ 774              		.loc 1 144 63 view .LVU184
+ 775 0020 2846     		mov	r0, r5
+ 776 0022 FFF7FEFF 		bl	__aeabi_fsub
+ 777              	.LVL74:
+ 778 0026 0146     		mov	r1, r0
+ 779              		.loc 1 144 36 view .LVU185
+ 780 0028 3046     		mov	r0, r6
+ 781 002a FFF7FEFF 		bl	__aeabi_fdiv
+ 782              	.LVL75:
+ 145:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 783              		.loc 1 145 1 view .LVU186
+ 784 002e 70BD     		pop	{r4, r5, r6, pc}
+ 785              		.loc 1 145 1 view .LVU187
+ 786              		.cfi_endproc
+ 787              	.LFE17:
+ 789              		.section	.text.biquadFilterUpdate,"ax",%progbits
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 17
+
+
+ 790              		.align	1
+ 791              		.global	biquadFilterUpdate
+ 792              		.syntax unified
+ 793              		.thumb
+ 794              		.thumb_func
+ 796              	biquadFilterUpdate:
+ 797              	.LVL76:
+ 798              	.LFB20:
+ 146:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 147:Libraries/ctrl_drv/imu/biquad_filter.c **** /* sets up a biquad filter as a 2nd order butterworth LPF */
+ 148:Libraries/ctrl_drv/imu/biquad_filter.c **** void biquadFilterInitLPF(BiquadFilter_t *filter, float _filterCallFreq, float _cutoffFreq)
+ 149:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 150:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterInit(filter, _filterCallFreq, _cutoffFreq, BIQUAD_Q, FILTER_LPF);
+ 151:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 152:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 153:Libraries/ctrl_drv/imu/biquad_filter.c **** void biquadFilterInit(BiquadFilter_t *filter, float _filterCallFreq, float _cutoffFreq, float Q,
+ 154:Libraries/ctrl_drv/imu/biquad_filter.c ****                  biquadFilterType_e filterType)
+ 155:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 156:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterUpdate(filter, _filterCallFreq, _cutoffFreq, Q, filterType);
+ 157:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 158:Libraries/ctrl_drv/imu/biquad_filter.c ****     // zero initial samples
+ 159:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->x1 = filter->x2 = 0;
+ 160:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y1 = filter->y2 = 0;
+ 161:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 162:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 163:Libraries/ctrl_drv/imu/biquad_filter.c **** void biquadFilterUpdate(BiquadFilter_t *filter, float _filterCallFreq, float _cutoffFreq, float Q,
+ 164:Libraries/ctrl_drv/imu/biquad_filter.c ****                         biquadFilterType_e filterType)
+ 165:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 799              		.loc 1 165 1 is_stmt 1 view -0
+ 800              		.cfi_startproc
+ 801              		@ args = 4, pretend = 0, frame = 0
+ 802              		@ frame_needed = 0, uses_anonymous_args = 0
+ 803              		.loc 1 165 1 is_stmt 0 view .LVU189
+ 804 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 805              	.LCFI8:
+ 806              		.cfi_def_cfa_offset 24
+ 807              		.cfi_offset 4, -24
+ 808              		.cfi_offset 5, -20
+ 809              		.cfi_offset 6, -16
+ 810              		.cfi_offset 7, -12
+ 811              		.cfi_offset 8, -8
+ 812              		.cfi_offset 14, -4
+ 813 0004 0446     		mov	r4, r0
+ 814 0006 0846     		mov	r0, r1
+ 815              	.LVL77:
+ 816              		.loc 1 165 1 view .LVU190
+ 817 0008 1546     		mov	r5, r2
+ 818 000a 9846     		mov	r8, r3
+ 819 000c 9DF81860 		ldrb	r6, [sp, #24]	@ zero_extendqisi2
+ 166:Libraries/ctrl_drv/imu/biquad_filter.c ****     // setup variables
+ 167:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float omega = 2.0f * M_PIf * _filterCallFreq * _cutoffFreq * 0.000001f;
+ 820              		.loc 1 167 5 is_stmt 1 view .LVU191
+ 821              		.loc 1 167 38 is_stmt 0 view .LVU192
+ 822 0010 3E49     		ldr	r1, .L50
+ 823              	.LVL78:
+ 824              		.loc 1 167 38 view .LVU193
+ 825 0012 FFF7FEFF 		bl	__aeabi_fmul
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 18
+
+
+ 826              	.LVL79:
+ 827              		.loc 1 167 56 view .LVU194
+ 828 0016 2946     		mov	r1, r5
+ 829 0018 FFF7FEFF 		bl	__aeabi_fmul
+ 830              	.LVL80:
+ 831              		.loc 1 167 17 view .LVU195
+ 832 001c 3C49     		ldr	r1, .L50+4
+ 833 001e FFF7FEFF 		bl	__aeabi_fmul
+ 834              	.LVL81:
+ 835 0022 0746     		mov	r7, r0
+ 836              	.LVL82:
+ 168:Libraries/ctrl_drv/imu/biquad_filter.c ****     // const float omega = 2.0f * M_PIf * _filterCallFreq * _cutoffFreq * 0.000005f;
+ 169:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float sn = sin_approx(omega);
+ 837              		.loc 1 169 5 is_stmt 1 view .LVU196
+ 838              		.loc 1 169 22 is_stmt 0 view .LVU197
+ 839 0024 FFF7FEFF 		bl	sin_approx
+ 840              	.LVL83:
+ 841              		.loc 1 169 22 view .LVU198
+ 842 0028 0546     		mov	r5, r0
+ 843              	.LVL84:
+ 170:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float cs = cos_approx(omega);
+ 844              		.loc 1 170 5 is_stmt 1 view .LVU199
+ 845              		.loc 1 170 22 is_stmt 0 view .LVU200
+ 846 002a 3846     		mov	r0, r7
+ 847              	.LVL85:
+ 848              		.loc 1 170 22 view .LVU201
+ 849 002c FFF7FEFF 		bl	cos_approx
+ 850              	.LVL86:
+ 851 0030 0746     		mov	r7, r0
+ 852              	.LVL87:
+ 171:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float alpha = sn / (2.0f * Q);
+ 853              		.loc 1 171 5 is_stmt 1 view .LVU202
+ 854              		.loc 1 171 36 is_stmt 0 view .LVU203
+ 855 0032 4146     		mov	r1, r8
+ 856 0034 4046     		mov	r0, r8
+ 857              	.LVL88:
+ 858              		.loc 1 171 36 view .LVU204
+ 859 0036 FFF7FEFF 		bl	__aeabi_fadd
+ 860              	.LVL89:
+ 861 003a 0146     		mov	r1, r0
+ 862              		.loc 1 171 17 view .LVU205
+ 863 003c 2846     		mov	r0, r5
+ 864 003e FFF7FEFF 		bl	__aeabi_fdiv
+ 865              	.LVL90:
+ 866 0042 0546     		mov	r5, r0
+ 867              	.LVL91:
+ 172:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 173:Libraries/ctrl_drv/imu/biquad_filter.c ****     switch (filterType)
+ 868              		.loc 1 173 5 is_stmt 1 view .LVU206
+ 869 0044 012E     		cmp	r6, #1
+ 870 0046 3CD0     		beq	.L45
+ 871 0048 022E     		cmp	r6, #2
+ 872 004a 4BD0     		beq	.L46
+ 873 004c 06B3     		cbz	r6, .L49
+ 874              	.LVL92:
+ 875              	.L47:
+ 174:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 19
+
+
+ 175:Libraries/ctrl_drv/imu/biquad_filter.c ****         case FILTER_LPF:
+ 176:Libraries/ctrl_drv/imu/biquad_filter.c ****             // 2nd order Butterworth (with Q=1/sqrt(2)) / Butterworth biquad section with Q
+ 177:Libraries/ctrl_drv/imu/biquad_filter.c ****             // described in http://www.ti.com/lit/an/slaa447/slaa447.pdf
+ 178:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = 1 - cs;
+ 179:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = filter->b1 * 0.5f;
+ 180:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = filter->b0;
+ 181:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 182:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 183:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 184:Libraries/ctrl_drv/imu/biquad_filter.c ****         case FILTER_NOTCH:
+ 185:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = 1;
+ 186:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = -2 * cs;
+ 187:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = 1;
+ 188:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = filter->b1;
+ 189:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 190:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 191:Libraries/ctrl_drv/imu/biquad_filter.c ****         case FILTER_BPF:
+ 192:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = alpha;
+ 193:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = 0;
+ 194:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = -alpha;
+ 195:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 196:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 197:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 198:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 199:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 200:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float a0 = 1 + alpha;
+ 876              		.loc 1 200 5 view .LVU207
+ 877              		.loc 1 200 17 is_stmt 0 view .LVU208
+ 878 004e 4FF07E51 		mov	r1, #1065353216
+ 879 0052 2846     		mov	r0, r5
+ 880 0054 FFF7FEFF 		bl	__aeabi_fadd
+ 881              	.LVL93:
+ 882 0058 0546     		mov	r5, r0
+ 883              	.LVL94:
+ 201:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 202:Libraries/ctrl_drv/imu/biquad_filter.c ****     // precompute the coefficients
+ 203:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->b0 /= a0;
+ 884              		.loc 1 203 5 is_stmt 1 view .LVU209
+ 885              		.loc 1 203 16 is_stmt 0 view .LVU210
+ 886 005a 0146     		mov	r1, r0
+ 887 005c 2068     		ldr	r0, [r4]	@ float
+ 888              	.LVL95:
+ 889              		.loc 1 203 16 view .LVU211
+ 890 005e FFF7FEFF 		bl	__aeabi_fdiv
+ 891              	.LVL96:
+ 892              		.loc 1 203 16 view .LVU212
+ 893 0062 2060     		str	r0, [r4]	@ float
+ 204:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->b1 /= a0;
+ 894              		.loc 1 204 5 is_stmt 1 view .LVU213
+ 895              		.loc 1 204 16 is_stmt 0 view .LVU214
+ 896 0064 2946     		mov	r1, r5
+ 897 0066 6068     		ldr	r0, [r4, #4]	@ float
+ 898 0068 FFF7FEFF 		bl	__aeabi_fdiv
+ 899              	.LVL97:
+ 900 006c 6060     		str	r0, [r4, #4]	@ float
+ 205:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->b2 /= a0;
+ 901              		.loc 1 205 5 is_stmt 1 view .LVU215
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 20
+
+
+ 902              		.loc 1 205 16 is_stmt 0 view .LVU216
+ 903 006e 2946     		mov	r1, r5
+ 904 0070 A068     		ldr	r0, [r4, #8]	@ float
+ 905 0072 FFF7FEFF 		bl	__aeabi_fdiv
+ 906              	.LVL98:
+ 907 0076 A060     		str	r0, [r4, #8]	@ float
+ 206:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->a1 /= a0;
+ 908              		.loc 1 206 5 is_stmt 1 view .LVU217
+ 909              		.loc 1 206 16 is_stmt 0 view .LVU218
+ 910 0078 2946     		mov	r1, r5
+ 911 007a E068     		ldr	r0, [r4, #12]	@ float
+ 912 007c FFF7FEFF 		bl	__aeabi_fdiv
+ 913              	.LVL99:
+ 914 0080 E060     		str	r0, [r4, #12]	@ float
+ 207:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->a2 /= a0;
+ 915              		.loc 1 207 5 is_stmt 1 view .LVU219
+ 916              		.loc 1 207 16 is_stmt 0 view .LVU220
+ 917 0082 2946     		mov	r1, r5
+ 918 0084 2069     		ldr	r0, [r4, #16]	@ float
+ 919 0086 FFF7FEFF 		bl	__aeabi_fdiv
+ 920              	.LVL100:
+ 921 008a 2061     		str	r0, [r4, #16]	@ float
+ 208:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 922              		.loc 1 208 1 view .LVU221
+ 923 008c BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 924              	.LVL101:
+ 925              	.L49:
+ 178:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = filter->b1 * 0.5f;
+ 926              		.loc 1 178 13 is_stmt 1 view .LVU222
+ 178:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = filter->b1 * 0.5f;
+ 927              		.loc 1 178 28 is_stmt 0 view .LVU223
+ 928 0090 3946     		mov	r1, r7
+ 929 0092 4FF07E50 		mov	r0, #1065353216
+ 930              	.LVL102:
+ 178:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = filter->b1 * 0.5f;
+ 931              		.loc 1 178 28 view .LVU224
+ 932 0096 FFF7FEFF 		bl	__aeabi_fsub
+ 933              	.LVL103:
+ 178:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b0 = filter->b1 * 0.5f;
+ 934              		.loc 1 178 24 view .LVU225
+ 935 009a 6060     		str	r0, [r4, #4]	@ float
+ 179:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = filter->b0;
+ 936              		.loc 1 179 13 is_stmt 1 view .LVU226
+ 179:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = filter->b0;
+ 937              		.loc 1 179 37 is_stmt 0 view .LVU227
+ 938 009c 4FF07C51 		mov	r1, #1056964608
+ 939 00a0 FFF7FEFF 		bl	__aeabi_fmul
+ 940              	.LVL104:
+ 179:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = filter->b0;
+ 941              		.loc 1 179 24 view .LVU228
+ 942 00a4 2060     		str	r0, [r4]	@ float
+ 180:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 943              		.loc 1 180 13 is_stmt 1 view .LVU229
+ 180:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 944              		.loc 1 180 24 is_stmt 0 view .LVU230
+ 945 00a6 A060     		str	r0, [r4, #8]	@ float
+ 181:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 21
+
+
+ 946              		.loc 1 181 13 is_stmt 1 view .LVU231
+ 181:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 947              		.loc 1 181 29 is_stmt 0 view .LVU232
+ 948 00a8 4FF04041 		mov	r1, #-1073741824
+ 949 00ac 3846     		mov	r0, r7
+ 950 00ae FFF7FEFF 		bl	__aeabi_fmul
+ 951              	.LVL105:
+ 181:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 952              		.loc 1 181 24 view .LVU233
+ 953 00b2 E060     		str	r0, [r4, #12]	@ float
+ 182:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 954              		.loc 1 182 13 is_stmt 1 view .LVU234
+ 182:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 955              		.loc 1 182 28 is_stmt 0 view .LVU235
+ 956 00b4 2946     		mov	r1, r5
+ 957 00b6 4FF07E50 		mov	r0, #1065353216
+ 958 00ba FFF7FEFF 		bl	__aeabi_fsub
+ 959              	.LVL106:
+ 182:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 960              		.loc 1 182 24 view .LVU236
+ 961 00be 2061     		str	r0, [r4, #16]	@ float
+ 183:Libraries/ctrl_drv/imu/biquad_filter.c ****         case FILTER_NOTCH:
+ 962              		.loc 1 183 13 is_stmt 1 view .LVU237
+ 963 00c0 C5E7     		b	.L47
+ 964              	.LVL107:
+ 965              	.L45:
+ 185:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = -2 * cs;
+ 966              		.loc 1 185 13 view .LVU238
+ 185:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = -2 * cs;
+ 967              		.loc 1 185 24 is_stmt 0 view .LVU239
+ 968 00c2 4FF07E56 		mov	r6, #1065353216
+ 969 00c6 2660     		str	r6, [r4]	@ float
+ 186:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = 1;
+ 970              		.loc 1 186 13 is_stmt 1 view .LVU240
+ 186:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = 1;
+ 971              		.loc 1 186 29 is_stmt 0 view .LVU241
+ 972 00c8 4FF04041 		mov	r1, #-1073741824
+ 973 00cc 3846     		mov	r0, r7
+ 974              	.LVL108:
+ 186:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = 1;
+ 975              		.loc 1 186 29 view .LVU242
+ 976 00ce FFF7FEFF 		bl	__aeabi_fmul
+ 977              	.LVL109:
+ 186:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = 1;
+ 978              		.loc 1 186 24 view .LVU243
+ 979 00d2 6060     		str	r0, [r4, #4]	@ float
+ 187:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = filter->b1;
+ 980              		.loc 1 187 13 is_stmt 1 view .LVU244
+ 187:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = filter->b1;
+ 981              		.loc 1 187 24 is_stmt 0 view .LVU245
+ 982 00d4 A660     		str	r6, [r4, #8]	@ float
+ 188:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 983              		.loc 1 188 13 is_stmt 1 view .LVU246
+ 188:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 984              		.loc 1 188 24 is_stmt 0 view .LVU247
+ 985 00d6 E060     		str	r0, [r4, #12]	@ float
+ 189:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 22
+
+
+ 986              		.loc 1 189 13 is_stmt 1 view .LVU248
+ 189:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 987              		.loc 1 189 28 is_stmt 0 view .LVU249
+ 988 00d8 2946     		mov	r1, r5
+ 989 00da 3046     		mov	r0, r6
+ 990 00dc FFF7FEFF 		bl	__aeabi_fsub
+ 991              	.LVL110:
+ 189:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 992              		.loc 1 189 24 view .LVU250
+ 993 00e0 2061     		str	r0, [r4, #16]	@ float
+ 190:Libraries/ctrl_drv/imu/biquad_filter.c ****         case FILTER_BPF:
+ 994              		.loc 1 190 13 is_stmt 1 view .LVU251
+ 995 00e2 B4E7     		b	.L47
+ 996              	.LVL111:
+ 997              	.L46:
+ 192:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = 0;
+ 998              		.loc 1 192 13 view .LVU252
+ 192:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b1 = 0;
+ 999              		.loc 1 192 24 is_stmt 0 view .LVU253
+ 1000 00e4 2060     		str	r0, [r4]	@ float
+ 193:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = -alpha;
+ 1001              		.loc 1 193 13 is_stmt 1 view .LVU254
+ 193:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->b2 = -alpha;
+ 1002              		.loc 1 193 24 is_stmt 0 view .LVU255
+ 1003 00e6 0023     		movs	r3, #0
+ 1004 00e8 6360     		str	r3, [r4, #4]	@ float
+ 194:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 1005              		.loc 1 194 13 is_stmt 1 view .LVU256
+ 194:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 1006              		.loc 1 194 26 is_stmt 0 view .LVU257
+ 1007 00ea 00F10043 		add	r3, r0, #-2147483648
+ 194:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a1 = -2 * cs;
+ 1008              		.loc 1 194 24 view .LVU258
+ 1009 00ee A360     		str	r3, [r4, #8]	@ float
+ 195:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 1010              		.loc 1 195 13 is_stmt 1 view .LVU259
+ 195:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 1011              		.loc 1 195 29 is_stmt 0 view .LVU260
+ 1012 00f0 4FF04041 		mov	r1, #-1073741824
+ 1013 00f4 3846     		mov	r0, r7
+ 1014              	.LVL112:
+ 195:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 1015              		.loc 1 195 29 view .LVU261
+ 1016 00f6 FFF7FEFF 		bl	__aeabi_fmul
+ 1017              	.LVL113:
+ 195:Libraries/ctrl_drv/imu/biquad_filter.c ****             filter->a2 = 1 - alpha;
+ 1018              		.loc 1 195 24 view .LVU262
+ 1019 00fa E060     		str	r0, [r4, #12]	@ float
+ 196:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 1020              		.loc 1 196 13 is_stmt 1 view .LVU263
+ 196:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ 1021              		.loc 1 196 28 is_stmt 0 view .LVU264
+ 1022 00fc 2946     		mov	r1, r5
+ 1023 00fe 4FF07E50 		mov	r0, #1065353216
+ 1024 0102 FFF7FEFF 		bl	__aeabi_fsub
+ 1025              	.LVL114:
+ 196:Libraries/ctrl_drv/imu/biquad_filter.c ****             break;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 23
+
+
+ 1026              		.loc 1 196 24 view .LVU265
+ 1027 0106 2061     		str	r0, [r4, #16]	@ float
+ 197:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 1028              		.loc 1 197 13 is_stmt 1 view .LVU266
+ 1029 0108 A1E7     		b	.L47
+ 1030              	.L51:
+ 1031 010a 00BF     		.align	2
+ 1032              	.L50:
+ 1033 010c DB0FC940 		.word	1086918619
+ 1034 0110 BD378635 		.word	897988541
+ 1035              		.cfi_endproc
+ 1036              	.LFE20:
+ 1038              		.section	.text.biquadFilterInit,"ax",%progbits
+ 1039              		.align	1
+ 1040              		.global	biquadFilterInit
+ 1041              		.syntax unified
+ 1042              		.thumb
+ 1043              		.thumb_func
+ 1045              	biquadFilterInit:
+ 1046              	.LVL115:
+ 1047              	.LFB19:
+ 155:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterUpdate(filter, _filterCallFreq, _cutoffFreq, Q, filterType);
+ 1048              		.loc 1 155 1 view -0
+ 1049              		.cfi_startproc
+ 1050              		@ args = 4, pretend = 0, frame = 0
+ 1051              		@ frame_needed = 0, uses_anonymous_args = 0
+ 155:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterUpdate(filter, _filterCallFreq, _cutoffFreq, Q, filterType);
+ 1052              		.loc 1 155 1 is_stmt 0 view .LVU268
+ 1053 0000 30B5     		push	{r4, r5, lr}
+ 1054              	.LCFI9:
+ 1055              		.cfi_def_cfa_offset 12
+ 1056              		.cfi_offset 4, -12
+ 1057              		.cfi_offset 5, -8
+ 1058              		.cfi_offset 14, -4
+ 1059 0002 83B0     		sub	sp, sp, #12
+ 1060              	.LCFI10:
+ 1061              		.cfi_def_cfa_offset 24
+ 1062 0004 0446     		mov	r4, r0
+ 156:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 1063              		.loc 1 156 5 is_stmt 1 view .LVU269
+ 1064 0006 9DF81850 		ldrb	r5, [sp, #24]	@ zero_extendqisi2
+ 1065 000a 0095     		str	r5, [sp]
+ 1066 000c FFF7FEFF 		bl	biquadFilterUpdate
+ 1067              	.LVL116:
+ 159:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y1 = filter->y2 = 0;
+ 1068              		.loc 1 159 5 view .LVU270
+ 159:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y1 = filter->y2 = 0;
+ 1069              		.loc 1 159 29 is_stmt 0 view .LVU271
+ 1070 0010 0023     		movs	r3, #0
+ 1071 0012 A361     		str	r3, [r4, #24]	@ float
+ 159:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y1 = filter->y2 = 0;
+ 1072              		.loc 1 159 16 view .LVU272
+ 1073 0014 6361     		str	r3, [r4, #20]	@ float
+ 160:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1074              		.loc 1 160 5 is_stmt 1 view .LVU273
+ 160:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1075              		.loc 1 160 29 is_stmt 0 view .LVU274
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 24
+
+
+ 1076 0016 2362     		str	r3, [r4, #32]	@ float
+ 160:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1077              		.loc 1 160 16 view .LVU275
+ 1078 0018 E361     		str	r3, [r4, #28]	@ float
+ 161:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 1079              		.loc 1 161 1 view .LVU276
+ 1080 001a 03B0     		add	sp, sp, #12
+ 1081              	.LCFI11:
+ 1082              		.cfi_def_cfa_offset 12
+ 1083              		@ sp needed
+ 1084 001c 30BD     		pop	{r4, r5, pc}
+ 161:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 1085              		.loc 1 161 1 view .LVU277
+ 1086              		.cfi_endproc
+ 1087              	.LFE19:
+ 1089              		.section	.text.biquadFilterInitLPF,"ax",%progbits
+ 1090              		.align	1
+ 1091              		.global	biquadFilterInitLPF
+ 1092              		.syntax unified
+ 1093              		.thumb
+ 1094              		.thumb_func
+ 1096              	biquadFilterInitLPF:
+ 1097              	.LVL117:
+ 1098              	.LFB18:
+ 149:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterInit(filter, _filterCallFreq, _cutoffFreq, BIQUAD_Q, FILTER_LPF);
+ 1099              		.loc 1 149 1 is_stmt 1 view -0
+ 1100              		.cfi_startproc
+ 1101              		@ args = 0, pretend = 0, frame = 0
+ 1102              		@ frame_needed = 0, uses_anonymous_args = 0
+ 149:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterInit(filter, _filterCallFreq, _cutoffFreq, BIQUAD_Q, FILTER_LPF);
+ 1103              		.loc 1 149 1 is_stmt 0 view .LVU279
+ 1104 0000 00B5     		push	{lr}
+ 1105              	.LCFI12:
+ 1106              		.cfi_def_cfa_offset 4
+ 1107              		.cfi_offset 14, -4
+ 1108 0002 83B0     		sub	sp, sp, #12
+ 1109              	.LCFI13:
+ 1110              		.cfi_def_cfa_offset 16
+ 150:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1111              		.loc 1 150 5 is_stmt 1 view .LVU280
+ 1112 0004 0023     		movs	r3, #0
+ 1113 0006 0093     		str	r3, [sp]
+ 1114 0008 024B     		ldr	r3, .L56
+ 1115 000a FFF7FEFF 		bl	biquadFilterInit
+ 1116              	.LVL118:
+ 151:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 1117              		.loc 1 151 1 is_stmt 0 view .LVU281
+ 1118 000e 03B0     		add	sp, sp, #12
+ 1119              	.LCFI14:
+ 1120              		.cfi_def_cfa_offset 4
+ 1121              		@ sp needed
+ 1122 0010 5DF804FB 		ldr	pc, [sp], #4
+ 1123              	.L57:
+ 1124              		.align	2
+ 1125              	.L56:
+ 1126 0014 F304353F 		.word	1060439283
+ 1127              		.cfi_endproc
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 25
+
+
+ 1128              	.LFE18:
+ 1130              		.section	.text.biquadFilterUpdateLPF,"ax",%progbits
+ 1131              		.align	1
+ 1132              		.global	biquadFilterUpdateLPF
+ 1133              		.syntax unified
+ 1134              		.thumb
+ 1135              		.thumb_func
+ 1137              	biquadFilterUpdateLPF:
+ 1138              	.LVL119:
+ 1139              	.LFB21:
+ 209:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 210:Libraries/ctrl_drv/imu/biquad_filter.c **** void biquadFilterUpdateLPF(BiquadFilter_t *filter, float filterFreq, float refreshRate)
+ 211:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 1140              		.loc 1 211 1 is_stmt 1 view -0
+ 1141              		.cfi_startproc
+ 1142              		@ args = 0, pretend = 0, frame = 0
+ 1143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1144              		.loc 1 211 1 is_stmt 0 view .LVU283
+ 1145 0000 00B5     		push	{lr}
+ 1146              	.LCFI15:
+ 1147              		.cfi_def_cfa_offset 4
+ 1148              		.cfi_offset 14, -4
+ 1149 0002 83B0     		sub	sp, sp, #12
+ 1150              	.LCFI16:
+ 1151              		.cfi_def_cfa_offset 16
+ 212:Libraries/ctrl_drv/imu/biquad_filter.c ****     biquadFilterUpdate(filter, filterFreq, refreshRate, BIQUAD_Q, FILTER_LPF);
+ 1152              		.loc 1 212 5 is_stmt 1 view .LVU284
+ 1153 0004 0023     		movs	r3, #0
+ 1154 0006 0093     		str	r3, [sp]
+ 1155 0008 024B     		ldr	r3, .L60
+ 1156 000a FFF7FEFF 		bl	biquadFilterUpdate
+ 1157              	.LVL120:
+ 213:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1158              		.loc 1 213 1 is_stmt 0 view .LVU285
+ 1159 000e 03B0     		add	sp, sp, #12
+ 1160              	.LCFI17:
+ 1161              		.cfi_def_cfa_offset 4
+ 1162              		@ sp needed
+ 1163 0010 5DF804FB 		ldr	pc, [sp], #4
+ 1164              	.L61:
+ 1165              		.align	2
+ 1166              	.L60:
+ 1167 0014 F304353F 		.word	1060439283
+ 1168              		.cfi_endproc
+ 1169              	.LFE21:
+ 1171              		.section	.text.biquadFilterApplyDF1,"ax",%progbits
+ 1172              		.align	1
+ 1173              		.global	biquadFilterApplyDF1
+ 1174              		.syntax unified
+ 1175              		.thumb
+ 1176              		.thumb_func
+ 1178              	biquadFilterApplyDF1:
+ 1179              	.LVL121:
+ 1180              	.LFB22:
+ 214:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 215:Libraries/ctrl_drv/imu/biquad_filter.c **** /* Computes a biquadFilter_t filter on a sample (slightly less precise than df2 but works in dynami
+ 216:Libraries/ctrl_drv/imu/biquad_filter.c **** float biquadFilterApplyDF1(BiquadFilter_t *filter, float input)
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 26
+
+
+ 217:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 1181              		.loc 1 217 1 is_stmt 1 view -0
+ 1182              		.cfi_startproc
+ 1183              		@ args = 0, pretend = 0, frame = 0
+ 1184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1185              		.loc 1 217 1 is_stmt 0 view .LVU287
+ 1186 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1187              	.LCFI18:
+ 1188              		.cfi_def_cfa_offset 24
+ 1189              		.cfi_offset 4, -24
+ 1190              		.cfi_offset 5, -20
+ 1191              		.cfi_offset 6, -16
+ 1192              		.cfi_offset 7, -12
+ 1193              		.cfi_offset 8, -8
+ 1194              		.cfi_offset 14, -4
+ 1195 0004 0446     		mov	r4, r0
+ 1196 0006 0D46     		mov	r5, r1
+ 218:Libraries/ctrl_drv/imu/biquad_filter.c ****     /* compute result */
+ 219:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float result =
+ 1197              		.loc 1 219 5 is_stmt 1 view .LVU288
+ 220:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->b0 * input + filter->b1 * filter->x1 + filter->b2 * filter->x2 - filter->a1 * filte
+ 1198              		.loc 1 220 20 is_stmt 0 view .LVU289
+ 1199 0008 0068     		ldr	r0, [r0]	@ float
+ 1200              	.LVL122:
+ 1201              		.loc 1 220 20 view .LVU290
+ 1202 000a FFF7FEFF 		bl	__aeabi_fmul
+ 1203              	.LVL123:
+ 1204              		.loc 1 220 20 view .LVU291
+ 1205 000e 0646     		mov	r6, r0
+ 1206              		.loc 1 220 49 view .LVU292
+ 1207 0010 6769     		ldr	r7, [r4, #20]	@ float
+ 1208              		.loc 1 220 41 view .LVU293
+ 1209 0012 3946     		mov	r1, r7
+ 1210 0014 6068     		ldr	r0, [r4, #4]	@ float
+ 1211 0016 FFF7FEFF 		bl	__aeabi_fmul
+ 1212              	.LVL124:
+ 1213 001a 0146     		mov	r1, r0
+ 1214              		.loc 1 220 28 view .LVU294
+ 1215 001c 3046     		mov	r0, r6
+ 1216 001e FFF7FEFF 		bl	__aeabi_fadd
+ 1217              	.LVL125:
+ 1218 0022 0646     		mov	r6, r0
+ 1219              		.loc 1 220 67 view .LVU295
+ 1220 0024 A169     		ldr	r1, [r4, #24]	@ float
+ 1221 0026 A068     		ldr	r0, [r4, #8]	@ float
+ 1222 0028 FFF7FEFF 		bl	__aeabi_fmul
+ 1223              	.LVL126:
+ 1224 002c 0146     		mov	r1, r0
+ 1225              		.loc 1 220 54 view .LVU296
+ 1226 002e 3046     		mov	r0, r6
+ 1227 0030 FFF7FEFF 		bl	__aeabi_fadd
+ 1228              	.LVL127:
+ 1229 0034 0646     		mov	r6, r0
+ 1230              		.loc 1 220 101 view .LVU297
+ 1231 0036 D4F81C80 		ldr	r8, [r4, #28]	@ float
+ 1232              		.loc 1 220 93 view .LVU298
+ 1233 003a 4146     		mov	r1, r8
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 27
+
+
+ 1234 003c E068     		ldr	r0, [r4, #12]	@ float
+ 1235 003e FFF7FEFF 		bl	__aeabi_fmul
+ 1236              	.LVL128:
+ 1237 0042 0146     		mov	r1, r0
+ 1238              		.loc 1 220 80 view .LVU299
+ 1239 0044 3046     		mov	r0, r6
+ 1240 0046 FFF7FEFF 		bl	__aeabi_fsub
+ 1241              	.LVL129:
+ 1242 004a 0646     		mov	r6, r0
+ 221:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->a2 * filter->y2;
+ 1243              		.loc 1 221 20 view .LVU300
+ 1244 004c 216A     		ldr	r1, [r4, #32]	@ float
+ 1245 004e 2069     		ldr	r0, [r4, #16]	@ float
+ 1246 0050 FFF7FEFF 		bl	__aeabi_fmul
+ 1247              	.LVL130:
+ 1248 0054 0146     		mov	r1, r0
+ 219:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->b0 * input + filter->b1 * filter->x1 + filter->b2 * filter->x2 - filter->a1 * filte
+ 1249              		.loc 1 219 17 view .LVU301
+ 1250 0056 3046     		mov	r0, r6
+ 1251 0058 FFF7FEFF 		bl	__aeabi_fsub
+ 1252              	.LVL131:
+ 222:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 223:Libraries/ctrl_drv/imu/biquad_filter.c ****     /* shift x1 to x2, input to x1 */
+ 224:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->x2 = filter->x1;
+ 1253              		.loc 1 224 5 is_stmt 1 view .LVU302
+ 1254              		.loc 1 224 16 is_stmt 0 view .LVU303
+ 1255 005c A761     		str	r7, [r4, #24]	@ float
+ 225:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->x1 = input;
+ 1256              		.loc 1 225 5 is_stmt 1 view .LVU304
+ 1257              		.loc 1 225 16 is_stmt 0 view .LVU305
+ 1258 005e 6561     		str	r5, [r4, #20]	@ float
+ 226:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 227:Libraries/ctrl_drv/imu/biquad_filter.c ****     /* shift y1 to y2, result to y1 */
+ 228:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y2 = filter->y1;
+ 1259              		.loc 1 228 5 is_stmt 1 view .LVU306
+ 1260              		.loc 1 228 16 is_stmt 0 view .LVU307
+ 1261 0060 C4F82080 		str	r8, [r4, #32]	@ float
+ 229:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->y1 = result;
+ 1262              		.loc 1 229 5 is_stmt 1 view .LVU308
+ 1263              		.loc 1 229 16 is_stmt 0 view .LVU309
+ 1264 0064 E061     		str	r0, [r4, #28]	@ float
+ 230:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 231:Libraries/ctrl_drv/imu/biquad_filter.c ****     return result;
+ 1265              		.loc 1 231 5 is_stmt 1 view .LVU310
+ 232:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1266              		.loc 1 232 1 is_stmt 0 view .LVU311
+ 1267 0066 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1268              		.loc 1 232 1 view .LVU312
+ 1269              		.cfi_endproc
+ 1270              	.LFE22:
+ 1272              		.section	.text.biquadFilterApply,"ax",%progbits
+ 1273              		.align	1
+ 1274              		.global	biquadFilterApply
+ 1275              		.syntax unified
+ 1276              		.thumb
+ 1277              		.thumb_func
+ 1279              	biquadFilterApply:
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 28
+
+
+ 1280              	.LVL132:
+ 1281              	.LFB23:
+ 233:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 234:Libraries/ctrl_drv/imu/biquad_filter.c **** /* Computes a biquadFilter_t filter in direct form 2 on a sample (higher precision but can't handle
+ 235:Libraries/ctrl_drv/imu/biquad_filter.c **** float biquadFilterApply(BiquadFilter_t *filter, float input)
+ 236:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 1282              		.loc 1 236 1 is_stmt 1 view -0
+ 1283              		.cfi_startproc
+ 1284              		@ args = 0, pretend = 0, frame = 0
+ 1285              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1286              		.loc 1 236 1 is_stmt 0 view .LVU314
+ 1287 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1288              	.LCFI19:
+ 1289              		.cfi_def_cfa_offset 24
+ 1290              		.cfi_offset 3, -24
+ 1291              		.cfi_offset 4, -20
+ 1292              		.cfi_offset 5, -16
+ 1293              		.cfi_offset 6, -12
+ 1294              		.cfi_offset 7, -8
+ 1295              		.cfi_offset 14, -4
+ 1296 0002 0446     		mov	r4, r0
+ 1297 0004 0E46     		mov	r6, r1
+ 237:Libraries/ctrl_drv/imu/biquad_filter.c ****     const float result = filter->b0 * input + filter->x1;
+ 1298              		.loc 1 237 5 is_stmt 1 view .LVU315
+ 1299              		.loc 1 237 37 is_stmt 0 view .LVU316
+ 1300 0006 0068     		ldr	r0, [r0]	@ float
+ 1301              	.LVL133:
+ 1302              		.loc 1 237 37 view .LVU317
+ 1303 0008 FFF7FEFF 		bl	__aeabi_fmul
+ 1304              	.LVL134:
+ 1305              		.loc 1 237 17 view .LVU318
+ 1306 000c 6169     		ldr	r1, [r4, #20]	@ float
+ 1307 000e FFF7FEFF 		bl	__aeabi_fadd
+ 1308              	.LVL135:
+ 1309 0012 0546     		mov	r5, r0
+ 1310              	.LVL136:
+ 238:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->x1 = filter->b1 * input - filter->a1 * result + filter->x2;
+ 1311              		.loc 1 238 5 is_stmt 1 view .LVU319
+ 1312              		.loc 1 238 29 is_stmt 0 view .LVU320
+ 1313 0014 3146     		mov	r1, r6
+ 1314 0016 6068     		ldr	r0, [r4, #4]	@ float
+ 1315              	.LVL137:
+ 1316              		.loc 1 238 29 view .LVU321
+ 1317 0018 FFF7FEFF 		bl	__aeabi_fmul
+ 1318              	.LVL138:
+ 1319 001c 0746     		mov	r7, r0
+ 1320              		.loc 1 238 50 view .LVU322
+ 1321 001e 2946     		mov	r1, r5
+ 1322 0020 E068     		ldr	r0, [r4, #12]	@ float
+ 1323 0022 FFF7FEFF 		bl	__aeabi_fmul
+ 1324              	.LVL139:
+ 1325 0026 0146     		mov	r1, r0
+ 1326              		.loc 1 238 37 view .LVU323
+ 1327 0028 3846     		mov	r0, r7
+ 1328 002a FFF7FEFF 		bl	__aeabi_fsub
+ 1329              	.LVL140:
+ 1330              		.loc 1 238 59 view .LVU324
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 29
+
+
+ 1331 002e A169     		ldr	r1, [r4, #24]	@ float
+ 1332 0030 FFF7FEFF 		bl	__aeabi_fadd
+ 1333              	.LVL141:
+ 1334              		.loc 1 238 16 view .LVU325
+ 1335 0034 6061     		str	r0, [r4, #20]	@ float
+ 239:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->x2 = filter->b2 * input - filter->a2 * result;
+ 1336              		.loc 1 239 5 is_stmt 1 view .LVU326
+ 1337              		.loc 1 239 29 is_stmt 0 view .LVU327
+ 1338 0036 3146     		mov	r1, r6
+ 1339 0038 A068     		ldr	r0, [r4, #8]	@ float
+ 1340 003a FFF7FEFF 		bl	__aeabi_fmul
+ 1341              	.LVL142:
+ 1342 003e 0646     		mov	r6, r0
+ 1343              	.LVL143:
+ 1344              		.loc 1 239 50 view .LVU328
+ 1345 0040 2946     		mov	r1, r5
+ 1346 0042 2069     		ldr	r0, [r4, #16]	@ float
+ 1347 0044 FFF7FEFF 		bl	__aeabi_fmul
+ 1348              	.LVL144:
+ 1349 0048 0146     		mov	r1, r0
+ 1350              		.loc 1 239 37 view .LVU329
+ 1351 004a 3046     		mov	r0, r6
+ 1352 004c FFF7FEFF 		bl	__aeabi_fsub
+ 1353              	.LVL145:
+ 1354              		.loc 1 239 16 view .LVU330
+ 1355 0050 A061     		str	r0, [r4, #24]	@ float
+ 240:Libraries/ctrl_drv/imu/biquad_filter.c ****     return result;
+ 1356              		.loc 1 240 5 is_stmt 1 view .LVU331
+ 241:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1357              		.loc 1 241 1 is_stmt 0 view .LVU332
+ 1358 0052 2846     		mov	r0, r5
+ 1359 0054 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1360              		.loc 1 241 1 view .LVU333
+ 1361              		.cfi_endproc
+ 1362              	.LFE23:
+ 1364              		.section	.text.laggedMovingAverageInit,"ax",%progbits
+ 1365              		.align	1
+ 1366              		.global	laggedMovingAverageInit
+ 1367              		.syntax unified
+ 1368              		.thumb
+ 1369              		.thumb_func
+ 1371              	laggedMovingAverageInit:
+ 1372              	.LVL146:
+ 1373              	.LFB24:
+ 242:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 243:Libraries/ctrl_drv/imu/biquad_filter.c **** void laggedMovingAverageInit(laggedMovingAverage_t *filter, uint16_t windowSize, float *buf)
+ 244:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 1374              		.loc 1 244 1 is_stmt 1 view -0
+ 1375              		.cfi_startproc
+ 1376              		@ args = 0, pretend = 0, frame = 0
+ 1377              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1378              		.loc 1 244 1 is_stmt 0 view .LVU335
+ 1379 0000 38B5     		push	{r3, r4, r5, lr}
+ 1380              	.LCFI20:
+ 1381              		.cfi_def_cfa_offset 16
+ 1382              		.cfi_offset 3, -16
+ 1383              		.cfi_offset 4, -12
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 30
+
+
+ 1384              		.cfi_offset 5, -8
+ 1385              		.cfi_offset 14, -4
+ 1386 0002 0446     		mov	r4, r0
+ 1387 0004 1046     		mov	r0, r2
+ 1388              	.LVL147:
+ 245:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->movingWindowIndex = 0;
+ 1389              		.loc 1 245 5 is_stmt 1 view .LVU336
+ 1390              		.loc 1 245 31 is_stmt 0 view .LVU337
+ 1391 0006 0025     		movs	r5, #0
+ 1392 0008 2580     		strh	r5, [r4]	@ movhi
+ 246:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->windowSize = windowSize;
+ 1393              		.loc 1 246 5 is_stmt 1 view .LVU338
+ 1394              		.loc 1 246 24 is_stmt 0 view .LVU339
+ 1395 000a 6180     		strh	r1, [r4, #2]	@ movhi
+ 247:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->buf = buf;
+ 1396              		.loc 1 247 5 is_stmt 1 view .LVU340
+ 1397              		.loc 1 247 17 is_stmt 0 view .LVU341
+ 1398 000c A260     		str	r2, [r4, #8]
+ 248:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->movingSum = 0;
+ 1399              		.loc 1 248 5 is_stmt 1 view .LVU342
+ 1400              		.loc 1 248 23 is_stmt 0 view .LVU343
+ 1401 000e 0023     		movs	r3, #0
+ 1402 0010 6360     		str	r3, [r4, #4]	@ float
+ 249:Libraries/ctrl_drv/imu/biquad_filter.c ****     memset(filter->buf, 0, windowSize * sizeof(float));
+ 1403              		.loc 1 249 5 is_stmt 1 view .LVU344
+ 1404 0012 8A00     		lsls	r2, r1, #2
+ 1405              	.LVL148:
+ 1406              		.loc 1 249 5 is_stmt 0 view .LVU345
+ 1407 0014 2946     		mov	r1, r5
+ 1408              	.LVL149:
+ 1409              		.loc 1 249 5 view .LVU346
+ 1410 0016 FFF7FEFF 		bl	memset
+ 1411              	.LVL150:
+ 250:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->primed = false;
+ 1412              		.loc 1 250 5 is_stmt 1 view .LVU347
+ 1413              		.loc 1 250 20 is_stmt 0 view .LVU348
+ 1414 001a 2573     		strb	r5, [r4, #12]
+ 251:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1415              		.loc 1 251 1 view .LVU349
+ 1416 001c 38BD     		pop	{r3, r4, r5, pc}
+ 1417              		.loc 1 251 1 view .LVU350
+ 1418              		.cfi_endproc
+ 1419              	.LFE24:
+ 1421              		.global	__aeabi_i2f
+ 1422              		.section	.text.laggedMovingAverageUpdate,"ax",%progbits
+ 1423              		.align	1
+ 1424              		.global	laggedMovingAverageUpdate
+ 1425              		.syntax unified
+ 1426              		.thumb
+ 1427              		.thumb_func
+ 1429              	laggedMovingAverageUpdate:
+ 1430              	.LVL151:
+ 1431              	.LFB25:
+ 252:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 253:Libraries/ctrl_drv/imu/biquad_filter.c **** float laggedMovingAverageUpdate(laggedMovingAverage_t *filter, float input)
+ 254:Libraries/ctrl_drv/imu/biquad_filter.c **** {
+ 1432              		.loc 1 254 1 is_stmt 1 view -0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 31
+
+
+ 1433              		.cfi_startproc
+ 1434              		@ args = 0, pretend = 0, frame = 0
+ 1435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1436              		.loc 1 254 1 is_stmt 0 view .LVU352
+ 1437 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1438              	.LCFI21:
+ 1439              		.cfi_def_cfa_offset 24
+ 1440              		.cfi_offset 3, -24
+ 1441              		.cfi_offset 4, -20
+ 1442              		.cfi_offset 5, -16
+ 1443              		.cfi_offset 6, -12
+ 1444              		.cfi_offset 7, -8
+ 1445              		.cfi_offset 14, -4
+ 1446 0002 0446     		mov	r4, r0
+ 1447 0004 0D46     		mov	r5, r1
+ 255:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->movingSum -= filter->buf[filter->movingWindowIndex];
+ 1448              		.loc 1 255 5 is_stmt 1 view .LVU353
+ 1449              		.loc 1 255 32 is_stmt 0 view .LVU354
+ 1450 0006 8668     		ldr	r6, [r0, #8]
+ 1451              		.loc 1 255 44 view .LVU355
+ 1452 0008 0788     		ldrh	r7, [r0]
+ 1453              		.loc 1 255 23 view .LVU356
+ 1454 000a 56F82710 		ldr	r1, [r6, r7, lsl #2]	@ float
+ 1455              	.LVL152:
+ 1456              		.loc 1 255 23 view .LVU357
+ 1457 000e 4068     		ldr	r0, [r0, #4]	@ float
+ 1458              	.LVL153:
+ 1459              		.loc 1 255 23 view .LVU358
+ 1460 0010 FFF7FEFF 		bl	__aeabi_fsub
+ 1461              	.LVL154:
+ 1462 0014 6060     		str	r0, [r4, #4]	@ float
+ 256:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->buf[filter->movingWindowIndex] = input;
+ 1463              		.loc 1 256 5 is_stmt 1 view .LVU359
+ 1464              		.loc 1 256 44 is_stmt 0 view .LVU360
+ 1465 0016 46F82750 		str	r5, [r6, r7, lsl #2]	@ float
+ 257:Libraries/ctrl_drv/imu/biquad_filter.c ****     filter->movingSum += input;
+ 1466              		.loc 1 257 5 is_stmt 1 view .LVU361
+ 1467              		.loc 1 257 23 is_stmt 0 view .LVU362
+ 1468 001a 2946     		mov	r1, r5
+ 1469 001c 6068     		ldr	r0, [r4, #4]	@ float
+ 1470 001e FFF7FEFF 		bl	__aeabi_fadd
+ 1471              	.LVL155:
+ 1472 0022 0546     		mov	r5, r0
+ 1473              	.LVL156:
+ 1474              		.loc 1 257 23 view .LVU363
+ 1475 0024 6060     		str	r0, [r4, #4]	@ float
+ 258:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 259:Libraries/ctrl_drv/imu/biquad_filter.c ****     if (++filter->movingWindowIndex == filter->windowSize)
+ 1476              		.loc 1 259 5 is_stmt 1 view .LVU364
+ 1477              		.loc 1 259 17 is_stmt 0 view .LVU365
+ 1478 0026 2388     		ldrh	r3, [r4]
+ 1479              		.loc 1 259 9 view .LVU366
+ 1480 0028 0133     		adds	r3, r3, #1
+ 1481 002a 9BB2     		uxth	r3, r3
+ 1482              		.loc 1 259 8 view .LVU367
+ 1483 002c 2380     		strh	r3, [r4]	@ movhi
+ 1484              		.loc 1 259 46 view .LVU368
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 32
+
+
+ 1485 002e 6088     		ldrh	r0, [r4, #2]
+ 1486              		.loc 1 259 8 view .LVU369
+ 1487 0030 8342     		cmp	r3, r0
+ 1488 0032 09D0     		beq	.L72
+ 1489              	.L69:
+ 260:Libraries/ctrl_drv/imu/biquad_filter.c ****     {
+ 261:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->movingWindowIndex = 0;
+ 262:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->primed = true;
+ 263:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 264:Libraries/ctrl_drv/imu/biquad_filter.c **** 
+ 265:Libraries/ctrl_drv/imu/biquad_filter.c ****     const uint16_t denom = filter->primed ? filter->windowSize : filter->movingWindowIndex;
+ 1490              		.loc 1 265 5 is_stmt 1 view .LVU370
+ 1491              		.loc 1 265 34 is_stmt 0 view .LVU371
+ 1492 0034 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 1493              		.loc 1 265 20 view .LVU372
+ 1494 0036 03B9     		cbnz	r3, .L70
+ 1495              		.loc 1 265 20 discriminator 2 view .LVU373
+ 1496 0038 2088     		ldrh	r0, [r4]
+ 1497              	.L70:
+ 1498              	.LVL157:
+ 266:Libraries/ctrl_drv/imu/biquad_filter.c ****     return filter->movingSum / denom;
+ 1499              		.loc 1 266 5 is_stmt 1 discriminator 4 view .LVU374
+ 1500              		.loc 1 266 30 is_stmt 0 discriminator 4 view .LVU375
+ 1501 003a FFF7FEFF 		bl	__aeabi_i2f
+ 1502              	.LVL158:
+ 1503              		.loc 1 266 30 discriminator 4 view .LVU376
+ 1504 003e 0146     		mov	r1, r0
+ 1505 0040 2846     		mov	r0, r5
+ 1506 0042 FFF7FEFF 		bl	__aeabi_fdiv
+ 1507              	.LVL159:
+ 267:Libraries/ctrl_drv/imu/biquad_filter.c **** }
+ 1508              		.loc 1 267 1 discriminator 4 view .LVU377
+ 1509 0046 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1510              	.LVL160:
+ 1511              	.L72:
+ 261:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->primed = true;
+ 1512              		.loc 1 261 9 is_stmt 1 view .LVU378
+ 261:Libraries/ctrl_drv/imu/biquad_filter.c ****         filter->primed = true;
+ 1513              		.loc 1 261 35 is_stmt 0 view .LVU379
+ 1514 0048 0023     		movs	r3, #0
+ 1515 004a 2380     		strh	r3, [r4]	@ movhi
+ 262:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 1516              		.loc 1 262 9 is_stmt 1 view .LVU380
+ 262:Libraries/ctrl_drv/imu/biquad_filter.c ****     }
+ 1517              		.loc 1 262 24 is_stmt 0 view .LVU381
+ 1518 004c 0123     		movs	r3, #1
+ 1519 004e 2373     		strb	r3, [r4, #12]
+ 1520 0050 F0E7     		b	.L69
+ 1521              		.cfi_endproc
+ 1522              	.LFE25:
+ 1524              		.text
+ 1525              	.Letext0:
+ 1526              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 1527              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 1528              		.file 4 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ 1529              		.file 5 "Libraries/ctrl_drv/imu/biquad_filter.h"
+ 1530              		.file 6 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\string.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 33
+
+
+ 1531              		.file 7 "Libraries/ctrl_drv/imu/filter_math.h"
+ 1532              		.file 8 "<built-in>"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 biquad_filter.c
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:19     .text.nullFilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:25     .text.nullFilterApply:00000000 nullFilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:47     .text.pt1FilterGain:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:53     .text.pt1FilterGain:00000000 pt1FilterGain
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:98     .text.pt1FilterGain:00000024 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:103    .text.pt1FilterInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:109    .text.pt1FilterInit:00000000 pt1FilterInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:130    .text.pt1FilterUpdateCutoff:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:136    .text.pt1FilterUpdateCutoff:00000000 pt1FilterUpdateCutoff
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:154    .text.pt1FilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:160    .text.pt1FilterApply:00000000 pt1FilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:210    .text.pt2FilterGain:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:216    .text.pt2FilterGain:00000000 pt2FilterGain
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:264    .text.pt2FilterGain:00000024 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:269    .text.pt2FilterInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:275    .text.pt2FilterInit:00000000 pt2FilterInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:299    .text.pt2FilterUpdateCutoff:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:305    .text.pt2FilterUpdateCutoff:00000000 pt2FilterUpdateCutoff
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:322    .text.pt2FilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:328    .text.pt2FilterApply:00000000 pt2FilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:397    .text.pt3FilterGain:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:403    .text.pt3FilterGain:00000000 pt3FilterGain
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:451    .text.pt3FilterGain:00000024 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:456    .text.pt3FilterInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:462    .text.pt3FilterInit:00000000 pt3FilterInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:489    .text.pt3FilterUpdateCutoff:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:495    .text.pt3FilterUpdateCutoff:00000000 pt3FilterUpdateCutoff
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:512    .text.pt3FilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:518    .text.pt3FilterApply:00000000 pt3FilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:606    .text.slewFilterInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:612    .text.slewFilterInit:00000000 slewFilterInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:638    .text.slewFilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:644    .text.slewFilterApply:00000000 slewFilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:732    .text.filterGetNotchQ:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:738    .text.filterGetNotchQ:00000000 filterGetNotchQ
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:790    .text.biquadFilterUpdate:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:796    .text.biquadFilterUpdate:00000000 biquadFilterUpdate
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1033   .text.biquadFilterUpdate:0000010c $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1039   .text.biquadFilterInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1045   .text.biquadFilterInit:00000000 biquadFilterInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1090   .text.biquadFilterInitLPF:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1096   .text.biquadFilterInitLPF:00000000 biquadFilterInitLPF
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1126   .text.biquadFilterInitLPF:00000014 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1131   .text.biquadFilterUpdateLPF:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1137   .text.biquadFilterUpdateLPF:00000000 biquadFilterUpdateLPF
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1167   .text.biquadFilterUpdateLPF:00000014 $d
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1172   .text.biquadFilterApplyDF1:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1178   .text.biquadFilterApplyDF1:00000000 biquadFilterApplyDF1
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1273   .text.biquadFilterApply:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1279   .text.biquadFilterApply:00000000 biquadFilterApply
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1365   .text.laggedMovingAverageInit:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1371   .text.laggedMovingAverageInit:00000000 laggedMovingAverageInit
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1423   .text.laggedMovingAverageUpdate:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s:1429   .text.laggedMovingAverageUpdate:00000000 laggedMovingAverageUpdate
+
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\ccTtKGHS.s 			page 35
+
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_fdiv
+__aeabi_fadd
+__aeabi_fsub
+__aeabi_fcmpge
+__aeabi_fcmple
+sin_approx
+cos_approx
+memset
+__aeabi_i2f

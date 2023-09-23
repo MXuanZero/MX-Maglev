@@ -1,0 +1,1157 @@
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"lib_timer.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Libraries/ctrl_sdk/src/lib_timer.c"
+  18              		.section	.text.lib_timer_fsm,"ax",%progbits
+  19              		.align	1
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	lib_timer_fsm:
+  25              	.LVL0:
+  26              	.LFB5:
+   1:Libraries/ctrl_sdk/src/lib_timer.c **** /* Includes ------------------------------------------------------------------*/
+   2:Libraries/ctrl_sdk/src/lib_timer.c **** #include "lib_timer.h"
+   3:Libraries/ctrl_sdk/src/lib_timer.c **** #include "lib_tick.h"
+   4:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private define ------------------------------------------------------------*/
+   5:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private macro -------------------------------------------------------------*/
+   6:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private typedef -----------------------------------------------------------*/
+   7:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private variables ---------------------------------------------------------*/
+   8:Libraries/ctrl_sdk/src/lib_timer.c **** static lib_list_t lib_timer_groups = { 0 };
+   9:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private function prototypes -----------------------------------------------*/
+  10:Libraries/ctrl_sdk/src/lib_timer.c **** static inline LIB_TIMER_UNIT lib_timer_get_millis(void);
+  11:Libraries/ctrl_sdk/src/lib_timer.c **** static inline void lib_timer_fsm(lib_timer_t *timer);
+  12:Libraries/ctrl_sdk/src/lib_timer.c **** /* Private functions ---------------------------------------------------------*/
+  13:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_init(lib_timer_t *timer, LIB_TIMER_UNIT period,
+  14:Libraries/ctrl_sdk/src/lib_timer.c **** 		    LIB_TIMER_UNIT timeout, lib_timer_callback_fn cb_fn)
+  15:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  16:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer == NULL) {
+  17:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+  18:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+  19:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->period = period;
+  20:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->timeout = timeout;
+  21:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->cb_fn = cb_fn;
+  22:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.next = NULL;
+  23:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.prev = NULL;
+  24:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  25:Libraries/ctrl_sdk/src/lib_timer.c **** 
+  26:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_group_init(lib_timer_group_t *group)
+  27:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  28:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL) {
+  29:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+  30:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+  31:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group->id != 0) {
+  32:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 2
+
+
+  33:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+  34:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *node = &group->node;
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_inc_tail(&lib_timer_groups, node);
+  36:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  37:Libraries/ctrl_sdk/src/lib_timer.c **** 
+  38:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_reg(lib_timer_group_t *group, lib_timer_t *timer)
+  39:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  40:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL || timer == NULL) {
+  41:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+  42:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+  43:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer->cb_fn == NULL) {
+  44:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+  45:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+  46:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_t *list = &group->list;
+  47:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *node = &timer->node;
+  48:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_inc_tail(list, node);
+  49:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  50:Libraries/ctrl_sdk/src/lib_timer.c **** 
+  51:Libraries/ctrl_sdk/src/lib_timer.c **** static inline LIB_TIMER_UNIT lib_timer_get_millis(void)
+  52:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** 	return lib_get_millis();
+  54:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  55:Libraries/ctrl_sdk/src/lib_timer.c **** 
+  56:Libraries/ctrl_sdk/src/lib_timer.c **** static inline uint32_t lib_timer_get_tick(void)
+  57:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** 	return lib_get_tick();
+  59:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  60:Libraries/ctrl_sdk/src/lib_timer.c **** 
+  61:Libraries/ctrl_sdk/src/lib_timer.c **** static inline void lib_timer_fsm(lib_timer_t *timer)
+  62:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  27              		.loc 1 62 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		.loc 1 62 1 is_stmt 0 view .LVU1
+  32 0000 70B5     		push	{r4, r5, r6, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 16
+  35              		.cfi_offset 4, -16
+  36              		.cfi_offset 5, -12
+  37              		.cfi_offset 6, -8
+  38              		.cfi_offset 14, -4
+  39 0002 0446     		mov	r4, r0
+  63:Libraries/ctrl_sdk/src/lib_timer.c **** 	uint32_t start_time;
+  40              		.loc 1 63 2 is_stmt 1 view .LVU2
+  64:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_timer_event event;
+  41              		.loc 1 64 2 view .LVU3
+  65:Libraries/ctrl_sdk/src/lib_timer.c **** 	LIB_TIMER_UNIT temp;
+  42              		.loc 1 65 2 view .LVU4
+  66:Libraries/ctrl_sdk/src/lib_timer.c **** 	LIB_TIMER_UNIT ms = lib_timer_get_millis();
+  43              		.loc 1 66 2 view .LVU5
+  44              	.LBB15:
+  45              	.LBI15:
+  51:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  46              		.loc 1 51 30 view .LVU6
+  47              	.LBB16:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 3
+
+
+  48              		.loc 1 53 2 view .LVU7
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  49              		.loc 1 53 9 is_stmt 0 view .LVU8
+  50 0004 FFF7FEFF 		bl	lib_get_millis
+  51              	.LVL1:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  52              		.loc 1 53 9 view .LVU9
+  53              	.LBE16:
+  54              	.LBE15:
+  67:Libraries/ctrl_sdk/src/lib_timer.c **** 	switch (timer->state) {
+  55              		.loc 1 67 2 is_stmt 1 view .LVU10
+  56              		.loc 1 67 15 is_stmt 0 view .LVU11
+  57 0008 257D     		ldrb	r5, [r4, #20]	@ zero_extendqisi2
+  58              		.loc 1 67 2 view .LVU12
+  59 000a 15B1     		cbz	r5, .L2
+  60 000c 012D     		cmp	r5, #1
+  61 000e 1AD0     		beq	.L3
+  62              	.LVL2:
+  63              	.L1:
+  68:Libraries/ctrl_sdk/src/lib_timer.c **** 	case LIB_TIMER_READY:
+  69:Libraries/ctrl_sdk/src/lib_timer.c **** 		temp = ms - timer->last_run;
+  70:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < timer->period) {
+  71:Libraries/ctrl_sdk/src/lib_timer.c **** 			return;
+  72:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+  73:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp > timer->timeout) {
+  74:Libraries/ctrl_sdk/src/lib_timer.c **** 			event = LIB_TIMER_TIMEOUT;
+  75:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+  76:Libraries/ctrl_sdk/src/lib_timer.c **** 			event = LIB_TIMER_NORMAL;
+  77:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+  78:Libraries/ctrl_sdk/src/lib_timer.c **** 		timer->last_run = ms;
+  79:Libraries/ctrl_sdk/src/lib_timer.c **** 		start_time = lib_timer_get_tick();
+  80:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (timer->cb_fn != NULL) {
+  81:Libraries/ctrl_sdk/src/lib_timer.c **** #if LIB_USE_SELF_DATA == 1
+  82:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->cb_fn(event, timer->user_data);
+  83:Libraries/ctrl_sdk/src/lib_timer.c **** #else
+  84:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->cb_fn(event, NULL);
+  85:Libraries/ctrl_sdk/src/lib_timer.c **** #endif
+  86:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->run_time = lib_timer_get_tick() - start_time;
+  87:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+  88:Libraries/ctrl_sdk/src/lib_timer.c **** 			/* error */
+  89:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->run_time = 0;
+  90:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+  91:Libraries/ctrl_sdk/src/lib_timer.c **** 		break;
+  92:Libraries/ctrl_sdk/src/lib_timer.c **** 	case LIB_TIMER_DELAY:
+  93:Libraries/ctrl_sdk/src/lib_timer.c **** 		temp = ms - timer->last_run;
+  94:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < LIB_TIMER_PERIOD_MAX) {
+  95:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->last_run = ms;
+  96:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->state = LIB_TIMER_READY;
+  97:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+  98:Libraries/ctrl_sdk/src/lib_timer.c **** 		break;
+  99:Libraries/ctrl_sdk/src/lib_timer.c **** 	case LIB_TIMER_STOP:
+ 100:Libraries/ctrl_sdk/src/lib_timer.c **** 		break;
+ 101:Libraries/ctrl_sdk/src/lib_timer.c **** 	default:
+ 102:Libraries/ctrl_sdk/src/lib_timer.c **** 		/* error */
+ 103:Libraries/ctrl_sdk/src/lib_timer.c **** 		break;
+ 104:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 105:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 4
+
+
+  64              		.loc 1 105 1 view .LVU13
+  65 0010 70BD     		pop	{r4, r5, r6, pc}
+  66              	.LVL3:
+  67              	.L2:
+  69:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < timer->period) {
+  68              		.loc 1 69 3 is_stmt 1 view .LVU14
+  69:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < timer->period) {
+  69              		.loc 1 69 20 is_stmt 0 view .LVU15
+  70 0012 236A     		ldr	r3, [r4, #32]
+  69:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < timer->period) {
+  71              		.loc 1 69 8 view .LVU16
+  72 0014 C31A     		subs	r3, r0, r3
+  73              	.LVL4:
+  70:Libraries/ctrl_sdk/src/lib_timer.c **** 			return;
+  74              		.loc 1 70 3 is_stmt 1 view .LVU17
+  70:Libraries/ctrl_sdk/src/lib_timer.c **** 			return;
+  75              		.loc 1 70 19 is_stmt 0 view .LVU18
+  76 0016 A269     		ldr	r2, [r4, #24]
+  70:Libraries/ctrl_sdk/src/lib_timer.c **** 			return;
+  77              		.loc 1 70 6 view .LVU19
+  78 0018 9A42     		cmp	r2, r3
+  79 001a F9D8     		bhi	.L1
+  73:Libraries/ctrl_sdk/src/lib_timer.c **** 			event = LIB_TIMER_TIMEOUT;
+  80              		.loc 1 73 3 is_stmt 1 view .LVU20
+  73:Libraries/ctrl_sdk/src/lib_timer.c **** 			event = LIB_TIMER_TIMEOUT;
+  81              		.loc 1 73 19 is_stmt 0 view .LVU21
+  82 001c E269     		ldr	r2, [r4, #28]
+  73:Libraries/ctrl_sdk/src/lib_timer.c **** 			event = LIB_TIMER_TIMEOUT;
+  83              		.loc 1 73 6 view .LVU22
+  84 001e 9A42     		cmp	r2, r3
+  85 0020 00D2     		bcs	.L5
+  74:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+  86              		.loc 1 74 10 view .LVU23
+  87 0022 0125     		movs	r5, #1
+  88              	.L5:
+  89              	.LVL5:
+  78:Libraries/ctrl_sdk/src/lib_timer.c **** 		start_time = lib_timer_get_tick();
+  90              		.loc 1 78 3 is_stmt 1 view .LVU24
+  78:Libraries/ctrl_sdk/src/lib_timer.c **** 		start_time = lib_timer_get_tick();
+  91              		.loc 1 78 19 is_stmt 0 view .LVU25
+  92 0024 2062     		str	r0, [r4, #32]
+  79:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (timer->cb_fn != NULL) {
+  93              		.loc 1 79 3 is_stmt 1 view .LVU26
+  94              	.LBB17:
+  95              	.LBI17:
+  56:Libraries/ctrl_sdk/src/lib_timer.c **** {
+  96              		.loc 1 56 24 view .LVU27
+  97              	.LBB18:
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  98              		.loc 1 58 2 view .LVU28
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+  99              		.loc 1 58 9 is_stmt 0 view .LVU29
+ 100 0026 FFF7FEFF 		bl	lib_get_tick
+ 101              	.LVL6:
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 102              		.loc 1 58 9 view .LVU30
+ 103 002a 0646     		mov	r6, r0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 5
+
+
+ 104              	.LVL7:
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 105              		.loc 1 58 9 view .LVU31
+ 106              	.LBE18:
+ 107              	.LBE17:
+  80:Libraries/ctrl_sdk/src/lib_timer.c **** #if LIB_USE_SELF_DATA == 1
+ 108              		.loc 1 80 3 is_stmt 1 view .LVU32
+  80:Libraries/ctrl_sdk/src/lib_timer.c **** #if LIB_USE_SELF_DATA == 1
+ 109              		.loc 1 80 12 is_stmt 0 view .LVU33
+ 110 002c A368     		ldr	r3, [r4, #8]
+  80:Libraries/ctrl_sdk/src/lib_timer.c **** #if LIB_USE_SELF_DATA == 1
+ 111              		.loc 1 80 6 view .LVU34
+ 112 002e 3BB1     		cbz	r3, .L6
+  82:Libraries/ctrl_sdk/src/lib_timer.c **** #else
+ 113              		.loc 1 82 4 is_stmt 1 view .LVU35
+ 114 0030 E168     		ldr	r1, [r4, #12]
+ 115 0032 2846     		mov	r0, r5
+ 116              	.LVL8:
+  82:Libraries/ctrl_sdk/src/lib_timer.c **** #else
+ 117              		.loc 1 82 4 is_stmt 0 view .LVU36
+ 118 0034 9847     		blx	r3
+ 119              	.LVL9:
+  86:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+ 120              		.loc 1 86 4 is_stmt 1 view .LVU37
+ 121              	.LBB19:
+ 122              	.LBI19:
+  56:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 123              		.loc 1 56 24 view .LVU38
+ 124              	.LBB20:
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 125              		.loc 1 58 2 view .LVU39
+  58:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 126              		.loc 1 58 9 is_stmt 0 view .LVU40
+ 127 0036 FFF7FEFF 		bl	lib_get_tick
+ 128              	.LVL10:
+ 129              	.LBE20:
+ 130              	.LBE19:
+  86:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+ 131              		.loc 1 86 43 view .LVU41
+ 132 003a 801B     		subs	r0, r0, r6
+  86:Libraries/ctrl_sdk/src/lib_timer.c **** 		} else {
+ 133              		.loc 1 86 20 view .LVU42
+ 134 003c 2061     		str	r0, [r4, #16]
+ 135 003e E7E7     		b	.L1
+ 136              	.LVL11:
+ 137              	.L6:
+  89:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 138              		.loc 1 89 4 is_stmt 1 view .LVU43
+  89:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 139              		.loc 1 89 20 is_stmt 0 view .LVU44
+ 140 0040 0023     		movs	r3, #0
+ 141 0042 2361     		str	r3, [r4, #16]
+ 142 0044 E4E7     		b	.L1
+ 143              	.LVL12:
+ 144              	.L3:
+  93:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < LIB_TIMER_PERIOD_MAX) {
+ 145              		.loc 1 93 3 is_stmt 1 view .LVU45
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 6
+
+
+  93:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < LIB_TIMER_PERIOD_MAX) {
+ 146              		.loc 1 93 20 is_stmt 0 view .LVU46
+ 147 0046 236A     		ldr	r3, [r4, #32]
+  93:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (temp < LIB_TIMER_PERIOD_MAX) {
+ 148              		.loc 1 93 8 view .LVU47
+ 149 0048 C31A     		subs	r3, r0, r3
+ 150              	.LVL13:
+  94:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->last_run = ms;
+ 151              		.loc 1 94 3 is_stmt 1 view .LVU48
+  94:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->last_run = ms;
+ 152              		.loc 1 94 6 is_stmt 0 view .LVU49
+ 153 004a 6FF00042 		mvn	r2, #-2147483648
+ 154 004e 9342     		cmp	r3, r2
+ 155 0050 DED2     		bcs	.L1
+  95:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->state = LIB_TIMER_READY;
+ 156              		.loc 1 95 4 is_stmt 1 view .LVU50
+  95:Libraries/ctrl_sdk/src/lib_timer.c **** 			timer->state = LIB_TIMER_READY;
+ 157              		.loc 1 95 20 is_stmt 0 view .LVU51
+ 158 0052 2062     		str	r0, [r4, #32]
+  96:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 159              		.loc 1 96 4 is_stmt 1 view .LVU52
+  96:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 160              		.loc 1 96 17 is_stmt 0 view .LVU53
+ 161 0054 0023     		movs	r3, #0
+ 162              	.LVL14:
+  96:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 163              		.loc 1 96 17 view .LVU54
+ 164 0056 2375     		strb	r3, [r4, #20]
+ 165 0058 DAE7     		b	.L1
+ 166              		.cfi_endproc
+ 167              	.LFE5:
+ 169              		.section	.text.lib_timer_init,"ax",%progbits
+ 170              		.align	1
+ 171              		.global	lib_timer_init
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 176              	lib_timer_init:
+ 177              	.LVL15:
+ 178              	.LFB0:
+  15:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer == NULL) {
+ 179              		.loc 1 15 1 is_stmt 1 view -0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183              		@ link register save eliminated.
+  16:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 184              		.loc 1 16 2 view .LVU56
+  16:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 185              		.loc 1 16 5 is_stmt 0 view .LVU57
+ 186 0000 28B1     		cbz	r0, .L8
+  19:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->timeout = timeout;
+ 187              		.loc 1 19 2 is_stmt 1 view .LVU58
+  19:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->timeout = timeout;
+ 188              		.loc 1 19 16 is_stmt 0 view .LVU59
+ 189 0002 8161     		str	r1, [r0, #24]
+  20:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->cb_fn = cb_fn;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 7
+
+
+ 190              		.loc 1 20 2 is_stmt 1 view .LVU60
+  20:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->cb_fn = cb_fn;
+ 191              		.loc 1 20 17 is_stmt 0 view .LVU61
+ 192 0004 C261     		str	r2, [r0, #28]
+  21:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.next = NULL;
+ 193              		.loc 1 21 2 is_stmt 1 view .LVU62
+  21:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.next = NULL;
+ 194              		.loc 1 21 15 is_stmt 0 view .LVU63
+ 195 0006 8360     		str	r3, [r0, #8]
+  22:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.prev = NULL;
+ 196              		.loc 1 22 2 is_stmt 1 view .LVU64
+  22:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.prev = NULL;
+ 197              		.loc 1 22 19 is_stmt 0 view .LVU65
+ 198 0008 0023     		movs	r3, #0
+ 199              	.LVL16:
+  22:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->node.prev = NULL;
+ 200              		.loc 1 22 19 view .LVU66
+ 201 000a 0360     		str	r3, [r0]
+  23:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 202              		.loc 1 23 2 is_stmt 1 view .LVU67
+  23:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 203              		.loc 1 23 19 is_stmt 0 view .LVU68
+ 204 000c 4360     		str	r3, [r0, #4]
+ 205              	.LVL17:
+ 206              	.L8:
+  24:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 207              		.loc 1 24 1 view .LVU69
+ 208 000e 7047     		bx	lr
+ 209              		.cfi_endproc
+ 210              	.LFE0:
+ 212              		.section	.text.lib_timer_group_init,"ax",%progbits
+ 213              		.align	1
+ 214              		.global	lib_timer_group_init
+ 215              		.syntax unified
+ 216              		.thumb
+ 217              		.thumb_func
+ 219              	lib_timer_group_init:
+ 220              	.LVL18:
+ 221              	.LFB1:
+  27:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL) {
+ 222              		.loc 1 27 1 is_stmt 1 view -0
+ 223              		.cfi_startproc
+ 224              		@ args = 0, pretend = 0, frame = 0
+ 225              		@ frame_needed = 0, uses_anonymous_args = 0
+  28:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 226              		.loc 1 28 2 view .LVU71
+  28:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 227              		.loc 1 28 5 is_stmt 0 view .LVU72
+ 228 0000 48B1     		cbz	r0, .L13
+  27:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL) {
+ 229              		.loc 1 27 1 view .LVU73
+ 230 0002 08B5     		push	{r3, lr}
+ 231              	.LCFI1:
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 3, -8
+ 234              		.cfi_offset 14, -4
+ 235 0004 0146     		mov	r1, r0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 8
+
+
+  31:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 236              		.loc 1 31 2 is_stmt 1 view .LVU74
+  31:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 237              		.loc 1 31 11 is_stmt 0 view .LVU75
+ 238 0006 838A     		ldrh	r3, [r0, #20]
+  31:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 239              		.loc 1 31 5 view .LVU76
+ 240 0008 03B1     		cbz	r3, .L16
+ 241              	.LVL19:
+ 242              	.L10:
+  36:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 243              		.loc 1 36 1 view .LVU77
+ 244 000a 08BD     		pop	{r3, pc}
+ 245              	.LVL20:
+ 246              	.L16:
+  34:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_inc_tail(&lib_timer_groups, node);
+ 247              		.loc 1 34 2 is_stmt 1 view .LVU78
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 248              		.loc 1 35 2 view .LVU79
+ 249 000c 0C31     		adds	r1, r1, #12
+ 250              	.LVL21:
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 251              		.loc 1 35 2 is_stmt 0 view .LVU80
+ 252 000e 0248     		ldr	r0, .L17
+ 253              	.LVL22:
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 254              		.loc 1 35 2 view .LVU81
+ 255 0010 FFF7FEFF 		bl	lib_list_inc_tail
+ 256              	.LVL23:
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 257              		.loc 1 35 2 view .LVU82
+ 258 0014 F9E7     		b	.L10
+ 259              	.LVL24:
+ 260              	.L13:
+ 261              	.LCFI2:
+ 262              		.cfi_def_cfa_offset 0
+ 263              		.cfi_restore 3
+ 264              		.cfi_restore 14
+  35:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 265              		.loc 1 35 2 view .LVU83
+ 266 0016 7047     		bx	lr
+ 267              	.L18:
+ 268              		.align	2
+ 269              	.L17:
+ 270 0018 00000000 		.word	lib_timer_groups
+ 271              		.cfi_endproc
+ 272              	.LFE1:
+ 274              		.section	.text.lib_timer_reg,"ax",%progbits
+ 275              		.align	1
+ 276              		.global	lib_timer_reg
+ 277              		.syntax unified
+ 278              		.thumb
+ 279              		.thumb_func
+ 281              	lib_timer_reg:
+ 282              	.LVL25:
+ 283              	.LFB2:
+  39:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL || timer == NULL) {
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 9
+
+
+ 284              		.loc 1 39 1 is_stmt 1 view -0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+  40:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 288              		.loc 1 40 2 view .LVU85
+  40:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 289              		.loc 1 40 5 is_stmt 0 view .LVU86
+ 290 0000 30B1     		cbz	r0, .L22
+  39:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL || timer == NULL) {
+ 291              		.loc 1 39 1 discriminator 1 view .LVU87
+ 292 0002 08B5     		push	{r3, lr}
+ 293              	.LCFI3:
+ 294              		.cfi_def_cfa_offset 8
+ 295              		.cfi_offset 3, -8
+ 296              		.cfi_offset 14, -4
+  40:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 297              		.loc 1 40 20 discriminator 1 view .LVU88
+ 298 0004 19B1     		cbz	r1, .L19
+  43:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 299              		.loc 1 43 2 is_stmt 1 view .LVU89
+  43:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 300              		.loc 1 43 11 is_stmt 0 view .LVU90
+ 301 0006 8A68     		ldr	r2, [r1, #8]
+  43:Libraries/ctrl_sdk/src/lib_timer.c **** 		return;
+ 302              		.loc 1 43 5 view .LVU91
+ 303 0008 0AB1     		cbz	r2, .L19
+  46:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *node = &timer->node;
+ 304              		.loc 1 46 2 is_stmt 1 view .LVU92
+  47:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_inc_tail(list, node);
+ 305              		.loc 1 47 2 view .LVU93
+ 306              	.LVL26:
+  48:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 307              		.loc 1 48 2 view .LVU94
+ 308 000a FFF7FEFF 		bl	lib_list_inc_tail
+ 309              	.LVL27:
+ 310              	.L19:
+  49:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 311              		.loc 1 49 1 is_stmt 0 view .LVU95
+ 312 000e 08BD     		pop	{r3, pc}
+ 313              	.LVL28:
+ 314              	.L22:
+ 315              	.LCFI4:
+ 316              		.cfi_def_cfa_offset 0
+ 317              		.cfi_restore 3
+ 318              		.cfi_restore 14
+  49:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 319              		.loc 1 49 1 view .LVU96
+ 320 0010 7047     		bx	lr
+ 321              		.cfi_endproc
+ 322              	.LFE2:
+ 324              		.section	.text.lib_timer_handler,"ax",%progbits
+ 325              		.align	1
+ 326              		.global	lib_timer_handler
+ 327              		.syntax unified
+ 328              		.thumb
+ 329              		.thumb_func
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 10
+
+
+ 331              	lib_timer_handler:
+ 332              	.LVL29:
+ 333              	.LFB6:
+ 106:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 107:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_handler(lib_timer_group_t *group)
+ 108:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 334              		.loc 1 108 1 is_stmt 1 view -0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338              		.loc 1 108 1 is_stmt 0 view .LVU98
+ 339 0000 10B5     		push	{r4, lr}
+ 340              	.LCFI5:
+ 341              		.cfi_def_cfa_offset 8
+ 342              		.cfi_offset 4, -8
+ 343              		.cfi_offset 14, -4
+ 109:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *temp, *node;
+ 344              		.loc 1 109 2 is_stmt 1 view .LVU99
+ 110:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_timer_t *timer;
+ 345              		.loc 1 110 2 view .LVU100
+ 111:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_t *list = &group->list;
+ 346              		.loc 1 111 2 view .LVU101
+ 347              		.loc 1 111 14 is_stmt 0 view .LVU102
+ 348 0002 0446     		mov	r4, r0
+ 349              	.LVL30:
+ 112:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 350              		.loc 1 112 2 is_stmt 1 view .LVU103
+ 351 0004 40B1     		cbz	r0, .L27
+ 352              		.loc 1 112 2 is_stmt 0 discriminator 1 view .LVU104
+ 353 0006 0068     		ldr	r0, [r0]
+ 354              	.LVL31:
+ 355              		.loc 1 112 2 discriminator 1 view .LVU105
+ 356 0008 08B1     		cbz	r0, .L31
+ 357              		.loc 1 112 2 discriminator 5 view .LVU106
+ 358 000a 0468     		ldr	r4, [r0]
+ 359              	.LVL32:
+ 360              		.loc 1 112 2 discriminator 5 view .LVU107
+ 361 000c 04E0     		b	.L27
+ 362              	.LVL33:
+ 363              	.L31:
+ 364              		.loc 1 112 2 view .LVU108
+ 365 000e 0446     		mov	r4, r0
+ 366              	.LVL34:
+ 367              		.loc 1 112 2 view .LVU109
+ 368 0010 02E0     		b	.L27
+ 369              	.LVL35:
+ 370              	.L35:
+ 371              		.loc 1 112 2 discriminator 10 view .LVU110
+ 372 0012 2368     		ldr	r3, [r4]
+ 373              	.L28:
+ 374              		.loc 1 112 2 discriminator 14 view .LVU111
+ 375 0014 2046     		mov	r0, r4
+ 376 0016 1C46     		mov	r4, r3
+ 377              	.LVL36:
+ 378              	.L27:
+ 379              		.loc 1 112 2 is_stmt 1 discriminator 14 view .LVU112
+ 380 0018 28B1     		cbz	r0, .L34
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 11
+
+
+ 113:Libraries/ctrl_sdk/src/lib_timer.c **** 		timer = container_addr(node, lib_timer_t, node);
+ 381              		.loc 1 113 3 discriminator 15 view .LVU113
+ 382              	.LVL37:
+ 114:Libraries/ctrl_sdk/src/lib_timer.c **** 		lib_timer_fsm(timer);
+ 383              		.loc 1 114 3 discriminator 15 view .LVU114
+ 384 001a FFF7FEFF 		bl	lib_timer_fsm
+ 385              	.LVL38:
+ 112:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 386              		.loc 1 112 2 discriminator 15 view .LVU115
+ 112:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 387              		.loc 1 112 2 is_stmt 0 discriminator 15 view .LVU116
+ 388 001e 002C     		cmp	r4, #0
+ 389 0020 F7D1     		bne	.L35
+ 112:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 390              		.loc 1 112 2 view .LVU117
+ 391 0022 2346     		mov	r3, r4
+ 392 0024 F6E7     		b	.L28
+ 393              	.LVL39:
+ 394              	.L34:
+ 115:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 116:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 395              		.loc 1 116 1 view .LVU118
+ 396 0026 10BD     		pop	{r4, pc}
+ 397              		.loc 1 116 1 view .LVU119
+ 398              		.cfi_endproc
+ 399              	.LFE6:
+ 401              		.section	.text.lib_timer_group_handler,"ax",%progbits
+ 402              		.align	1
+ 403              		.global	lib_timer_group_handler
+ 404              		.syntax unified
+ 405              		.thumb
+ 406              		.thumb_func
+ 408              	lib_timer_group_handler:
+ 409              	.LFB7:
+ 117:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 118:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_group_handler(void)
+ 119:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 410              		.loc 1 119 1 is_stmt 1 view -0
+ 411              		.cfi_startproc
+ 412              		@ args = 0, pretend = 0, frame = 0
+ 413              		@ frame_needed = 0, uses_anonymous_args = 0
+ 414 0000 10B5     		push	{r4, lr}
+ 415              	.LCFI6:
+ 416              		.cfi_def_cfa_offset 8
+ 417              		.cfi_offset 4, -8
+ 418              		.cfi_offset 14, -4
+ 120:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *temp, *node;
+ 419              		.loc 1 120 2 view .LVU121
+ 121:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_timer_group_t *group;
+ 420              		.loc 1 121 2 view .LVU122
+ 122:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_t *list = &lib_timer_groups;
+ 421              		.loc 1 122 2 view .LVU123
+ 422              	.LVL40:
+ 123:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 423              		.loc 1 123 2 view .LVU124
+ 424 0002 094B     		ldr	r3, .L46
+ 425 0004 1868     		ldr	r0, [r3]
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 12
+
+
+ 426              	.LVL41:
+ 427              		.loc 1 123 2 is_stmt 0 view .LVU125
+ 428 0006 08B1     		cbz	r0, .L41
+ 429              		.loc 1 123 2 discriminator 5 view .LVU126
+ 430 0008 0468     		ldr	r4, [r0]
+ 431 000a 04E0     		b	.L38
+ 432              	.L41:
+ 433              		.loc 1 123 2 view .LVU127
+ 434 000c 0446     		mov	r4, r0
+ 435 000e 02E0     		b	.L38
+ 436              	.LVL42:
+ 437              	.L45:
+ 438              		.loc 1 123 2 discriminator 10 view .LVU128
+ 439 0010 2368     		ldr	r3, [r4]
+ 440              	.L39:
+ 441              		.loc 1 123 2 discriminator 14 view .LVU129
+ 442 0012 2046     		mov	r0, r4
+ 443 0014 1C46     		mov	r4, r3
+ 444              	.LVL43:
+ 445              	.L38:
+ 446              		.loc 1 123 2 is_stmt 1 discriminator 14 view .LVU130
+ 447 0016 30B1     		cbz	r0, .L44
+ 124:Libraries/ctrl_sdk/src/lib_timer.c **** 		group = container_addr(node, lib_timer_group_t, node);
+ 448              		.loc 1 124 3 discriminator 15 view .LVU131
+ 449              	.LVL44:
+ 125:Libraries/ctrl_sdk/src/lib_timer.c **** 		lib_timer_handler(group);
+ 450              		.loc 1 125 3 discriminator 15 view .LVU132
+ 451 0018 0C38     		subs	r0, r0, #12
+ 452              	.LVL45:
+ 453              		.loc 1 125 3 is_stmt 0 discriminator 15 view .LVU133
+ 454 001a FFF7FEFF 		bl	lib_timer_handler
+ 455              	.LVL46:
+ 123:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 456              		.loc 1 123 2 is_stmt 1 discriminator 15 view .LVU134
+ 123:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 457              		.loc 1 123 2 is_stmt 0 discriminator 15 view .LVU135
+ 458 001e 002C     		cmp	r4, #0
+ 459 0020 F6D1     		bne	.L45
+ 123:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each_safe(list, node, temp) {
+ 460              		.loc 1 123 2 view .LVU136
+ 461 0022 2346     		mov	r3, r4
+ 462 0024 F5E7     		b	.L39
+ 463              	.LVL47:
+ 464              	.L44:
+ 126:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 127:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 465              		.loc 1 127 1 view .LVU137
+ 466 0026 10BD     		pop	{r4, pc}
+ 467              	.LVL48:
+ 468              	.L47:
+ 469              		.loc 1 127 1 view .LVU138
+ 470              		.align	2
+ 471              	.L46:
+ 472 0028 00000000 		.word	lib_timer_groups
+ 473              		.cfi_endproc
+ 474              	.LFE7:
+ 476              		.section	.text.lib_timer_delay,"ax",%progbits
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 13
+
+
+ 477              		.align	1
+ 478              		.global	lib_timer_delay
+ 479              		.syntax unified
+ 480              		.thumb
+ 481              		.thumb_func
+ 483              	lib_timer_delay:
+ 484              	.LVL49:
+ 485              	.LFB8:
+ 128:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 129:Libraries/ctrl_sdk/src/lib_timer.c **** lib_timer_error lib_timer_delay(lib_timer_t *timer, LIB_TIMER_UNIT ms)
+ 130:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 486              		.loc 1 130 1 is_stmt 1 view -0
+ 487              		.cfi_startproc
+ 488              		@ args = 0, pretend = 0, frame = 0
+ 489              		@ frame_needed = 0, uses_anonymous_args = 0
+ 131:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer == NULL || ms == 0 || ms > LIB_TIMER_PERIOD_MAX) {
+ 490              		.loc 1 131 2 view .LVU140
+ 491              		.loc 1 131 5 is_stmt 0 view .LVU141
+ 492 0000 80B1     		cbz	r0, .L50
+ 130:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer == NULL || ms == 0 || ms > LIB_TIMER_PERIOD_MAX) {
+ 493              		.loc 1 130 1 discriminator 1 view .LVU142
+ 494 0002 38B5     		push	{r3, r4, r5, lr}
+ 495              	.LCFI7:
+ 496              		.cfi_def_cfa_offset 16
+ 497              		.cfi_offset 3, -16
+ 498              		.cfi_offset 4, -12
+ 499              		.cfi_offset 5, -8
+ 500              		.cfi_offset 14, -4
+ 501 0004 0C46     		mov	r4, r1
+ 502 0006 0546     		mov	r5, r0
+ 503              		.loc 1 131 20 discriminator 1 view .LVU143
+ 504 0008 71B1     		cbz	r1, .L51
+ 505              		.loc 1 131 31 discriminator 2 view .LVU144
+ 506 000a 0029     		cmp	r1, #0
+ 507 000c 0EDB     		blt	.L52
+ 132:Libraries/ctrl_sdk/src/lib_timer.c **** 		return LIB_TIEMR_ERROR;
+ 133:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 134:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (timer->state == LIB_TIMER_STOP) {
+ 508              		.loc 1 134 2 is_stmt 1 view .LVU145
+ 509              		.loc 1 134 11 is_stmt 0 view .LVU146
+ 510 000e 037D     		ldrb	r3, [r0, #20]	@ zero_extendqisi2
+ 511              		.loc 1 134 5 view .LVU147
+ 512 0010 022B     		cmp	r3, #2
+ 513 0012 0DD0     		beq	.L53
+ 135:Libraries/ctrl_sdk/src/lib_timer.c **** 		return LIB_TIMER_OK;
+ 136:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 137:Libraries/ctrl_sdk/src/lib_timer.c **** 	LIB_TIMER_UNIT tick = lib_timer_get_millis();
+ 514              		.loc 1 137 2 is_stmt 1 view .LVU148
+ 515              	.LBB21:
+ 516              	.LBI21:
+  51:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 517              		.loc 1 51 30 view .LVU149
+ 518              	.LBB22:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 519              		.loc 1 53 2 view .LVU150
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 520              		.loc 1 53 9 is_stmt 0 view .LVU151
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 14
+
+
+ 521 0014 FFF7FEFF 		bl	lib_get_millis
+ 522              	.LVL50:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 523              		.loc 1 53 9 view .LVU152
+ 524              	.LBE22:
+ 525              	.LBE21:
+ 138:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->state = LIB_TIMER_DELAY;
+ 526              		.loc 1 138 2 is_stmt 1 view .LVU153
+ 527              		.loc 1 138 15 is_stmt 0 view .LVU154
+ 528 0018 0123     		movs	r3, #1
+ 529 001a 2B75     		strb	r3, [r5, #20]
+ 139:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->last_run = tick - ms;
+ 530              		.loc 1 139 2 is_stmt 1 view .LVU155
+ 531              		.loc 1 139 25 is_stmt 0 view .LVU156
+ 532 001c 001B     		subs	r0, r0, r4
+ 533              	.LVL51:
+ 534              		.loc 1 139 18 view .LVU157
+ 535 001e 2862     		str	r0, [r5, #32]
+ 140:Libraries/ctrl_sdk/src/lib_timer.c **** 	return LIB_TIMER_OK;
+ 536              		.loc 1 140 2 is_stmt 1 view .LVU158
+ 537              		.loc 1 140 9 is_stmt 0 view .LVU159
+ 538 0020 0020     		movs	r0, #0
+ 539 0022 02E0     		b	.L49
+ 540              	.LVL52:
+ 541              	.L50:
+ 542              	.LCFI8:
+ 543              		.cfi_def_cfa_offset 0
+ 544              		.cfi_restore 3
+ 545              		.cfi_restore 4
+ 546              		.cfi_restore 5
+ 547              		.cfi_restore 14
+ 132:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 548              		.loc 1 132 10 view .LVU160
+ 549 0024 0120     		movs	r0, #1
+ 550              	.LVL53:
+ 141:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 551              		.loc 1 141 1 view .LVU161
+ 552 0026 7047     		bx	lr
+ 553              	.LVL54:
+ 554              	.L51:
+ 555              	.LCFI9:
+ 556              		.cfi_def_cfa_offset 16
+ 557              		.cfi_offset 3, -16
+ 558              		.cfi_offset 4, -12
+ 559              		.cfi_offset 5, -8
+ 560              		.cfi_offset 14, -4
+ 132:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 561              		.loc 1 132 10 view .LVU162
+ 562 0028 0120     		movs	r0, #1
+ 563              	.LVL55:
+ 564              	.L49:
+ 565              		.loc 1 141 1 view .LVU163
+ 566 002a 38BD     		pop	{r3, r4, r5, pc}
+ 567              	.LVL56:
+ 568              	.L52:
+ 132:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 569              		.loc 1 132 10 view .LVU164
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 15
+
+
+ 570 002c 0120     		movs	r0, #1
+ 571              	.LVL57:
+ 132:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 572              		.loc 1 132 10 view .LVU165
+ 573 002e FCE7     		b	.L49
+ 574              	.LVL58:
+ 575              	.L53:
+ 135:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 576              		.loc 1 135 10 view .LVU166
+ 577 0030 0020     		movs	r0, #0
+ 578              	.LVL59:
+ 135:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 579              		.loc 1 135 10 view .LVU167
+ 580 0032 FAE7     		b	.L49
+ 581              		.cfi_endproc
+ 582              	.LFE8:
+ 584              		.section	.text.lib_timer_group_delay,"ax",%progbits
+ 585              		.align	1
+ 586              		.global	lib_timer_group_delay
+ 587              		.syntax unified
+ 588              		.thumb
+ 589              		.thumb_func
+ 591              	lib_timer_group_delay:
+ 592              	.LVL60:
+ 593              	.LFB9:
+ 142:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 143:Libraries/ctrl_sdk/src/lib_timer.c **** lib_timer_error lib_timer_group_delay(lib_timer_group_t *group,
+ 144:Libraries/ctrl_sdk/src/lib_timer.c **** 				      LIB_TIMER_UNIT ms)
+ 145:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 594              		.loc 1 145 1 is_stmt 1 view -0
+ 595              		.cfi_startproc
+ 596              		@ args = 0, pretend = 0, frame = 0
+ 597              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL || ms == 0 || ms > LIB_TIMER_PERIOD_MAX) {
+ 598              		.loc 1 146 2 view .LVU169
+ 599              		.loc 1 146 5 is_stmt 0 view .LVU170
+ 600 0000 B0B1     		cbz	r0, .L64
+ 145:Libraries/ctrl_sdk/src/lib_timer.c **** 	if (group == NULL || ms == 0 || ms > LIB_TIMER_PERIOD_MAX) {
+ 601              		.loc 1 145 1 discriminator 1 view .LVU171
+ 602 0002 38B5     		push	{r3, r4, r5, lr}
+ 603              	.LCFI10:
+ 604              		.cfi_def_cfa_offset 16
+ 605              		.cfi_offset 3, -16
+ 606              		.cfi_offset 4, -12
+ 607              		.cfi_offset 5, -8
+ 608              		.cfi_offset 14, -4
+ 609 0004 0D46     		mov	r5, r1
+ 610              		.loc 1 146 20 discriminator 1 view .LVU172
+ 611 0006 A9B1     		cbz	r1, .L65
+ 612              		.loc 1 146 31 discriminator 2 view .LVU173
+ 613 0008 0029     		cmp	r1, #0
+ 614 000a 15DB     		blt	.L66
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 		return LIB_TIEMR_ERROR;
+ 148:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 149:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_timer_t *timer;
+ 615              		.loc 1 149 2 is_stmt 1 view .LVU174
+ 150:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_node_t *node;
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 16
+
+
+ 616              		.loc 1 150 2 view .LVU175
+ 151:Libraries/ctrl_sdk/src/lib_timer.c **** 	lib_list_for_each(&group->list, node) {
+ 617              		.loc 1 151 2 view .LVU176
+ 618 000c 0446     		mov	r4, r0
+ 619 000e 10B1     		cbz	r0, .L61
+ 620              		.loc 1 151 2 is_stmt 0 discriminator 1 view .LVU177
+ 621 0010 0468     		ldr	r4, [r0]
+ 622 0012 00E0     		b	.L61
+ 623              	.LVL61:
+ 624              	.L62:
+ 625              		.loc 1 151 2 is_stmt 1 discriminator 6 view .LVU178
+ 626 0014 2468     		ldr	r4, [r4]
+ 627              	.LVL62:
+ 628              	.L61:
+ 629              		.loc 1 151 2 discriminator 5 view .LVU179
+ 630 0016 4CB1     		cbz	r4, .L71
+ 631              	.LBB23:
+ 152:Libraries/ctrl_sdk/src/lib_timer.c **** 		timer = container_addr(node, lib_timer_t, node);
+ 632              		.loc 1 152 3 view .LVU180
+ 633              	.LVL63:
+ 153:Libraries/ctrl_sdk/src/lib_timer.c **** 		if (timer->state == LIB_TIMER_STOP) {
+ 634              		.loc 1 153 3 view .LVU181
+ 635              		.loc 1 153 12 is_stmt 0 view .LVU182
+ 636 0018 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 637              		.loc 1 153 6 view .LVU183
+ 638 001a 022B     		cmp	r3, #2
+ 639 001c FAD0     		beq	.L62
+ 154:Libraries/ctrl_sdk/src/lib_timer.c **** 			continue;
+ 155:Libraries/ctrl_sdk/src/lib_timer.c **** 		}
+ 156:Libraries/ctrl_sdk/src/lib_timer.c **** 		LIB_TIMER_UNIT tick = lib_timer_get_millis();
+ 640              		.loc 1 156 3 is_stmt 1 view .LVU184
+ 641              	.LBB24:
+ 642              	.LBI24:
+  51:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 643              		.loc 1 51 30 view .LVU185
+ 644              	.LBB25:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 645              		.loc 1 53 2 view .LVU186
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 646              		.loc 1 53 9 is_stmt 0 view .LVU187
+ 647 001e FFF7FEFF 		bl	lib_get_millis
+ 648              	.LVL64:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 649              		.loc 1 53 9 view .LVU188
+ 650              	.LBE25:
+ 651              	.LBE24:
+ 157:Libraries/ctrl_sdk/src/lib_timer.c **** 		timer->state = LIB_TIMER_DELAY;
+ 652              		.loc 1 157 3 is_stmt 1 view .LVU189
+ 653              		.loc 1 157 16 is_stmt 0 view .LVU190
+ 654 0022 0123     		movs	r3, #1
+ 655 0024 2375     		strb	r3, [r4, #20]
+ 158:Libraries/ctrl_sdk/src/lib_timer.c **** 		timer->last_run = tick - ms;
+ 656              		.loc 1 158 3 is_stmt 1 view .LVU191
+ 657              		.loc 1 158 26 is_stmt 0 view .LVU192
+ 658 0026 401B     		subs	r0, r0, r5
+ 659              	.LVL65:
+ 660              		.loc 1 158 19 view .LVU193
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 17
+
+
+ 661 0028 2062     		str	r0, [r4, #32]
+ 662 002a F3E7     		b	.L62
+ 663              	.LVL66:
+ 664              	.L71:
+ 665              		.loc 1 158 19 view .LVU194
+ 666              	.LBE23:
+ 159:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 160:Libraries/ctrl_sdk/src/lib_timer.c **** 	return LIB_TIMER_OK;
+ 667              		.loc 1 160 9 view .LVU195
+ 668 002c 0020     		movs	r0, #0
+ 669              	.LVL67:
+ 670              	.L59:
+ 161:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 671              		.loc 1 161 1 view .LVU196
+ 672 002e 38BD     		pop	{r3, r4, r5, pc}
+ 673              	.LVL68:
+ 674              	.L64:
+ 675              	.LCFI11:
+ 676              		.cfi_def_cfa_offset 0
+ 677              		.cfi_restore 3
+ 678              		.cfi_restore 4
+ 679              		.cfi_restore 5
+ 680              		.cfi_restore 14
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 681              		.loc 1 147 10 view .LVU197
+ 682 0030 0120     		movs	r0, #1
+ 683              	.LVL69:
+ 684              		.loc 1 161 1 view .LVU198
+ 685 0032 7047     		bx	lr
+ 686              	.LVL70:
+ 687              	.L65:
+ 688              	.LCFI12:
+ 689              		.cfi_def_cfa_offset 16
+ 690              		.cfi_offset 3, -16
+ 691              		.cfi_offset 4, -12
+ 692              		.cfi_offset 5, -8
+ 693              		.cfi_offset 14, -4
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 694              		.loc 1 147 10 view .LVU199
+ 695 0034 0120     		movs	r0, #1
+ 696              	.LVL71:
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 697              		.loc 1 147 10 view .LVU200
+ 698 0036 FAE7     		b	.L59
+ 699              	.LVL72:
+ 700              	.L66:
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 701              		.loc 1 147 10 view .LVU201
+ 702 0038 0120     		movs	r0, #1
+ 703              	.LVL73:
+ 147:Libraries/ctrl_sdk/src/lib_timer.c **** 	}
+ 704              		.loc 1 147 10 view .LVU202
+ 705 003a F8E7     		b	.L59
+ 706              		.cfi_endproc
+ 707              	.LFE9:
+ 709              		.section	.text.lib_timer_stop,"ax",%progbits
+ 710              		.align	1
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 18
+
+
+ 711              		.global	lib_timer_stop
+ 712              		.syntax unified
+ 713              		.thumb
+ 714              		.thumb_func
+ 716              	lib_timer_stop:
+ 717              	.LVL74:
+ 718              	.LFB10:
+ 162:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 163:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_stop(lib_timer_t *timer)
+ 164:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 719              		.loc 1 164 1 is_stmt 1 view -0
+ 720              		.cfi_startproc
+ 721              		@ args = 0, pretend = 0, frame = 0
+ 722              		@ frame_needed = 0, uses_anonymous_args = 0
+ 723              		@ link register save eliminated.
+ 165:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->state = LIB_TIMER_STOP;
+ 724              		.loc 1 165 2 view .LVU204
+ 725              		.loc 1 165 15 is_stmt 0 view .LVU205
+ 726 0000 0223     		movs	r3, #2
+ 727 0002 0375     		strb	r3, [r0, #20]
+ 166:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->last_run = 0;
+ 728              		.loc 1 166 2 is_stmt 1 view .LVU206
+ 729              		.loc 1 166 18 is_stmt 0 view .LVU207
+ 730 0004 0023     		movs	r3, #0
+ 731 0006 0362     		str	r3, [r0, #32]
+ 167:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 732              		.loc 1 167 1 view .LVU208
+ 733 0008 7047     		bx	lr
+ 734              		.cfi_endproc
+ 735              	.LFE10:
+ 737              		.section	.text.lib_timer_restart,"ax",%progbits
+ 738              		.align	1
+ 739              		.global	lib_timer_restart
+ 740              		.syntax unified
+ 741              		.thumb
+ 742              		.thumb_func
+ 744              	lib_timer_restart:
+ 745              	.LVL75:
+ 746              	.LFB11:
+ 168:Libraries/ctrl_sdk/src/lib_timer.c **** 
+ 169:Libraries/ctrl_sdk/src/lib_timer.c **** void lib_timer_restart(lib_timer_t *timer)
+ 170:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 747              		.loc 1 170 1 is_stmt 1 view -0
+ 748              		.cfi_startproc
+ 749              		@ args = 0, pretend = 0, frame = 0
+ 750              		@ frame_needed = 0, uses_anonymous_args = 0
+ 751              		.loc 1 170 1 is_stmt 0 view .LVU210
+ 752 0000 10B5     		push	{r4, lr}
+ 753              	.LCFI13:
+ 754              		.cfi_def_cfa_offset 8
+ 755              		.cfi_offset 4, -8
+ 756              		.cfi_offset 14, -4
+ 757 0002 0446     		mov	r4, r0
+ 171:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->state = LIB_TIMER_READY;
+ 758              		.loc 1 171 2 is_stmt 1 view .LVU211
+ 759              		.loc 1 171 15 is_stmt 0 view .LVU212
+ 760 0004 0023     		movs	r3, #0
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 19
+
+
+ 761 0006 0375     		strb	r3, [r0, #20]
+ 172:Libraries/ctrl_sdk/src/lib_timer.c **** 	timer->last_run = lib_timer_get_millis();
+ 762              		.loc 1 172 2 is_stmt 1 view .LVU213
+ 763              	.LBB26:
+ 764              	.LBI26:
+  51:Libraries/ctrl_sdk/src/lib_timer.c **** {
+ 765              		.loc 1 51 30 view .LVU214
+ 766              	.LBB27:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 767              		.loc 1 53 2 view .LVU215
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 768              		.loc 1 53 9 is_stmt 0 view .LVU216
+ 769 0008 FFF7FEFF 		bl	lib_get_millis
+ 770              	.LVL76:
+  53:Libraries/ctrl_sdk/src/lib_timer.c **** }
+ 771              		.loc 1 53 9 view .LVU217
+ 772              	.LBE27:
+ 773              	.LBE26:
+ 774              		.loc 1 172 18 view .LVU218
+ 775 000c 2062     		str	r0, [r4, #32]
+ 173:Libraries/ctrl_sdk/src/lib_timer.c **** }...
+ 776              		.loc 1 173 1 view .LVU219
+ 777 000e 10BD     		pop	{r4, pc}
+ 778              		.loc 1 173 1 view .LVU220
+ 779              		.cfi_endproc
+ 780              	.LFE11:
+ 782              		.section	.bss.lib_timer_groups,"aw",%nobits
+ 783              		.align	2
+ 786              	lib_timer_groups:
+ 787 0000 00000000 		.space	12
+ 787      00000000 
+ 787      00000000 
+ 788              		.text
+ 789              	.Letext0:
+ 790              		.file 2 "d:\\_environment\\arm-gnu-toolchain\\lib\\gcc\\arm-none-eabi\\12.3.1\\include\\stddef.h"
+ 791              		.file 3 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 792              		.file 4 "d:\\_environment\\arm-gnu-toolchain\\arm-none-eabi\\include\\sys\\_stdint.h"
+ 793              		.file 5 "Libraries/ctrl_sdk/inc/lib_list.h"
+ 794              		.file 6 "Libraries/ctrl_sdk/inc/lib_timer.h"
+ 795              		.file 7 "Libraries/ctrl_sdk/inc/lib_tick.h"
+ARM GAS  C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 lib_timer.c
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:19     .text.lib_timer_fsm:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:24     .text.lib_timer_fsm:00000000 lib_timer_fsm
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:170    .text.lib_timer_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:176    .text.lib_timer_init:00000000 lib_timer_init
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:213    .text.lib_timer_group_init:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:219    .text.lib_timer_group_init:00000000 lib_timer_group_init
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:270    .text.lib_timer_group_init:00000018 $d
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:786    .bss.lib_timer_groups:00000000 lib_timer_groups
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:275    .text.lib_timer_reg:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:281    .text.lib_timer_reg:00000000 lib_timer_reg
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:325    .text.lib_timer_handler:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:331    .text.lib_timer_handler:00000000 lib_timer_handler
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:402    .text.lib_timer_group_handler:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:408    .text.lib_timer_group_handler:00000000 lib_timer_group_handler
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:472    .text.lib_timer_group_handler:00000028 $d
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:477    .text.lib_timer_delay:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:483    .text.lib_timer_delay:00000000 lib_timer_delay
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:585    .text.lib_timer_group_delay:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:591    .text.lib_timer_group_delay:00000000 lib_timer_group_delay
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:710    .text.lib_timer_stop:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:716    .text.lib_timer_stop:00000000 lib_timer_stop
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:738    .text.lib_timer_restart:00000000 $t
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:744    .text.lib_timer_restart:00000000 lib_timer_restart
+C:\Users\Mxuan\AppData\Local\Temp\cc69UA53.s:783    .bss.lib_timer_groups:00000000 $d
+
+UNDEFINED SYMBOLS
+lib_get_millis
+lib_get_tick
+lib_list_inc_tail
